@@ -1,0 +1,40 @@
+{
+ "note": "Hand fixes to the road furniture of data/road.json (tools/realroad.mjs merges them). drop: OSM features that are not for us (within 8 m); add: ones the map lacks. roundabouts: by OSM way id, the island's look (deco grass|bushes|trees|none, kerb concrete|brick), from the video.",
+ "drop": {
+  "signs": [
+   9,
+   24,
+   40,
+   57,
+   74,
+   90,
+   106,
+   122
+  ]
+ },
+ "add": {},
+ "stretches": [],
+ "roundabouts": {
+  "126563688": {
+   "deco": "bushes",
+   "note": "the small one out of the car park"
+  },
+  "126563689": {
+   "deco": "grass",
+   "note": "Via Sestini: a big low grass island"
+  },
+  "126563692": {
+   "deco": "grass",
+   "note": "the big one at the end of Via Chirici, guard rail round it"
+  },
+  "126563690": {
+   "deco": "trees",
+   "note": "Via Fantacci / Via Bure Vecchia Nord: grass and trees"
+  },
+  "284597096": {
+   "deco": "bushes",
+   "kerb": "brick",
+   "note": "Via Fermi: small, raised, red brick kerb, bushes"
+  }
+ }
+}

@@ -34,6 +34,7 @@ export async function createRoad(canvas, opts = {}) {
   try { KITJ = await (await fetch('art/kit.json')).json(); } catch { console.warn('no art/kit.json: drawing without pictures'); }
   let LMS = []; try { LMS = await (await fetch('data/landmarks.json')).json(); } catch {}
   let BLD = []; try { BLD = await (await fetch('data/buildings.json')).json(); } catch {}   // ROX: the real look of each mapped building
+  let ROAD = null; try { ROAD = await (await fetch('data/road.json')).json(); } catch {}   // ROX: real signs, crossings, roundabouts (tools/realroad.mjs)
   for (const lm of LMS) { const a = KITJ.landmarks?.[lm.qid]; if (a && KITJ.pictures[a] && !KITJ.pictures[a].drop && !KITJ.pictures[a].placeholder) lm.art = a; }   // a landmark is its real picture or nothing (its brown sign still names it)
   const signed = LMS.filter(l => l.art || l.score >= 2).slice(0, Math.max(6, Math.round(LEN / 4000))); for (const l of LMS) l.signed = signed.includes(l);
   const KIT = makeKit(KITJ);
@@ -75,7 +76,7 @@ export async function createRoad(canvas, opts = {}) {
   }
 
   // ============================================================ STREAMING
-  const CHUNKS = new Map(), env = { idx: IDX, kit: KIT, landmarks: LMS, buildings: BLD };
+  const CHUNKS = new Map(), env = { idx: IDX, kit: KIT, landmarks: LMS, buildings: BLD, road: ROAD };
   async function loadChunk(c) {
     if (c < 0 || c >= IDX.count || CHUNKS.has(c)) return; CHUNKS.set(c, { loading: true });
     try { const d = await (await fetch(`data/c${String(c).padStart(4, '0')}.json`)).json(); CHUNKS.set(c, buildChunk(d, env)); }
@@ -188,14 +189,20 @@ export async function createRoad(canvas, opts = {}) {
       if (q.cls === 'tr') c = [150 + patch * 12, 128 + patch * 10, 96];
       else if (!cr && rw > 3.2) {
         if (q.cls === 'mw') { if (Math.abs(al - rw / 2) < 0.08 && (FAST || along % 12 < 4)) c = [222, 222, 214]; if (al < 0.5 && al > 0.3) c = [200, 200, 192]; }
+        else if (q.ring) { /* a roundabout is one way: no centre line */ }
         else if (IDX.centre === 'yellow' ? (al < 0.17 && al > 0.04) : (al < 0.08 && (FAST || along % 9 < 4))) c = CENTRE;
         if (Math.abs(al - (rw - 0.3)) < 0.07 && !q.town) c = [214, 214, 206]; }
-      for (const x2 of xw) { const e = along - (x2.at - x2.w / 2), e2 = along - (x2.at + x2.w / 2); if ((e > -4 && e < -1 || e2 > 1 && e2 < 4) && al < rw && (Math.floor(lat / 0.6) & 1)) c = [222, 222, 214]; }
+      for (const x2 of xw) { const e = along - (x2.at - x2.w / 2), e2 = along - (x2.at + x2.w / 2); if ((x2.zebra ? Math.abs(e) < 1.5 : e > -4 && e < -1 || e2 > 1 && e2 < 4) && al < rw && (Math.floor(lat / 0.6) & 1)) c = [222, 222, 214]; }
+      if (q.mark && lat * DRIVE > 0 && al < rw - 0.2) { const e = q.mark.at - along; if (q.mark.type === 'stop' ? e > 0 && e < 0.5 : e > 0 && e < 0.7 && (e < 0.7 - Math.abs((al % 0.9) - 0.45) * 1.4)) c = [226, 226, 218]; }   // ROX: the stop line, or the give-way teeth
     } else if (q.town && al < rw + 0.25) c = [176, 172, 160];   // the curb
     else if (al < rw + 0.25 + sw) {
       if (q.town) { const sx = Math.floor(al / 1.5), sz = FAST ? 0 : Math.floor(along / 1.5), seam = !FAST && ((al % 1.5 < 0.05) || (along % 1.5 < 0.05)), v0 = 172 + ((hash(sx, sz) & 15) - 8) * 1.2 + ((hh & 7) - 4); c = seam ? [140, 136, 128] : [v0, v0 - 4, v0 - 12]; }   // sidewalk slabs on a fixed 1.5 m grid
       else { const v = (hh & 15) - 8, m = lat > 0 ? q.R : q.L; c = m === 'desert' || m === 'sand' ? [190 + v, 162 + v, 124 + v] : q.bridge ? [140, 140, 146] : [118 + v, 132 + v, 84 + v * 0.6]; }   // a gravel or grass verge
     } else c = besideCol(lat > 0 ? q.R : q.L, lat, along, cell, hh);
+    if (q.isl && lat < -rw) { const I = q.isl, d = Math.hypot((along - I.at) / I.a, (-lat - rw - 0.25 - I.b) / I.b);   // ROX: a roundabout island: kerb, a ring of hedge, mown grass
+      if (d < 1) { const kb = (1 - d) * Math.min(I.a, I.b), v = (hh & 15) - 8;
+        c = kb < 0.55 ? (I.kerb === 'brick' ? ((Math.floor(along / 0.5) & 1) ? [158, 78, 54] : [132, 62, 46]) : (Math.floor(along / 1) & 1) ? [222, 220, 212] : [196, 194, 186])
+          : kb < 1.6 ? [46 + v, 82 + v, 40] : (Math.floor((along + lat) / 1.6) & 1) ? [118 + v, 158 + v, 74] : [106 + v, 146 + v, 68]; } }
     if (q.rail !== undefined && al < 200) { const ae = Math.abs(along - q.rail); if (ae < 1.6) { if (ae < 1.25 && al < rw) c = [58, 56, 54]; else if (al >= rw && ae < 1.5) c = ae < 1.25 && (Math.floor((lat + 1000) / 0.55) & 1) ? [96, 74, 54] : [124, 118, 108]; if (Math.abs(ae - 0.72) < 0.07) c = [168, 170, 176]; } }   // rails, ties and ballast
     return c;
   }
@@ -204,7 +211,7 @@ export async function createRoad(canvas, opts = {}) {
   function drawGround(proj, s, hzY, speed) {
     FAST = speed > 35; BLUR = 1 + Math.min(4, speed / 60);   // at speed fine ground detail would strobe: smooth it
     const D = GL.id.data; D.fill(0); let clip = H;
-    const xs = []; for (const ch of CHUNKS.values()) if (ch.cross) for (const x2 of ch.cross) if (x2.at > s - 60 && x2.at < s + 960) xs.push(x2);
+    const xs = []; for (const ch of CHUNKS.values()) for (const x2 of ch.zebra || ch.cross || []) if (x2.at > s - 60 && x2.at < s + 960) xs.push(x2);
     for (let n = 1; n < DRAW; n++) {
       const p = proj[n - 1], a = proj[n], yTop = Math.max(Math.floor(a.Y), 0), yBot = Math.min(Math.floor(p.Y), clip - 1, H - 1);
       for (let y = yBot; y >= yTop; y--) {
@@ -349,6 +356,14 @@ export async function createRoad(canvas, opts = {}) {
     } else if (sg.type === 'rail') {
       if (sty === 'us' || sty === 'au' || sty === 'jp') { c = canv(40, 60); const x = c.getContext('2d'); post(x, 19, 8, 60); for (const [w, col] of [[8, '#2b241b'], [5, '#f6f2e8']]) { x.strokeStyle = col; x.lineWidth = w; x.beginPath(); x.moveTo(3, 3); x.lineTo(37, 25); x.moveTo(37, 3); x.lineTo(3, 25); x.stroke(); } }
       else { c = canv(34, 52); const x = c.getContext('2d'); post(x, 16, 26, 52); x.fillStyle = '#2b241b'; x.beginPath(); x.moveTo(17, 0); x.lineTo(34, 30); x.lineTo(0, 30); x.fill(); x.fillStyle = '#c8202a'; x.beginPath(); x.moveTo(17, 3); x.lineTo(31, 28); x.lineTo(3, 28); x.fill(); x.fillStyle = '#f6f2e8'; x.beginPath(); x.moveTo(17, 10); x.lineTo(25, 25); x.lineTo(9, 25); x.fill(); x.fillStyle = '#1c1c1c'; x.fillRect(11, 19, 12, 2); for (let i = 0; i < 4; i++) x.fillRect(12 + i * 3, 17, 1, 2); }
+    }
+    // ROX: Italian road signs on a post: STOP, give way, roundabout
+    else if (sg.type === 'stop' || sg.type === 'yield' || sg.type === 'roundabout') {
+      c = canv(32, 58); const x = c.getContext('2d'); post(x, 15, 28, 58); const poly = (pts, col) => { x.fillStyle = col; x.beginPath(); pts.forEach(([a, b], i) => i ? x.lineTo(a, b) : x.moveTo(a, b)); x.fill(); };
+      if (sg.type === 'stop') { const oct = r => Array.from({ length: 8 }, (_, i) => [16 + Math.cos((i + 0.5) * Math.PI / 4) * r, 16 + Math.sin((i + 0.5) * Math.PI / 4) * r]); poly(oct(16), '#2b241b'); poly(oct(15), '#f6f2e8'); poly(oct(13), '#c8202a'); text(x, 'STOP', 16 - textW('STOP') / 2, 13, '#f6f2e8'); }
+      else if (sg.type === 'yield') { poly([[0, 2], [32, 2], [16, 30]], '#2b241b'); poly([[2, 3], [30, 3], [16, 28]], '#c8202a'); poly([[8, 7], [24, 7], [16, 21]], '#f6f2e8'); }
+      else { x.fillStyle = '#2b241b'; x.beginPath(); x.arc(16, 16, 16, 0, Math.PI * 2); x.fill(); x.fillStyle = '#22448a'; x.beginPath(); x.arc(16, 16, 15, 0, Math.PI * 2); x.fill();
+        x.strokeStyle = '#f6f2e8'; x.lineWidth = 3; for (let i = 0; i < 3; i++) { const a0 = i * Math.PI * 2 / 3; x.beginPath(); x.arc(16, 16, 8, a0, a0 + 1.5); x.stroke(); const a1 = a0 + 1.5, hx = 16 + Math.cos(a1) * 8, hy = 16 + Math.sin(a1) * 8; poly([[hx + Math.cos(a1) * 5, hy + Math.sin(a1) * 5], [hx - Math.cos(a1) * 5, hy - Math.sin(a1) * 5], [hx - Math.sin(a1) * 5, hy + Math.cos(a1) * 5]], '#f6f2e8'); } }
     }
     if (!c) return null; const x = c.getContext('2d'), id = x.getImageData(0, 0, c.width, c.height); for (let i = 3; i < id.data.length; i += 4) id.data[i] = id.data[i] > 127 ? 255 : 0; x.putImageData(id, 0, 0);   // hard edges, like every other picture
     SIGNS.set(key, c); return c;

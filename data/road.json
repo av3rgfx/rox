@@ -1,0 +1,7 @@
+{
+ "signals": [],
+ "signs": [[137,"stop"],[199,"yield"],[250,"yield"],[417,"yield"],[614,"yield"],[829,"yield"],[1119,"yield"],[1841,"yield"],[2016,"stop"]],
+ "zebras": [20,51,84,116,267,299,372,675,809,974,1060,1837],
+ "roundabouts": [{"s0":210,"s1":240,"r":14,"at":236,"side":-11,"osm":126563688,"deco":"bushes","note":"the small one out of the car park"},{"s0":430,"s1":550,"r":33,"at":516,"side":-30,"osm":126563689,"deco":"grass","note":"Via Sestini: a big low grass island"},{"s0":840,"s1":920,"r":33,"at":844,"side":-31,"osm":126563692,"deco":"grass","note":"the big one at the end of Via Chirici, guard rail round it"},{"s0":1120,"s1":1170,"r":25,"at":1134,"side":-24,"osm":126563690,"deco":"trees","note":"Via Fantacci / Via Bure Vecchia Nord: grass and trees"},{"s0":1850,"s1":1880,"r":10,"at":1867,"side":-3,"osm":284597096,"deco":"bushes","kerb":"brick","note":"Via Fermi: small, raised, red brick kerb, bushes"}],
+ "stretches": []
+}

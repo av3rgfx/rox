@@ -114,7 +114,7 @@ function spawnTraffic(s) {
   const q = road.roadAt(s); if (q.rw < 3.8) return;   // a lane each way at least
   const r = Math.random();
   if (r < 0.5) G.ents.push({ kind: 'car', s, lat: q.rw / 2 + rnd(-0.3, 0.3), vs: rnd(8, 12), img: pick(CARS.rear), len: 3.8 });
-  else if (r < 0.85) G.ents.push({ kind: 'car', s: s + 120, lat: -q.rw / 2 + rnd(-0.3, 0.3), vs: -rnd(10, 14), img: pick(CARS.front), len: 3.8, oncoming: true });
+  else if (r < 0.85) { if (!road.roadAt(s + 120).ring) G.ents.push({ kind: 'car', s: s + 120, lat: -q.rw / 2 + rnd(-0.3, 0.3), vs: -rnd(10, 14), img: pick(CARS.front), len: 3.8, oncoming: true }); }
   else G.ents.push({ kind: 'car', s, lat: q.rw / 2, vs: rnd(5, 7), img: CARS.ape, len: 2.8, ape: true });
 }
 function spawns() {
@@ -217,7 +217,7 @@ function step(dt) {
     } else if (e.kind === 'car') {
       e.s += e.vs * dt;
       if (G.invT <= 0 && Math.abs(e.lat - G.lat) < 1.75 && e.s < front && e.s + e.len > rear) crash(e);
-      if (e.s < G.pos - 20 || e.s > G.pos + 1000) e.gone = true;
+      if (e.s < G.pos - 20 || e.s > G.pos + 1000 || (e.oncoming && road.roadAt(e.s).ring)) e.gone = true;   // oncoming cars take another exit before a roundabout (it is one way)
     } else if (e.kind === 'fennel' || e.kind === 'wet') {
       if (G.invT <= 0 && Math.abs(e.lat - G.lat) < 1.15 && e.s < front && e.s > rear - 0.5) slip(e, e.kind === 'wet');
       if (e.s < G.pos - 5) e.gone = true;

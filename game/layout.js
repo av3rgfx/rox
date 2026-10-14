@@ -101,10 +101,16 @@ export function buildChunk(d, env) {
   if (idx.dry) for (const q of segs) for (const sd of ['L', 'R']) if (q[sd] === 'farm' || q[sd] === 'grass') q[sd] = 'desert';
   // ROX: land the map gets wrong, set by hand (data/buildings.json "land": the Panorama car park is asphalt and bays, not fields)
   for (const b of env.buildings || []) if (b.land) for (const q of segs) if (q.s >= b.land.from && q.s < b.land.to) { if (b.land.L) q.L = b.land.L; if (b.land.R) q.R = b.land.R; }
+  // ROX: the real road (data/road.json, tools/realroad.mjs). A roundabout is a one-way ring with its island on the left
+  // (Italy goes round anticlockwise): an oval of grass behind a kerb, drawn by road.js where q.isl says
+  const RD = env.road;
+  for (const rb of RD?.roundabouts || []) { const at = (rb.s0 + rb.s1) / 2, b = clamp(rb.r - 7, 3, 16), isl = { at, a: Math.max((rb.s1 - rb.s0) / 2 + 3, b), b, kerb: rb.kerb || 'concrete', deco: rb.deco || 'grass' };   // deco: grass (a few bushes), bushes, trees, none
+    for (const q of segs) { if (q.s > rb.s0 - 8 && q.s < rb.s1 + 8) q.ring = true; if (Math.abs(q.s - at) < isl.a + 1) q.isl = isl; } }
 
   // crossings (a crosswalk and a gap in the street wall) and railway crossings
   const cross = (d.cross || []).map(([s, w, ni]) => ({ at: d.s0 + s, w, name: nm(ni) })).filter(c => c.name !== segAt(segs, d, c.at)?.road);
   for (const c of cross) for (let k = Math.max(0, Math.round((c.at - d.s0 - c.w / 2) / SEG)); k <= Math.min(n - 1, Math.round((c.at - d.s0 + c.w / 2) / SEG)); k++) segs[k].cross = true;
+  const zebra = RD ? RD.zebras.filter(z => z >= d.s0 && z < d.s0 + d.len).map(at => ({ at, w: 0, zebra: true })) : null;   // ROX: crosswalks only where they are
   for (const r of d.rails || []) for (let k = Math.max(0, Math.round((r - 4) / SEG)); k <= Math.min(n - 1, Math.round((r + 4) / SEG)); k++) segs[k].rail = d.s0 + r;
   // dense: the paved share of the land within 200 m along the road (both sides). A dense stretch builds continuous street
   // walls; a suburb of houses on lawns does not, even in the same 10 km as a city centre.
@@ -203,7 +209,14 @@ export function buildChunk(d, env) {
       else if (g === 'lawn' && hrnd(s, s2 * 13) < 0.04) { const t = kit.pool(['bush', 'tree'], s), b = pickFrom(t, hash(s, s2 * 17)); if (b) q.bill.push({ pic: b, side: s2 * (off + 1 + hrnd(s, 12) * 4), scale: 0.8 + hrnd(s, 3) * 0.4 }); }
       else if (g === 'desert' && k % 4 === 0 && hrnd(s, s2 * 11) < 0.5) { const t = kit.pool(['bush', 'tree'], s), b = pickFrom(t, hash(s, s2 * 19)); if (b) q.bill.push({ pic: b, side: s2 * (off + hrnd(s, s2 * 11) * 40), scale: 0.6 + hrnd(s, 10) * 0.7 }); } }
   }
-  for (const c of cross) for (const sg of [-1, 1]) { const k = Math.round((c.at - c.w / 2 - 1 - d.s0) / SEG); if (segs[k] && segs[k].town) segs[k].bill.push({ code: 'signal', side: sg * (segs[k].rw + 0.4) }); }
+  // ROX: traffic signals only where the map has them (Pixel Path puts one at every junction in town: there are none on this road)
+  for (const c of RD ? RD.signals.map(at => ({ at, w: 0 })) : cross) for (const sg of [-1, 1]) { const k = Math.round((c.at - c.w / 2 - 1 - d.s0) / SEG); if (segs[k] && (RD || segs[k].town)) segs[k].bill.push({ code: 'signal', side: sg * (segs[k].rw + 0.4) }); }
+  // ROX: on a roundabout island nothing of the roadside (lamps, trees, signs): its own bushes and trees instead
+  const onIsl = (q, b) => q.isl && b.side < 0 && Math.hypot((q.s - q.isl.at) / q.isl.a, (-b.side - q.rw - 0.25 - q.isl.b) / q.isl.b) < 1.15;
+  for (const q of segs) if (q.isl) q.bill = q.bill.filter(b => !onIsl(q, b));
+  for (const rb of RD?.roundabouts || []) { const q0 = segs.find(q => q.isl && Math.abs(q.isl.at - (rb.s0 + rb.s1) / 2) < 0.5); if (!q0 || q0.isl.deco === 'none') continue; const I = q0.isl, n = I.deco === 'trees' ? 7 : I.deco === 'grass' ? 4 : 9;
+    for (let i = 0; i < n; i++) { const ang = i / n * Math.PI * 2 + hrnd(I.at, i) * 0.6, rr = 0.25 + hrnd(I.at, i + 20) * 0.5, at = I.at + Math.cos(ang) * I.a * rr, k = Math.round((at - d.s0) / SEG), q = segs[k]; if (!q) continue;
+      const pool = kit.pool(I.deco === 'trees' && i % 2 ? ['tree'] : ['bush'], at), pic = pickFrom(pool, hash(Math.round(at), 41 + i)); if (pic) q.bill.push({ pic, side: -(q.rw + 0.25 + I.b + Math.sin(ang) * I.b * rr), scale: I.deco === 'trees' && i % 2 ? 0.6 : 0.55 + hrnd(at, 9) * 0.2, isl: true }); } }
   // landmarks with a picture stand at their real place; close to the road a building landmark replaces the frontage
   for (const lm of env.landmarks || []) { if (!lm.art || lm.s < d.s0 || lm.s >= d.s0 + d.len) continue; const info = kit.info(lm.art); if (!info) continue;
     const k = clamp(Math.round((lm.s - d.s0) / SEG), 0, n - 1), q = segs[k], sg = Math.sign(lm.side) || 1, hm = lm.h, wm = Math.max(4, hm * info.w / info.h);
@@ -213,8 +226,8 @@ export function buildChunk(d, env) {
     else q.bill.push({ pic: lm.art, side: lm.side, hm, wm, far: true, landmark: lm.name }); }
   // keep the road and the near sidewalk clear
   for (const q of segs) q.bill = q.bill.filter(b => b.far || b.code === 'post' || Math.abs(b.side) > q.rw + 0.3);
-  placeSigns(d, segs, env);
-  return { c: d.c, d, segs, planes, cross, places: (d.places || []).map(([s, name, rank]) => ({ at: d.s0 + s, name, rank })) };
+  placeSigns(d, segs, env); realSigns(d, segs, env);
+  return { c: d.c, d, segs, planes, cross, zebra, places: (d.places || []).map(([s, name, rank]) => ({ at: d.s0 + s, name, rank })) };
 }
 function treePick(kit, s, sg) { return pickFrom(kit.pool(['tree'], s), hash(Math.round(s), 61 + sg)); }
 function pic(F, slot, s, sg) { return null; }   // lamps and poles are drawn by code (crisp and free); a kit picture could be wired in here
@@ -282,6 +295,13 @@ function placeSigns(d, segs, env) {
   for (const r of d.rails || []) { const at = s0 + r; put(at - 8, { type: 'rail' }, DRIVE, 3.2); put(at + 8, { type: 'rail' }, -DRIVE, 3.2); }
   // street names at cross streets in town
   let lastStreet = -1e9; for (const c of d.cross || []) { const name = c[2] >= 0 ? d.names[c[2]] : null, at = s0 + c[0] - c[1] / 2 - 3; if (name && at - lastStreet > 150 && segs[Math.round((at - s0) / SEG)]?.town) { put(at, { type: 'street', text: name, country: idx.country }, DRIVE, 2.8); lastStreet = at; } }
+}
+// ROX: STOP and give-way signs where they really stand (data/road.json), each with its line across our half of the road
+// (q.mark, painted by road.js), and the round blue roundabout sign before each ring
+function realSigns(d, segs, env) {
+  const s0 = d.s0, DRIVE = env.idx.drive === 'left' ? -1 : 1, at2 = at => segs[Math.round((at - s0) / SEG)], side = q => DRIVE * (q.rw + Math.min(q.sw, 1.6) + 0.8);
+  for (const [at, type] of env.road?.signs || []) { const q = at2(at); if (!q) continue; const mark = { at, type }; for (let k = -2; k <= 2; k++) { const q2 = at2(at + k * SEG); if (q2) q2.mark = mark; } q.bill.push({ code: 'sign', sign: { type }, side: side(q), hm: 2.5, far: true }); }
+  for (const rb of env.road?.roundabouts || []) { const q = at2(rb.s0 - 14); if (q) q.bill.push({ code: 'sign', sign: { type: 'roundabout' }, side: side(q), hm: 2.5, far: true }); }
 }
 const dist = (m, units) => units === 'miles' ? `${Math.max(1, Math.round(m / 1609.34))}` : `${Math.max(1, Math.round(m / 1000))}`;
 
