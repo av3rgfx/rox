@@ -4,6 +4,8 @@ Un gioco di guida in pixel art su Rox, sulla strada vera dal **Panorama** (Via B
 **Utensilferramenta Pistoiese** (Via Luigi Salvatorelli): 2,2 km presi da OpenStreetMap, con edifici, campi, colline e
 orizzonte reali. Si gioca da PC e da telefono.
 
+Stato del lavoro e cose da fare: [NEXT_SESSION.md](NEXT_SESSION.md). Note tecniche: [CLAUDE.md](CLAUDE.md).
+
 ## Le modalità
 
 - **INVESTI ROX**: la pausa pranzo è finita, sono le 13:58 e devi timbrare alle 14:00. Rox è ovunque: attraversa, saluta,
@@ -69,7 +71,7 @@ ritaglio PNG trasparente, più o meno 53 × 70 pixel, faccia dritta.
   (MIT), con piccole modifiche per il gioco (telecamera dietro l'auto, sterzo, oggetti di gioco sulla strada)
 - `data/`: il percorso scaricato da OpenStreetMap (`tools/pixel-path/scripts/route.mjs` e `bake.mjs`)
 - `art/`: le immagini dei palazzi e `kit.json`
-- `tools/`: Pixel Path (licenza in `tools/pixel-path/LICENSE`) e `codex-art.mjs`
+- `tools/`: Pixel Path (licenza in `tools/pixel-path/LICENSE`), `codex-art.mjs`, `plan-art.sh` e i test automatici in `tools/test/`
 
 ## Crediti
 
