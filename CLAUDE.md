@@ -22,12 +22,16 @@ Italian. Read `NEXT_SESSION.md` first: it has the state, the decisions taken wit
   `opts.horizon`, `opts.steer` + `setCamX()`, and `render(s, speed, things)` where a thing is
   `{z, lat, img, hm, wm?, lift?, rot?, alpha?}` drawn in painter's order; `thing.screen` gets the drawn box.
   Keep the originals in `tools/pixel-path/templates/` untouched for diffing.
-- `data/`: the baked route, 2215 m, the way the owner drives it (checked on a Street View walk-through they recorded):
-  out of the Panorama car park, Via Pietro Gherardini, Via Ginetta Chirici, Via Ubaldo Fantacci, Via Bure Vecchia Nord,
-  Via Enrico Fermi, Via Dino Buzzati, Via Luigi Salvatorelli. `route.json` at the root is the routing input (the repo
-  root is Pixel Path's TRIP): `route.mjs --out . --from "43.938129,10.939320" --to "43.930245,10.944464"` (Google Maps'
-  pins for the Panorama and UFP), then set the `from`/`to` names in route.json before baking. A 1.1 km shortcut straight
-  down Via Bure Vecchia Nord was tried and dropped: it is not the road they drive.
+- `data/`: the baked route, 2173 m, the way the owner drives it (checked on a Street View walk-through they recorded):
+  up the car park lane along the Panorama's west side (the Panorama on the right), straight to the small roundabout,
+  Via Pietro Gherardini, Via Ginetta Chirici, Via Ubaldo Fantacci, Via Bure Vecchia Nord, Via Enrico Fermi, Via Dino
+  Buzzati, Via Luigi Salvatorelli past Utensilferramenta (on the right). `route.json` at the root is the routing input
+  (the repo root is Pixel Path's TRIP): `route.mjs --out . --from "43.937618,10.938431" --via "43.938660,10.938543"
+  --to "43.930355,10.945292"` (south end of the lane, its north end, 70 m past UFP's door), then set the `from`/`to`
+  names in route.json before baking. After a rebake that moves the route, `git show HEAD:data/c0000.json > old.json`
+  and `node tools/rebase.mjs --old old.json` moves the real buildings and landmarks to the new metres (by their place
+  on the map); "add"/"land" entries and main.js's car park are by hand. Rejected: a 1.1 km shortcut down Via Bure
+  Vecchia Nord (not their road), OSRM's loop through the car park aisles (not their road either).
 - `art/`: scenery kit (`kit.json`, PNGs), `plan.json`, `raw/` (pixelated inputs of clean.mjs), `codex/` (prompts,
   `REFERENCE.md` with the real road, `ref/` reference photos, `MESSAGGIO-CODEX.md`). All 14 `pistoia-*` and both
   landmarks are real Codex pictures (two rounds; the second came as PR #4, imported by hand and closed because it was

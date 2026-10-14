@@ -90,8 +90,8 @@ function reset(mode) {
     clock: 13 * 3600 + 58 * 60 + 15, deadline: 14 * 3600, crashes: 0, ents: [], parts: [], floats: [], shake: 0, invT: 0, slipT: 0, boostT: 0, hornT: 0, finished: false, endT: 0, result: null,
     nextRox: 70, nextTraffic: 160, nextCoffee: 380, wall: false, braking: false, sayT: 0 });
   G.ents.push({ kind: 'finish', s: FINISH, lat: 0 }, { kind: 'ufp', s: LEN - 8, lat: 0 });
-  // the Panorama car park: rows of parked cars on both sides of the lane, noses and tails towards you
-  for (let s = 14; s < 236; s += 5.2) for (const sg of [-1, 1]) { if (Math.random() < 0.3) continue; const q2 = road.roadAt(s), front = Math.random() < 0.5;
+  // the Panorama car park, left of the lane (the Panorama itself is on the right): parked cars, noses and tails towards you
+  for (let s = 8; s < 140; s += 5.2) for (const sg of [-1]) { if (Math.random() < 0.3) continue; const q2 = road.roadAt(s), front = Math.random() < 0.5;
     G.ents.push({ kind: 'parked', s, lat: sg * (q2.rw + 2.4), img: front ? pick(CARS.front) : pick(CARS.rear) }); }
   if (mode === 'chase') G.ents.push(G.boss = { kind: 'boss', s: 75, lat: q.rw / 2, vs: 0, hp: BOSS_HP, flee: 0, inv: 0, dodgeCool: 0, turbo: 0, turboCool: 0, tgtLat: q.rw / 2, tgtT: 2, dropT: 3, sayT: 1.5, said: null, saidT: 0, lift: 0, vz: 0, rot: 0 });
   else G.boss = null;

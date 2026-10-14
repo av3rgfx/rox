@@ -1,4 +1,4 @@
 [
-  {"name": "Ex Mensa Sant'Agostino", "qid": "mensa", "kind": "station", "s": 1965, "side": 45, "h": 9, "w": 30, "links": 2, "score": 3, "desc": "the former Sant'Agostino canteen, 1980, by architect Leonardo Ricci (it.wikipedia: Mensa Sant'Agostino), right side on Via Enrico Fermi"},
-  {"name": "Utensilferramenta", "qid": "ufp", "kind": "station", "s": 2210, "side": 47, "h": 12, "w": 45, "links": 2, "score": 3, "desc": "Utensilferramenta Pistoiese S.p.A., Via Luigi Salvatorelli: the warehouse at the end of the road, right side (OSM building 1809 m2)"}
+  {"name": "Ex Mensa Sant'Agostino", "qid": "mensa", "kind": "station", "s": 1860, "side": 44, "h": 9, "w": 30, "links": 2, "score": 3, "desc": "the former Sant'Agostino canteen, 1980, by architect Leonardo Ricci (it.wikipedia: Mensa Sant'Agostino), right side on Via Enrico Fermi"},
+  {"name": "Utensilferramenta", "qid": "ufp", "kind": "station", "s": 2110, "side": 15, "h": 13, "w": 45, "links": 2, "score": 3, "desc": "Utensilferramenta Pistoiese S.p.A., Via Luigi Salvatorelli: the warehouse right along the road after the turn from Via Dino Buzzati (OSM building 1813 m2, facade s 2081-2124)"}
 ]
