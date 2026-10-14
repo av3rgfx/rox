@@ -16,4 +16,8 @@ Metti qui le foto, chiamate col nome dell'immagine da generare più `-1`, `-2`..
 Consigli: di giorno, di fronte all'edificio, senza auto davanti se possibile. Non servono foto belle: servono foto
 chiare. Le foto restano solo nel repository (non finiscono sul sito del gioco).
 
+**Niente foto?** Va bene anche una descrizione a parole di chi conosce l'edificio (forma, piani, colori, insegne, porte):
+Claude la mette nel prompt in `tools/plan-art.sh`. Street View si può guardare per descrivere, ma le sue immagini non
+vanno usate come riferimento (i termini di Google lo vietano); Mapillary, che sarebbe libero, non copre questa zona.
+
 Dopo aver aggiunto le foto: `node tools/codex-art.mjs prompts` aggiorna `art/codex/PROMPTS.md` con i riferimenti.

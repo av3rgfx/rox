@@ -18,7 +18,7 @@ node tools/pixel-path/scripts/plan-art.mjs --trip . --detail "$DETAIL" --landmar
  --subject "pistoia:bush=a round potted shrub from a Pistoia plant nursery, in a black plastic pot|a row of small potted conifers from a plant nursery" \
  --subject "pistoia:street=an Italian green rubbish bin for recycling on wheels|an Italian bus stop sign on a pole with a small shelter|a red Italian post box" \
  --subject "lm-cappella=a tiny old Italian roadside chapel (cappellina) by a country lane near Pistoia: a single small room with a gabled terracotta tile roof, plastered walls, an arched doorway with a small iron gate, a little cross on the gable" \
- --subject "lm-mensa=the Ex Mensa Sant'Agostino in Pistoia, a 1980 building by the architect Leonardo Ricci: an expressive modernist building of exposed concrete with bold sloping and cantilevered volumes, strips of windows, low and wide" \
+ --subject "lm-mensa=the Ex Mensa Sant'Agostino in Pistoia, a 1980 building by the architect Leonardo Ricci: a low wide square canteen hall whose walls are clad in horizontal courses of white and black stone and brick, a thin metal roof that seems to float like a kite above a continuous ribbon of windows running all around the top of the walls, four concrete pillars, an oversized red-painted lift tower beside it, a lower irregular service wing" \
  --subject "lm-ufp=the headquarters and warehouse of Utensilferramenta Pistoiese S.p.A., a hardware and tools wholesaler in the industrial zone of Pistoia: a large modern prefabricated industrial building, low and very wide, with loading doors and an office entrance"
 node tools/pixel-path/scripts/placeholder-art.mjs --trip .
 node tools/codex-art.mjs prompts

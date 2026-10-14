@@ -19,7 +19,7 @@ Poi:
 
 2. Genera le immagini di art/codex/PROMPTS-NUOVE.md con il tuo strumento di generazione immagini, usando ESATTAMENTE il prompt e il formato indicati, e salvale come PNG nel percorso indicato (art/codex/in/<nome>.png), senza ridimensionarle.
    Quando per un'immagine sono indicate delle foto di riferimento, passale allo strumento come immagini di riferimento e aggiungi al prompt la frase indicata: l'edificio deve somigliare a quello della foto (forma, piani, colori, materiali, finestre, porte, insegne), raddrizzato in vista frontale. Questo vale soprattutto per lm-ufp (Utensilferramenta).
-   Se per lm-ufp, lm-mensa o lm-cappella non c'è nessuna foto, NON generare quell'immagine e dimmelo alla fine: senza foto verrebbe inventata.
+   lm-mensa si può fare anche senza foto: il suo prompt descrive l'edificio vero (da Wikipedia). Per lm-ufp e lm-cappella, se non c'è nessuna foto e il prompt non contiene una descrizione dettagliata dell'edificio vero, NON generare l'immagine e dimmelo alla fine: verrebbe inventata.
 
 3. Controlla le immagini già fatte (art/pistoia-*.png) confrontandole con art/codex/REFERENCE.md e con le foto della strada in art/codex/ref/strada-*.jpg, se ci sono. Rigenera con il prompt di art/codex/PROMPTS.md quelle che REFERENCE.md segna "da rifare" e quelle che secondo te non sembrano la periferia di Pistoia (per esempio da centro storico o da cartolina). Le altre lasciale stare.
 

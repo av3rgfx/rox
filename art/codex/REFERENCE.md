@@ -9,8 +9,8 @@ e tipo degli edifici, non il loro aspetto: per colori, insegne e facciate valgon
 | --- | --- | --- |
 | 0–230 | Via Bure Vecchia Nord, dal Panorama alla prima rotonda | a sinistra case basse di 2 piani, una **cappellina** a 13 m dalla strada (m 84), una villa storica arretrata; a destra il parcheggio del centro commerciale |
 | 230–870 | Via Bure Vecchia Nord verso sud | campi e vivai (Pistoia è la città dei vivai), prati, qualche casa di 2 piani e capannoni sparsi, un garage |
-| 870–960 | rotonda di Via Enrico Fermi | a destra l'**Ex Mensa Sant'Agostino** (1980, architetto Leonardo Ricci), a sinistra un grande parcheggio |
-| 960–1145 | Via Dino Buzzati e Via Luigi Salvatorelli | zona industriale e commerciale di Sant'Agostino: capannoni prefabbricati, showroom, uffici; alla fine, a destra, **Utensilferramenta Pistoiese** |
+| 870–960 | rotonda di Via Enrico Fermi | a destra l'**Ex Mensa Sant'Agostino** (1980, architetto Leonardo Ricci: sala quadrata con murature a corsi bianchi e neri di pietra e laterizio, copertura metallica sospesa "come un aquilone" sopra una fascia continua di finestre, quattro pilastri in cemento, gabbia dell'ascensore rossa; fonte: it.wikipedia "Mensa Sant'Agostino"), a sinistra un grande parcheggio |
+| 960–1145 | Via Dino Buzzati e Via Luigi Salvatorelli | zona industriale e commerciale di Sant'Agostino: capannoni prefabbricati, showroom, uffici (accanto a UFP un concessionario d'auto, "Speciale car 4+4", e altre aziende); alla fine, a destra, **Utensilferramenta Pistoiese** |
 
 Lungo la strada: circa 40% piazzali e asfalto, 25% campi, 20% prati e giardini; gli edifici sono soprattutto
 capannoni e edifici commerciali moderni, poche case.
