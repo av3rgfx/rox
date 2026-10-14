@@ -1,0 +1,6 @@
+# big originals from Codex/ChatGPT: only the pixelated results (art/raw, art/*.png) are kept
+art/codex/in/
+art/contact.png
+.cache/
+node_modules/
+.DS_Store

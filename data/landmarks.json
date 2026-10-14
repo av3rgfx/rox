@@ -1,0 +1,17 @@
+[
+  {
+    "name": "Chiesa di Santa Maria Assunta",
+    "qid": "Q3673382",
+    "kind": "church",
+    "s": 196,
+    "side": 684,
+    "h": 35,
+    "w": 30,
+    "tags": {
+      "building": "church"
+    },
+    "links": 2,
+    "desc": "church in Pistoia, Italy",
+    "score": 0.8
+  }
+]
