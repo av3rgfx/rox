@@ -2,17 +2,18 @@
 
 Il gioco usa **17 immagini** per la strada:
 - 14 edifici e oggetti "tipici" (`pistoia-*`), ripetuti lungo tutta la strada;
-- 3 **landmark** (`lm-*`), ognuno al suo posto vero: la cappellina di Via Bure Vecchia Nord, l'Ex Mensa
-  Sant'Agostino e **Utensilferramenta** all'arrivo.
+- 3 **landmark** (`lm-*`), ognuno al suo posto vero: il **Panorama** alla partenza, l'Ex Mensa Sant'Agostino e
+  **Utensilferramenta** all'arrivo.
 
-Finché un'immagine manca, il gioco usa un disegno provvisorio (per i landmark: niente, o il magazzino disegnato dal
-codice).
+Finché un'immagine manca, il gioco usa un disegno provvisorio (per i landmark: niente; Utensilferramenta per ora è
+disegnato dal codice da una descrizione dell'edificio vero).
 
 ## Perché servono le foto
 
 OpenStreetMap e OSRM (usati da Pixel Path, in `tools/pixel-path/`) danno la strada vera e **dove** stanno gli edifici,
 con forma, dimensioni e tipo. Non dicono **come sono fatti**: colori, insegne, facciate. Per questo il primo
-Utensilferramenta di Codex era inventato. Per i landmark servono foto vere: vedi
+Utensilferramenta di Codex era inventato. Ora i prompt dei landmark contengono descrizioni dell'edificio vero (da
+Wikipedia e da un video di Street View guardato e descritto a parole); se arrivano foto vedi
 [`art/codex/ref/README.md`](art/codex/ref/README.md). I dati veri della strada sono in
 [`art/codex/REFERENCE.md`](art/codex/REFERENCE.md).
 
@@ -20,8 +21,8 @@ Utensilferramenta di Codex era inventato. Per i landmark servono foto vere: vedi
 
 - [`art/codex/PROMPTS.md`](art/codex/PROMPTS.md): tutte le 17 immagini, ciascuna con prompt, formato, nome del file
   e foto di riferimento.
-- [`art/codex/PROMPTS-NUOVE.md`](art/codex/PROMPTS-NUOVE.md): solo quelle che mancano ancora (3 negozi e i 3
-  landmark).
+- [`art/codex/PROMPTS-NUOVE.md`](art/codex/PROMPTS-NUOVE.md): solo quelle da fare adesso (`pistoia-apartment-1`
+  e i 3 landmark).
 - `art/codex/ref/`: le foto di riferimento.
 
 Si rigenerano con `node tools/codex-art.mjs prompts` (tutte) e

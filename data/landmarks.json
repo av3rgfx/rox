@@ -1,56 +1,86 @@
 [
   {
-    "name": "Cappellina",
-    "qid": "cappella",
-    "kind": "chapel",
-    "s": 84,
-    "side": -13,
-    "h": 6,
-    "w": 6,
+    "name": "Panorama",
+    "qid": "panorama",
+    "kind": "station",
+    "s": 23,
+    "side": -50,
+    "h": 12,
+    "w": 60,
     "links": 2,
     "score": 3,
-    "desc": "small roadside chapel on Via Bure Vecchia Nord (OSM: building=chapel, 1 level, 37 m2), left side",
+    "desc": "the Panorama hypermarket of the Centro Commerciale Le Tre Mura (OSM: building=commercial, 3 levels, 16000 m2), left of the start; its wall runs along the car park lane",
     "custom": true
   },
   {
     "name": "Ex Mensa Sant'Agostino",
     "qid": "mensa",
     "kind": "station",
-    "s": 897,
-    "side": 46,
+    "s": 1965,
+    "side": 45,
     "h": 9,
     "w": 30,
     "links": 2,
     "score": 3,
-    "desc": "the former Sant'Agostino canteen, 1980, by architect Leonardo Ricci (it.wikipedia: Mensa Sant'Agostino), right side at the Via Enrico Fermi roundabout",
+    "desc": "the former Sant'Agostino canteen, 1980, by architect Leonardo Ricci (it.wikipedia: Mensa Sant'Agostino), right side on Via Enrico Fermi",
     "custom": true
   },
   {
     "name": "Utensilferramenta",
     "qid": "ufp",
     "kind": "station",
-    "s": 1139,
+    "s": 2210,
     "side": 47,
-    "h": 10,
+    "h": 12,
     "w": 45,
     "links": 2,
     "score": 3,
-    "desc": "Utensilferramenta Pistoiese S.p.A., Via Luigi Salvatorelli 161: the warehouse at the end of the road, right side (OSM building 1809 m2)",
+    "desc": "Utensilferramenta Pistoiese S.p.A., Via Luigi Salvatorelli: the warehouse at the end of the road, right side (OSM building 1809 m2)",
     "custom": true
   },
   {
-    "name": "Sant'Agostino",
-    "qid": "Q55180567",
+    "name": "Monumento votivo militare brasiliano",
+    "qid": "Q1248729",
+    "kind": "monument",
+    "s": 698,
+    "side": 670,
+    "h": 12,
+    "w": 8,
+    "tags": {
+      "historic": "monument"
+    },
+    "links": 11,
+    "desc": "cemetery",
+    "score": 3.26
+  },
+  {
+    "name": "Ponte delle Seiarcole",
+    "qid": "Q3647252",
+    "kind": "historic",
+    "s": 1,
+    "side": 281,
+    "h": 12,
+    "w": 25,
+    "tags": {
+      "historic": "archaeological_site"
+    },
+    "links": 3,
+    "desc": "river in Italy",
+    "score": 1.88
+  },
+  {
+    "name": "Chiesa di Santa Maria Assunta",
+    "qid": "Q3673382",
     "kind": "church",
-    "s": 624,
-    "side": 313,
+    "s": 214,
+    "side": 683,
     "h": 35,
     "w": 30,
     "tags": {
       "building": "church"
     },
-    "links": 0,
-    "desc": "",
-    "score": 0.44
+    "links": 2,
+    "desc": "church in Pistoia, Italy",
+    "score": 0.8
   }
 ]

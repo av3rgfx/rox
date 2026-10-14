@@ -45,23 +45,6 @@
         "holes filled (1140 px)"
       ]
     },
-    "pistoia-shop-3": {
-      "file": "art/pistoia-shop-3.png",
-      "role": "shop",
-      "theme": "pistoia",
-      "kind": "facade",
-      "w": 148,
-      "h": 47,
-      "hm": 10,
-      "avg": [
-        137,
-        132,
-        129
-      ],
-      "placeholder": false,
-      "drop": false,
-      "flags": []
-    },
     "pistoia-house-1": {
       "file": "art/pistoia-house-1.png",
       "role": "house",
@@ -202,75 +185,6 @@
       "drop": false,
       "flags": []
     },
-    "pistoia-shop-4": {
-      "file": "art/pistoia-shop-4.png",
-      "role": "shop",
-      "theme": "pistoia",
-      "kind": "facade",
-      "w": 160,
-      "h": 154,
-      "hm": 10,
-      "avg": [
-        144,
-        112,
-        98
-      ],
-      "placeholder": true,
-      "drop": false,
-      "flags": []
-    },
-    "pistoia-shop-5": {
-      "file": "art/pistoia-shop-5.png",
-      "role": "shop",
-      "theme": "pistoia",
-      "kind": "facade",
-      "w": 160,
-      "h": 154,
-      "hm": 10,
-      "avg": [
-        118,
-        95,
-        91
-      ],
-      "placeholder": true,
-      "drop": false,
-      "flags": []
-    },
-    "pistoia-shop-6": {
-      "file": "art/pistoia-shop-6.png",
-      "role": "shop",
-      "theme": "pistoia",
-      "kind": "facade",
-      "w": 160,
-      "h": 154,
-      "hm": 10,
-      "avg": [
-        159,
-        158,
-        135
-      ],
-      "placeholder": true,
-      "drop": false,
-      "flags": []
-    },
-    "lm-cappella": {
-      "file": "art/lm-cappella.png",
-      "role": "landmark",
-      "theme": "pistoia",
-      "kind": "landmark",
-      "w": 133,
-      "h": 173,
-      "hm": 6,
-      "avg": [
-        204,
-        195,
-        178
-      ],
-      "label": "Cappellina",
-      "placeholder": true,
-      "drop": false,
-      "flags": []
-    },
     "lm-mensa": {
       "file": "art/lm-mensa.png",
       "role": "landmark",
@@ -296,7 +210,7 @@
       "kind": "landmark",
       "w": 378,
       "h": 198,
-      "hm": 10,
+      "hm": 12,
       "avg": [
         168,
         149,
@@ -307,10 +221,100 @@
       "placeholder": false,
       "drop": false,
       "flags": []
+    },
+    "pistoia-house-3": {
+      "file": "art/pistoia-house-3.png",
+      "role": "house",
+      "theme": "pistoia",
+      "kind": "facade",
+      "w": 141,
+      "h": 118,
+      "hm": 8,
+      "avg": [
+        177,
+        139,
+        115
+      ],
+      "placeholder": false,
+      "drop": false,
+      "flags": []
+    },
+    "pistoia-tower-1": {
+      "file": "art/pistoia-tower-1.png",
+      "role": "tower",
+      "theme": "pistoia",
+      "kind": "facade",
+      "w": 118,
+      "h": 192,
+      "hm": 60,
+      "avg": [
+        146,
+        124,
+        96
+      ],
+      "placeholder": false,
+      "drop": false,
+      "flags": [
+        "holes filled (811 px)"
+      ]
+    },
+    "pistoia-apartment-1": {
+      "file": "art/pistoia-apartment-1.png",
+      "role": "apartment",
+      "theme": "pistoia",
+      "kind": "facade",
+      "w": 128,
+      "h": 188,
+      "hm": 18,
+      "avg": [
+        125,
+        142,
+        154
+      ],
+      "placeholder": true,
+      "drop": false,
+      "flags": []
+    },
+    "pistoia-farm-1": {
+      "file": "art/pistoia-farm-1.png",
+      "role": "farm",
+      "theme": "pistoia",
+      "kind": "facade",
+      "w": 182,
+      "h": 111,
+      "hm": 8,
+      "avg": [
+        147,
+        116,
+        80
+      ],
+      "placeholder": false,
+      "drop": false,
+      "flags": [
+        "holes filled (510 px)"
+      ]
+    },
+    "lm-panorama": {
+      "file": "art/lm-panorama.png",
+      "role": "landmark",
+      "theme": "pistoia",
+      "kind": "landmark",
+      "w": 177,
+      "h": 144,
+      "hm": 12,
+      "avg": [
+        204,
+        195,
+        177
+      ],
+      "label": "Panorama",
+      "placeholder": true,
+      "drop": false,
+      "flags": []
     }
   },
   "landmarks": {
-    "cappella": "lm-cappella",
+    "panorama": "lm-panorama",
     "mensa": "lm-mensa",
     "ufp": "lm-ufp"
   },

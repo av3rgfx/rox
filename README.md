@@ -1,14 +1,14 @@
 # ROX
 
 Un gioco di guida in pixel art su Rox, sulla strada vera dal **Panorama** (Via Bure Vecchia Nord, Pistoia) a
-**Utensilferramenta Pistoiese** (Via Luigi Salvatorelli): 1,1 km presi da OpenStreetMap (Via Bure Vecchia Nord, Via Enrico Fermi, Via Dino Buzzati, Via Salvatorelli), con edifici, campi, colline e
+**Utensilferramenta Pistoiese** (Via Luigi Salvatorelli): 2,2 km presi da OpenStreetMap, la strada che si fa davvero (fuori dal parcheggio del Panorama, Via Gherardini, Via Chirici, Via Fantacci, Via Bure Vecchia Nord, Via Fermi, Via Buzzati, Via Salvatorelli), con edifici, campi, colline e
 orizzonte reali. Si gioca da PC e da telefono.
 
 Stato del lavoro e cose da fare: [NEXT_SESSION.md](NEXT_SESSION.md). Note tecniche: [CLAUDE.md](CLAUDE.md).
 
 ## Le modalità
 
-- **INVESTI ROX**: la pausa pranzo è finita, sono le 13:59 e hai un minuto per timbrare. Rox è ovunque: attraversa, saluta,
+- **INVESTI ROX**: la pausa pranzo è finita, sono le 13:58 e devi timbrare alle 14:00. Rox è ovunque: attraversa, saluta,
   telefona, mangia finocchi, spinge il carrello del Panorama o il Grizzly, dorme sull'asfalto, a volte è d'oro. Più ne
   prendi di fila, più sale il moltiplicatore (fino a x8). Le auto ti fanno perdere 5 secondi, il caffè dà il turbo.
   All'arrivo c'è un muro di Rox davanti al traguardo.

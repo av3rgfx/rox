@@ -2,8 +2,8 @@
 // to the baked data/landmarks.json so Pixel Path stands each one's own picture at its real place (layout.js: within
 // 60 m of the road a landmark replaces the frontage). Run after every bake:  node tools/landmarks.mjs
 // Positions come from the OSM footprints: s = metres along the route, side = metres from the road (+ right).
-// "kind" only picks the picture's shape in plan-art.mjs (station = wide, chapel = square). plan-art.mjs keeps one
-// landmark per 120 m on a side: the historic villa set back 49 m behind the chapel (s 96, left) was left out for that.
+// "kind" only picks the picture's shape in plan-art.mjs (station = wide, chapel = square). On the long route
+// (through the Panorama car park) the roadside chapel of Via Bure Vecchia Nord is 72 m off the road: left out.
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readJSON, writeJSON } from './pixel-path/scripts/lib.mjs';

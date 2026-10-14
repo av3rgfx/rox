@@ -1,27 +1,40 @@
 # La strada vera (per controllare le immagini)
 
-Dati da OpenStreetMap lungo il percorso del gioco (1145 m), raccolti con Pixel Path. Le mappe danno posizione, forma
-e tipo degli edifici, non il loro aspetto: per colori, insegne e facciate valgono le foto in `art/codex/ref/`.
+Il percorso del gioco (2215 m), come lo fa il proprietario. Posizioni e tipi degli edifici vengono da OpenStreetMap; il
+loro aspetto viene da un video di Street View registrato dal proprietario, **guardato e descritto a parole** (le
+immagini di Street View non vanno usate come riferimento per generare: lo vietano i termini di Google).
 
 ## Il percorso
 
-| metri | strada | cosa c'è intorno |
+| metri | strada | cosa si vede |
 | --- | --- | --- |
-| 0–230 | Via Bure Vecchia Nord, dal Panorama alla prima rotonda | a sinistra case basse di 2 piani, una **cappellina** a 13 m dalla strada (m 84), una villa storica arretrata; a destra il parcheggio del centro commerciale |
-| 230–870 | Via Bure Vecchia Nord verso sud | campi e vivai (Pistoia è la città dei vivai), prati, qualche casa di 2 piani e capannoni sparsi, un garage |
-| 870–960 | rotonda di Via Enrico Fermi | a destra l'**Ex Mensa Sant'Agostino** (1980, architetto Leonardo Ricci: sala quadrata con murature a corsi bianchi e neri di pietra e laterizio, copertura metallica sospesa "come un aquilone" sopra una fascia continua di finestre, quattro pilastri in cemento, gabbia dell'ascensore rossa; fonte: it.wikipedia "Mensa Sant'Agostino"), a sinistra un grande parcheggio |
-| 960–1145 | Via Dino Buzzati e Via Luigi Salvatorelli | zona industriale e commerciale di Sant'Agostino: capannoni prefabbricati, showroom, uffici (accanto a UFP un concessionario d'auto, "Speciale car 4+4", e altre aziende); alla fine, a destra, **Utensilferramenta Pistoiese** |
+| 0–250 | parcheggio del **Panorama** (Centro Commerciale Le Tre Mura) | a sinistra il centro commerciale: muri bianco crema, pilastri quadrati alti color cotto rossiccio uniti in alto da una cornice sporgente a pergolato, grande ingresso a vetri con infissi rossi, cipressi sottili lungo la facciata, insegna rossa "PANORAMA" sul tetto; parcheggio con alberelli e lampioni |
+| 250–700 | Via Pietro Gherardini e rotonde di Via Sestini | strada larga con aiuole d'erba e alberi giovani, rotonde col centro piantumato, campi incolti; a nord case basse con tetti di coppi |
+| 700–1150 | Via Ginetta Chirici | condomini moderni di 3–4 piani color mattone e crema, uffici, un distributore di benzina, prati e campi |
+| 1150–1350 | Via Ubaldo Fantacci e rotonde | svincoli con scarpate d'erba, muri di cemento, campi |
+| 1350–1880 | Via Bure Vecchia Nord | strada di campagna stretta: siepi alte, cipressi, vivai e campi, una casa colonica in mattoni rossi, una croce votiva a un incrocio; verso sud capannoni e auto parcheggiate |
+| 1880–2000 | Via Enrico Fermi | rotonde con aiuole, platani, capannoni; a destra l'**Ex Mensa Sant'Agostino** (1980, architetto Leonardo Ricci: sala con murature a corsi bianchi e neri di pietra e laterizio, copertura metallica sospesa "come un aquilone" sopra una fascia continua di finestre, gabbia dell'ascensore rossa; fonte: it.wikipedia "Mensa Sant'Agostino") e più indietro il PalaCarrara |
+| 2000–2215 | Via Dino Buzzati e Via Luigi Salvatorelli | zona industriale di Sant'Agostino: capannoni prefabbricati, palazzine di uffici color mattone con vetrate blu; alla fine, a destra, **Utensilferramenta Pistoiese** |
 
-Lungo la strada: circa 40% piazzali e asfalto, 25% campi, 20% prati e giardini; gli edifici sono soprattutto
-capannoni e edifici commerciali moderni, poche case.
+Lungo la strada: circa 35% campi, 20% prati, 25% piazzali e asfalto; gli edifici sono soprattutto capannoni, condomini
+moderni e case basse, poche case vecchie.
 
 ## Cosa vuol dire per le immagini
 
 - È **periferia moderna**, non centro storico: niente borghi da cartolina, archi in pietra o insegne "La Bottega" in
-  stile antico. Case anni '60–'90 intonacate, capannoni in cemento e lamiera, showroom con vetrate, insegne semplici.
-- Alberi: platani e tigli lungo le strade, cipressi e piante in vaso dei vivai.
+  stile antico. Case anni '60–'90 intonacate, condomini color mattone, capannoni in cemento e lamiera, insegne semplici.
+- Alberi: cipressi, platani e alberi giovani nelle aiuole; piante in vaso dei vivai.
 - Gli edifici "generici" (`pistoia-*`) vengono ripetuti in tutta la strada, quindi devono essere tipici della zona,
   non copie di un edificio preciso. Gli edifici precisi sono i landmark (`lm-*`), ognuno al suo posto vero.
+
+## Utensilferramenta com'è davvero (`lm-ufp`)
+
+Un capannone alto circa 12 m, lungo e **senza finestre**, fatto di pannelli prefabbricati in cemento a **costoloni
+verticali**, color **sabbia/ocra** con colature grigie di pioggia. Sul bordo del tetto piano una **struttura metallica
+a ringhiera** regge grandi **lettere maiuscole grigio scuro "UTENSILFERRAMENTA PISTOIESE"**, che finiscono a destra con
+un **cartello triangolare bianco col monogramma rosso UFP**. In basso a sinistra una **serranda grigio scuro** di carico
+sotto una piccola pensilina, un **trabattello di alluminio** appoggiato al muro, paletti arancioni sul marciapiede.
+Accanto c'è una palazzina di uffici color mattone con una vetrata blu.
 
 ## Le immagini già fatte (primo giro di Codex), da ricontrollare
 
@@ -29,20 +42,10 @@ capannoni e edifici commerciali moderni, poche case.
 | --- | --- |
 | `pistoia-shop-1` (negozio "La Bottega" con archi) | troppo centro storico: da rifare più periferico |
 | `pistoia-shop-2` (bar caffè su palazzina con persiane) | accettabile, un po' da cartolina |
-| `pistoia-shop-3` (edificio commerciale moderno con fascia arancione) | va bene |
-| `pistoia-house-1`, `pistoia-house-2` (villette intonacate) | vanno bene |
-| `pistoia-industrial-1`, `pistoia-industrial-2` (capannoni) | vanno bene, sono il tipo più presente |
+| `pistoia-house-1`, `-2`, `-3` (villette intonacate) | vanno bene |
+| `pistoia-farm-1` (casa colonica) | va bene: lungo Via Bure Vecchia Nord ce n'è una in mattoni rossi |
+| `pistoia-tower-1` (condominio alto) | va bene |
+| `pistoia-industrial-1`, `-2` (capannoni) | vanno bene, sono il tipo più presente |
 | `pistoia-tree-1` (cipresso), `pistoia-tree-2` (pino a ombrello) | vanno bene |
 | `pistoia-bush-1` (pianta in vaso), `pistoia-street-1` (cassonetto) | vanno bene |
-| `extra-ufp` (magazzino inventato con insegna blu) | **non somiglia**: sostituito da `lm-ufp`, descritto qui sotto |
-
-## Utensilferramenta com'è davvero
-
-Descrizione scritta dal proprietario del gioco e da Claude guardando la strada (via Salvatorelli, angolo via Dino
-Buzzati), non da foto: è nel prompt di `lm-ufp`. Un capannone alto circa 12 m, lungo e **senza finestre**, fatto di
-pannelli prefabbricati in cemento a **costoloni verticali**, color **sabbia/ocra** con colature grigie di pioggia.
-Sul bordo del tetto piano una **struttura metallica a ringhiera** regge grandi **lettere maiuscole grigio scuro
-"UTENSILFERRAMENTA PISTOIESE"**, che finiscono a destra con un **cartello triangolare bianco col monogramma rosso
-UFP**. In basso a sinistra una **serranda grigio scuro** di carico sotto una piccola pensilina, un **trabattello di
-alluminio** appoggiato al muro, paletti arancioni sul marciapiede. Accanto c'è una palazzina di uffici color mattone
-con una vetrata blu.
+| `lm-ufp` (disegnato dal codice dalla descrizione qui sopra) | segnaposto fedele ma semplice: da rifare in pixel art più ricca |

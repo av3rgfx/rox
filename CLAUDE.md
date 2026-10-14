@@ -22,17 +22,19 @@ Italian. Read `NEXT_SESSION.md` first: it has the state, the decisions taken wit
   `opts.horizon`, `opts.steer` + `setCamX()`, and `render(s, speed, things)` where a thing is
   `{z, lat, img, hm, wm?, lift?, rot?, alpha?}` drawn in painter's order; `thing.screen` gets the drawn box.
   Keep the originals in `tools/pixel-path/templates/` untouched for diffing.
-- `data/`: the baked route (1145 m: Via Bure Vecchia Nord from beside the Panorama, Via Enrico Fermi, Via Dino Buzzati,
-  Via Salvatorelli). `route.json` at the root is the routing input (the repo root is Pixel Path's TRIP).
-  Do not route from inside the Panorama car park: OSRM leaves it the wrong way and adds a 1 km loop (the first bake
-  did, 2246 m). Start on Via Bure Vecchia Nord: `route.mjs --out . --from "43.938067,10.940142" --to "43.930245,10.944464"`,
-  then set the `from`/`to` names in route.json before baking. The end point is Google Maps' pin for UFP.
+- `data/`: the baked route, 2215 m, the way the owner drives it (checked on a Street View walk-through they recorded):
+  out of the Panorama car park, Via Pietro Gherardini, Via Ginetta Chirici, Via Ubaldo Fantacci, Via Bure Vecchia Nord,
+  Via Enrico Fermi, Via Dino Buzzati, Via Luigi Salvatorelli. `route.json` at the root is the routing input (the repo
+  root is Pixel Path's TRIP): `route.mjs --out . --from "43.938129,10.939320" --to "43.930245,10.944464"` (Google Maps'
+  pins for the Panorama and UFP), then set the `from`/`to` names in route.json before baking. A 1.1 km shortcut straight
+  down Via Bure Vecchia Nord was tried and dropped: it is not the road they drive.
 - `art/`: scenery kit (`kit.json`, PNGs), `plan.json`, `raw/` (pixelated inputs of clean.mjs), `codex/` (prompts,
   `REFERENCE.md` with the real road, `ref/` reference photos, `MESSAGGIO-CODEX.md`). 11 pictures are real (Codex, first
-  round); `pistoia-shop-4/5/6`, `lm-cappella` and `lm-mensa` are placeholders. `lm-ufp` is a stand-in drawn by
+  round, 3 of them recovered from the closed PR #3); `pistoia-apartment-1`, `lm-panorama` and `lm-mensa` are placeholders. `lm-ufp` is a stand-in drawn by
   `game/sprites.js` from a description of the real building (`node tools/ufp-standin.mjs` writes it to art/raw, needs the
   local server); a Codex picture imported later replaces it. Codex's first, invented warehouse (`extra-ufp`) is gone.
-- Landmarks: `art/landmarks-custom.json` (cappella, Ex Mensa Sant'Agostino, UFP, placed from their OSM footprints)
+- Landmarks: `art/landmarks-custom.json` (Panorama at the start, Ex Mensa Sant'Agostino, UFP, placed from their OSM
+  footprints)
   is merged into `data/landmarks.json` by `node tools/landmarks.mjs` (plan-art.sh runs it; run it after any rebake).
   A landmark with a real picture replaces the frontage at its real place (layout.js); placeholders are never shown.
   OSM/OSRM give where buildings are and their size and type, never their look: faithful pictures need photos.

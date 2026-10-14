@@ -15,7 +15,7 @@
 // (templates/palette.png, the one Pixel Path gives RetroDiffusion) extended with the picture's own most common
 // colours, so a whole street reads as one kit without losing the ochre plaster or the green shutters.
 import { existsSync, mkdirSync, writeFileSync, readdirSync } from 'node:fs';
-import { join, dirname } from 'node:path';
+import { join, dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { args, readJSON, writeJSON, readPNG, writePNG } from './pixel-path/scripts/lib.mjs';
 
@@ -52,7 +52,7 @@ if (cmd === 'prompts') {
   console.log(`${out.slice(ROOT.length + 1)}: ${jobs.length} prompts${only ? '' : ` (${plan.jobs.length} scenery from the plan + ${EXTRA.length} extra)`}`);
 }
 else if (cmd === 'import') {
-  const only = A.only ? new Set(A.only.split(',')) : null, IN = A.src ? join(ROOT, A.src) : join(CODEX, 'in'), jobs = [...plan.jobs, ...EXTRA];   // --src art/raw: redo pictures imported before the margin fix
+  const only = A.only ? new Set(A.only.split(',')) : null, IN = A.src ? resolve(ROOT, A.src) : join(CODEX, 'in'), jobs = [...plan.jobs, ...EXTRA];   // --src art/raw: redo pictures imported before the margin fix
   const pal = A['no-palette'] ? [] : (() => { const p = readPNG(join(ROOT, 'tools/pixel-path/templates/palette.png')), out = []; for (let i = 0; i < p.width * p.height; i++) if (p.data[i * 4 + 3] > 0) out.push([p.data[i * 4], p.data[i * 4 + 1], p.data[i * 4 + 2]]); return out; })();
   const extra = A.colours ? +A.colours : 40;
   const present = existsSync(IN) ? new Set(readdirSync(IN).filter(f => f.endsWith('.png')).map(f => f.slice(0, -4))) : new Set();

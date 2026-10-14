@@ -4,12 +4,13 @@ Ultimo aggiornamento: 14 ottobre 2026 (fine della prima sessione).
 
 ## Cosa c'è già (funziona, testato in headless su PC e telefono)
 
-- Percorso reale, come su Google Maps: dal Panorama (si parte su Via Bure Vecchia Nord accanto al parcheggio,
-  43.938067, 10.940142) giù per Via Bure Vecchia Nord, Via Enrico Fermi, Via Dino Buzzati, fino a Utensilferramenta
-  Pistoiese (Via Luigi Salvatorelli 161, 43.930245, 10.944464): 1145 m da OpenStreetMap. La prima versione partiva
-  dentro il parcheggio e faceva un giro di 1 km in più (2,2 km): corretto su segnalazione del proprietario.
+- Percorso reale, quello che fa il proprietario (verificato su un video di Street View che ha registrato): dal
+  parcheggio del Panorama (43.938129, 10.939320) per Via Pietro Gherardini, Via Ginetta Chirici, Via Ubaldo Fantacci,
+  Via Bure Vecchia Nord, Via Enrico Fermi, Via Dino Buzzati fino a Utensilferramenta Pistoiese (Via Luigi Salvatorelli,
+  43.930245, 10.944464): 2215 m da OpenStreetMap. Una scorciatoia di 1,1 km giù per Via Bure Vecchia Nord è stata
+  provata e scartata: non è la strada che fanno.
 - Due modalità complete:
-  - **INVESTI ROX**: partenza 13:59:00, timbratura entro le 14:00 (un minuto); Rox in 9 varianti (attraversa, saluta, telefona,
+  - **INVESTI ROX**: partenza 13:58:15, timbratura entro le 14:00; Rox in 9 varianti (attraversa, saluta, telefona,
     mangia finocchio, carrello del Panorama, Grizzly, dorme, d'oro); combo fino a x8; traffico (−5 s), Ape, caffè turbo;
     muro di 4 Rox prima del traguardo "TIMBRA QUI"; titoli finali da "Collega modello" a "Leggenda della Ferramenta".
   - **ROX CHASE**: Rox sul Grizzly seduto al contrario, 5 cuori, lancia finocchi e cartelli di pavimento bagnato,
@@ -48,20 +49,17 @@ Ultimo aggiornamento: 14 ottobre 2026 (fine della prima sessione).
    Rox sul Grizzly come boss. Da progettare insieme (scena a sé dopo il traguardo, o terza modalità).
 5. **Classifica condivisa** tra colleghi (ora solo record locale): proposta Supabase (connesso alla sessione) con una
    tabella punteggi e nome del giocatore; valutare anche anti-cheat minimo.
-6. **Grafica dei palazzi**: 11 immagini del primo giro di Codex sono nel gioco (PR #3 di Codex integrata nella PR #2,
-   con un margine aggiunto: senza, la pulizia ne scartava 5 come "tagliate"). Mancano `pistoia-shop-4/5/6`, `lm-cappella` e
-   `lm-mensa`; `lm-ufp` per ora è disegnato dal codice da una descrizione dell'edificio vero (capannone color sabbia a
-   costoloni, scritta UTENSILFERRAMENTA PISTOIESE sul tetto, triangolo rosso UFP), presa da un video di Street View fatto
-   dal proprietario: Street View solo guardato e descritto a parole, mai usato come immagine di riferimento (termini di
-   Google). Il proprietario ha trovato le immagini poco fedeli (Utensilferramenta
-   inventato): per i landmark servono **foto** in `art/codex/ref/` (vedi `art/codex/ref/README.md`), poi il messaggio
-   in `art/codex/MESSAGGIO-CODEX.md`. Quando arriva la PR di Codex: controllare `clean.mjs` (immagini scartate),
-   `art/contact.png`, provare il gioco e i landmark al loro posto (cappellina m 84 a sinistra, Mensa m 897 a destra,
-   UFP m 1139 a destra).
-7. **Playtest con persone vere**: regolare la difficoltà. Valori attuali (percorso da 1,1 km): Investi 60 s, un Rox
-   ogni 24–46 m (il bot arriva in ~38 s senza incidenti, 28 Rox su 33); Chase: Rox parte 45 m avanti, velocità
-   13–26 m/s contro 35 del giocatore, 5 cuori, colpo valido entro 1,7 m di lato (il bot vince in ~25 s, a metà strada).
-   I record locali sono ripartiti da zero (chiave `rox-best-v2`).
+6. **Grafica dei palazzi**: 14 immagini del primo giro di Codex sono nel gioco (PR #3 di Codex chiusa e integrata, con
+   un margine aggiunto: senza, la pulizia ne scartava 5 come "tagliate"). Mancano `pistoia-apartment-1` e i landmark
+   `lm-panorama` e `lm-mensa`. `lm-ufp` per ora è disegnato dal codice da una descrizione dell'edificio vero (capannone
+   color sabbia a costoloni, scritta UTENSILFERRAMENTA PISTOIESE sul tetto, triangolo rosso UFP). Panorama e UFP sono
+   descritti da un video di Street View fatto dal proprietario: Street View solo guardato e descritto a parole, mai
+   usato come immagine di riferimento (termini di Google). Messaggio per Codex: `art/codex/MESSAGGIO-CODEX.md`. Quando
+   arriva la PR di Codex: controllare `clean.mjs` (immagini scartate), `art/contact.png`, provare il gioco e i landmark
+   al loro posto (Panorama m 23 a sinistra, Mensa m 1965 a destra, UFP m 2210 a destra).
+7. **Playtest con persone vere**: regolare la difficoltà. Valori attuali (2,2 km): Investi 105 s (13:58:15 → 14:00),
+   un Rox ogni 34–70 m; Chase: Rox parte 75 m avanti, velocità 15–30 m/s contro 35 del giocatore, 5 cuori, colpo
+   valido entro 1,7 m di lato. I record ripartono da zero (chiave `rox-best-v3`).
 
 ## Come provarlo
 
