@@ -294,16 +294,17 @@
       "role": "landmark",
       "theme": "pistoia",
       "kind": "landmark",
-      "w": 177,
-      "h": 144,
+      "w": 378,
+      "h": 198,
       "hm": 10,
       "avg": [
-        204,
-        195,
-        177
+        168,
+        149,
+        113
       ],
       "label": "Utensilferramenta",
-      "placeholder": true,
+      "qid": "ufp",
+      "placeholder": false,
       "drop": false,
       "flags": []
     }

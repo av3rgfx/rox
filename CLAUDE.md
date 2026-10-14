@@ -29,8 +29,9 @@ Italian. Read `NEXT_SESSION.md` first: it has the state, the decisions taken wit
   then set the `from`/`to` names in route.json before baking. The end point is Google Maps' pin for UFP.
 - `art/`: scenery kit (`kit.json`, PNGs), `plan.json`, `raw/` (pixelated inputs of clean.mjs), `codex/` (prompts,
   `REFERENCE.md` with the real road, `ref/` reference photos, `MESSAGGIO-CODEX.md`). 11 pictures are real (Codex, first
-  round); `pistoia-shop-4/5/6` and the landmarks are placeholders. `extra-ufp.png` is Codex's invented warehouse, used
-  by the code-drawn finish prop only while `lm-ufp` has no real picture.
+  round); `pistoia-shop-4/5/6`, `lm-cappella` and `lm-mensa` are placeholders. `lm-ufp` is a stand-in drawn by
+  `game/sprites.js` from a description of the real building (`node tools/ufp-standin.mjs` writes it to art/raw, needs the
+  local server); a Codex picture imported later replaces it. Codex's first, invented warehouse (`extra-ufp`) is gone.
 - Landmarks: `art/landmarks-custom.json` (cappella, Ex Mensa Sant'Agostino, UFP, placed from their OSM footprints)
   is merged into `data/landmarks.json` by `node tools/landmarks.mjs` (plan-art.sh runs it; run it after any rebake).
   A landmark with a real picture replaces the frontage at its real place (layout.js); placeholders are never shown.

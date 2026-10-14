@@ -53,8 +53,6 @@ async function makeRoad() {
 // ------------------------------------------------------------ pictures
 const faceImg = await new Promise(res => { const i = new Image(); i.onload = () => res(i); i.onerror = () => res(null); i.src = 'assets/rox/face.png'; });
 const ROX = buildRox(faceImg), CARS = buildCars(), PROPS = buildProps();
-// the warehouse drawn by Codex, when there is one (tools/codex-art.mjs); otherwise the code-drawn one
-{ const i = new Image(); i.onload = () => { PROPS.ufp = i; }; i.src = 'art/extra-ufp.png'; }
 const PPM = 40;   // pixels per metre of Rox's pictures (he is 2.35 m tall: a bobblehead you can see from afar)
 const hmOf = im => im.height / PPM;
 const BUB = new Map(), bub = t => { if (!BUB.has(t)) BUB.set(t, bubble(t)); return BUB.get(t); };

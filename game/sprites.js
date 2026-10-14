@@ -195,13 +195,18 @@ export function buildProps() {
     R(2, 0, 4, 64, [120, 120, 130]); R(c.width - 6, 0, 4, 64, [120, 120, 130]);
     R(6, 4, c.width - 12, 22, [200, 30, 36]); for (let i = 0; i < c.width - 12; i += 8) { R(6 + i, 4, 4, 2, [250, 250, 250]); R(10 + i, 24, 4, 2, [250, 250, 250]); }
     pixelText(x, t, 20, 8, '#fff8e8', 2); P.finish = outline(c); }
-  // Utensilferramenta Pistoiese: the warehouse where it all ends
-  { const c = canv(220, 96), x = ctxOf(c), R = (a, b, w, h, col) => { x.fillStyle = rgb(col); x.fillRect(a, b, w, h); };
-    R(0, 14, 220, 82, [196, 198, 202]); for (let i = 0; i < 220; i += 11) R(i, 14, 1, 82, [170, 172, 178]); R(0, 10, 220, 5, [120, 124, 132]);
-    R(8, 22, 204, 18, [32, 70, 150]); pixelText(x, 'UTENSILFERRAMENTA', 22, 28, '#ffffff'); x.fillStyle = '#f2c41f'; x.beginPath(); x.arc(196, 31, 8, 0, 7); x.fill(); pixelText(x, '50', 191, 28, '#203a80');
-    R(20, 52, 70, 44, [242, 196, 30]); for (let i = 0; i < 11; i++) R(20, 54 + i * 4, 70, 1, [200, 160, 20]);   // the yellow roller door
-    R(110, 56, 34, 40, [60, 80, 110]); R(113, 59, 28, 34, [120, 160, 200]); R(160, 50, 44, 10, [110, 160, 210]); R(160, 64, 44, 10, [110, 160, 210]);
-    R(150, 3, 6, 11, [120, 124, 132]); P.ufp = outline(c); }
+  // Utensilferramenta Pistoiese as it really is: a tall windowless warehouse of ribbed concrete panels in sandy ochre
+  // with grey rain streaks, the name in big dark letters on a railing along the roof, a red UFP triangle, a shutter
+  { const t = 'UTENSILFERRAMENTA PISTOIESE', c = canv(textW(t) + 34, 100), x = ctxOf(c), W = c.width, R = (a, b, w, h, col) => { x.fillStyle = rgb(col); x.fillRect(a, b, w, h); };
+    R(0, 22, W, 78, [208, 184, 132]); for (let i = 0; i < W; i += 9) { R(i, 22, 2, 78, [184, 160, 112]); R(i + 2, 22, 1, 78, [222, 200, 150]); }   // ribbed panels
+    for (let i = 3; i < W; i += 13) R(i, 40 + (i * 7) % 23, 2, 14 + (i * 5) % 17, [150, 140, 116]);   // rain streaks
+    R(0, 20, W, 3, [150, 132, 96]); R(0, 6, W - 22, 1, [90, 92, 98]); R(0, 18, W - 22, 1, [90, 92, 98]); for (let i = 0; i < W - 22; i += 12) R(i, 6, 1, 14, [90, 92, 98]);   // the railing on the roof
+    pixelText(x, t, 4, 9, '#3a3c42');
+    x.fillStyle = '#f4f2ec'; x.beginPath(); x.moveTo(W - 18, 20); x.lineTo(W - 9, 2); x.lineTo(W - 1, 20); x.fill(); pixelText(x, 'U', W - 12, 10, '#d0262a');   // the red UFP triangle
+    R(10, 66, 34, 34, [74, 76, 82]); for (let i = 0; i < 8; i++) R(10, 68 + i * 4, 34, 1, [58, 60, 66]); R(6, 62, 42, 4, [120, 122, 128]);   // shutter and canopy
+    for (const xx of [54, 66]) R(xx, 44, 1, 56, [196, 200, 206]); for (let y = 48; y < 100; y += 12) R(54, y, 13, 1, [196, 200, 206]);   // the scaffold tower
+    for (const xx of [W - 60, W - 44, W - 28]) R(xx, 92, 3, 8, [236, 120, 30]);
+    P.ufp = outline(c); }
   return P;
 }
 

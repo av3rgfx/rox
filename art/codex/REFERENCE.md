@@ -34,4 +34,15 @@ capannoni e edifici commerciali moderni, poche case.
 | `pistoia-industrial-1`, `pistoia-industrial-2` (capannoni) | vanno bene, sono il tipo più presente |
 | `pistoia-tree-1` (cipresso), `pistoia-tree-2` (pino a ombrello) | vanno bene |
 | `pistoia-bush-1` (pianta in vaso), `pistoia-street-1` (cassonetto) | vanno bene |
-| `extra-ufp` (magazzino inventato con insegna blu) | **non somiglia**: sostituito da `lm-ufp`, da fare con la foto |
+| `extra-ufp` (magazzino inventato con insegna blu) | **non somiglia**: sostituito da `lm-ufp`, descritto qui sotto |
+
+## Utensilferramenta com'è davvero
+
+Descrizione scritta dal proprietario del gioco e da Claude guardando la strada (via Salvatorelli, angolo via Dino
+Buzzati), non da foto: è nel prompt di `lm-ufp`. Un capannone alto circa 12 m, lungo e **senza finestre**, fatto di
+pannelli prefabbricati in cemento a **costoloni verticali**, color **sabbia/ocra** con colature grigie di pioggia.
+Sul bordo del tetto piano una **struttura metallica a ringhiera** regge grandi **lettere maiuscole grigio scuro
+"UTENSILFERRAMENTA PISTOIESE"**, che finiscono a destra con un **cartello triangolare bianco col monogramma rosso
+UFP**. In basso a sinistra una **serranda grigio scuro** di carico sotto una piccola pensilina, un **trabattello di
+alluminio** appoggiato al muro, paletti arancioni sul marciapiede. Accanto c'è una palazzina di uffici color mattone
+con una vetrata blu.

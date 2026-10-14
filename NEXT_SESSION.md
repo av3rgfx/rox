@@ -49,8 +49,11 @@ Ultimo aggiornamento: 14 ottobre 2026 (fine della prima sessione).
 5. **Classifica condivisa** tra colleghi (ora solo record locale): proposta Supabase (connesso alla sessione) con una
    tabella punteggi e nome del giocatore; valutare anche anti-cheat minimo.
 6. **Grafica dei palazzi**: 11 immagini del primo giro di Codex sono nel gioco (PR #3 di Codex integrata nella PR #2,
-   con un margine aggiunto: senza, la pulizia ne scartava 5 come "tagliate"). Mancano `pistoia-shop-4/5/6` e i 3
-   landmark (`lm-cappella`, `lm-mensa`, `lm-ufp`). Il proprietario ha trovato le immagini poco fedeli (Utensilferramenta
+   con un margine aggiunto: senza, la pulizia ne scartava 5 come "tagliate"). Mancano `pistoia-shop-4/5/6`, `lm-cappella` e
+   `lm-mensa`; `lm-ufp` per ora è disegnato dal codice da una descrizione dell'edificio vero (capannone color sabbia a
+   costoloni, scritta UTENSILFERRAMENTA PISTOIESE sul tetto, triangolo rosso UFP), presa da un video di Street View fatto
+   dal proprietario: Street View solo guardato e descritto a parole, mai usato come immagine di riferimento (termini di
+   Google). Il proprietario ha trovato le immagini poco fedeli (Utensilferramenta
    inventato): per i landmark servono **foto** in `art/codex/ref/` (vedi `art/codex/ref/README.md`), poi il messaggio
    in `art/codex/MESSAGGIO-CODEX.md`. Quando arriva la PR di Codex: controllare `clean.mjs` (immagini scartate),
    `art/contact.png`, provare il gioco e i landmark al loro posto (cappellina m 84 a sinistra, Mensa m 897 a destra,
