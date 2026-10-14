@@ -249,9 +249,9 @@
       "theme": "pistoia",
       "kind": "facade",
       "width": 192,
-      "height": 95,
+      "height": 123,
       "hm": 12,
-      "prompt": "the full front elevation of one 24-metre bay of the long facade of the Panorama hypermarket at the Le Tre Mura shopping centre in Pistoia: cream-white rendered wall, tall square terracotta-red pilasters at both sides joined at the top by a projecting pergola-like cornice of red beams, a band of tall glass panels with dark frames between them, slim cypress trees in front, flat roof, no sign, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos, pixel art game asset, isolated on a plain white background, no ground, no shadow, 16-bit style, afternoon light, the whole subject inside the picture with a margin on every side, nothing cut off"
+      "prompt": "the full front elevation of a 19-metre stretch (four pilaster bays) of the long facade of the Panorama hypermarket at the Le Tre Mura shopping centre in Pistoia: cream-white rendered wall, tall square terracotta-red pilasters at both sides joined at the top by a projecting pergola-like cornice of red beams, a band of tall glass panels with dark frames between them, slim cypress trees in front, flat roof, no sign, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos, pixel art game asset, isolated on a plain white background, no ground, no shadow, 16-bit style, afternoon light, the whole subject inside the picture with a margin on every side, nothing cut off"
     },
     {
       "name": "b-panorama-entrance",
@@ -262,7 +262,7 @@
       "theme": "pistoia",
       "kind": "facade",
       "width": 192,
-      "height": 95,
+      "height": 123,
       "hm": 12,
       "prompt": "the full front elevation of the main entrance of the Panorama hypermarket at the Le Tre Mura shopping centre in Pistoia: a big recessed glazed entrance with sliding doors and red door frames under a projecting canopy, framed by tall terracotta-red pilasters and a pergola-like cornice of red beams, cream-white walls, and above it on the flat roof a big red sign reading PANORAMA, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos, pixel art game asset, isolated on a plain white background, no ground, no shadow, 16-bit style, afternoon light, the whole subject inside the picture with a margin on every side, nothing cut off"
     },
@@ -330,19 +330,6 @@
       "height": 125,
       "hm": 13,
       "prompt": "the full front elevation of a modern four-storey Italian apartment block with salmon-pink and white render, long balconies with metal railings, a grey roof, a row of parked cars in front, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos, pixel art game asset, isolated on a plain white background, no ground, no shadow, 16-bit style, afternoon light, the whole subject inside the picture with a margin on every side, nothing cut off"
-    },
-    {
-      "name": "b-petrol",
-      "style": "rd_pro__default",
-      "remove_bg": true,
-      "seed": 44197090,
-      "role": "custom",
-      "theme": "pistoia",
-      "kind": "facade",
-      "width": 192,
-      "height": 82,
-      "hm": 6,
-      "prompt": "the full front elevation of a small Italian petrol station seen from the road: a flat white canopy on slim pillars over two fuel pumps, a small shop kiosk, a tall price totem with blank panels, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos, pixel art game asset, isolated on a plain white background, no ground, no shadow, 16-bit style, afternoon light, the whole subject inside the picture with a margin on every side, nothing cut off"
     },
     {
       "name": "b-brick-shed",
@@ -473,6 +460,58 @@
       "height": 88,
       "hm": 11,
       "prompt": "the full front elevation of one bay of a tall windowless warehouse of vertical ribbed precast concrete panels painted sandy beige-ochre with dark grey rain streaks, a flat roof, no sign, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos, pixel art game asset, isolated on a plain white background, no ground, no shadow, 16-bit style, afternoon light, the whole subject inside the picture with a margin on every side, nothing cut off"
+    },
+    {
+      "name": "b-villa-a",
+      "style": "rd_pro__default",
+      "remove_bg": true,
+      "seed": 138932848,
+      "role": "custom",
+      "theme": "pistoia",
+      "kind": "facade",
+      "width": 96,
+      "height": 192,
+      "hm": 9,
+      "prompt": "the full front elevation of undefined, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos, pixel art game asset, isolated on a plain white background, no ground, no shadow, 16-bit style, afternoon light, the whole subject inside the picture with a margin on every side, nothing cut off"
+    },
+    {
+      "name": "b-condo-b",
+      "style": "rd_pro__default",
+      "remove_bg": true,
+      "seed": 152523182,
+      "role": "custom",
+      "theme": "pistoia",
+      "kind": "facade",
+      "width": 192,
+      "height": 125,
+      "hm": 13,
+      "prompt": "the full front elevation of undefined, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos, pixel art game asset, isolated on a plain white background, no ground, no shadow, 16-bit style, afternoon light, the whole subject inside the picture with a margin on every side, nothing cut off"
+    },
+    {
+      "name": "b-petrol",
+      "style": "rd_pro__default",
+      "remove_bg": true,
+      "seed": 44197090,
+      "role": "custom",
+      "theme": "pistoia",
+      "kind": "facade",
+      "width": 192,
+      "height": 64,
+      "hm": 6,
+      "prompt": "the full front elevation of undefined, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos, pixel art game asset, isolated on a plain white background, no ground, no shadow, 16-bit style, afternoon light, the whole subject inside the picture with a margin on every side, nothing cut off"
+    },
+    {
+      "name": "b-ufp-side",
+      "style": "rd_pro__default",
+      "remove_bg": true,
+      "seed": 16087138,
+      "role": "custom",
+      "theme": "pistoia",
+      "kind": "facade",
+      "width": 192,
+      "height": 99,
+      "hm": 11,
+      "prompt": "the full front elevation of undefined, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos, pixel art game asset, isolated on a plain white background, no ground, no shadow, 16-bit style, afternoon light, the whole subject inside the picture with a margin on every side, nothing cut off"
     }
   ]
 }

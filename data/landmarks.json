@@ -3,8 +3,8 @@
     "name": "Ex Mensa Sant'Agostino",
     "qid": "mensa",
     "kind": "station",
-    "s": 1965,
-    "side": 45,
+    "s": 1860,
+    "side": 44,
     "h": 9,
     "w": 30,
     "links": 2,
@@ -16,21 +16,21 @@
     "name": "Utensilferramenta",
     "qid": "ufp",
     "kind": "station",
-    "s": 2210,
-    "side": 47,
-    "h": 12,
+    "s": 2110,
+    "side": 15,
+    "h": 13,
     "w": 45,
     "links": 2,
     "score": 3,
-    "desc": "Utensilferramenta Pistoiese S.p.A., Via Luigi Salvatorelli: the warehouse at the end of the road, right side (OSM building 1809 m2)",
+    "desc": "Utensilferramenta Pistoiese S.p.A., Via Luigi Salvatorelli: the warehouse right along the road after the turn from Via Dino Buzzati (OSM building 1813 m2, facade s 2081-2124)",
     "custom": true
   },
   {
     "name": "Monumento votivo militare brasiliano",
     "qid": "Q1248729",
     "kind": "monument",
-    "s": 698,
-    "side": 670,
+    "s": 434,
+    "side": 683,
     "h": 12,
     "w": 8,
     "tags": {
@@ -38,14 +38,14 @@
     },
     "links": 11,
     "desc": "cemetery",
-    "score": 3.26
+    "score": 3.22
   },
   {
     "name": "Ponte delle Seiarcole",
     "qid": "Q3647252",
     "kind": "historic",
-    "s": 1,
-    "side": 281,
+    "s": 153,
+    "side": 316,
     "h": 12,
     "w": 25,
     "tags": {
@@ -53,21 +53,21 @@
     },
     "links": 3,
     "desc": "river in Italy",
-    "score": 1.88
+    "score": 1.77
   },
   {
-    "name": "Chiesa di Santa Maria Assunta",
-    "qid": "Q3673382",
+    "name": "Sant'Agostino",
+    "qid": "Q55180567",
     "kind": "church",
-    "s": 214,
-    "side": 683,
+    "s": 1532,
+    "side": 320,
     "h": 35,
     "w": 30,
     "tags": {
       "building": "church"
     },
-    "links": 2,
-    "desc": "church in Pistoia, Italy",
-    "score": 0.8
+    "links": 0,
+    "desc": "",
+    "score": 0.44
   }
 ]

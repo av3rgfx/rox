@@ -9,10 +9,10 @@
     },
     {
       "name": "Utensilferramenta Pistoiese, Via Luigi Salvatorelli 161, Pistoia",
-      "at": 2215
+      "at": 2173
     }
   ],
-  "total": 2215,
+  "total": 2173,
   "chunk": 10000,
   "step": 10,
   "count": 1,
@@ -22,30 +22,24 @@
   "centre": "white",
   "dry": false,
   "line": [
-    1093955,
-    4393812,
-    7,
-    59,
-    -149,
-    15,
-    43,
-    -2,
-    6,
-    28,
-    -131,
-    16,
+    1093843,
+    4393762,
+    22,
+    148,
+    -134,
+    18,
     -5,
-    135,
-    -49,
-    21,
-    -32,
-    -25,
-    -22,
-    -297,
-    271,
-    -30,
-    90,
-    -63,
+    132,
+    -41,
+    25,
+    -40,
+    -26,
+    -18,
+    -301,
+    260,
+    -24,
+    97,
+    -65,
     53,
     -140,
     134,
@@ -54,14 +48,14 @@
     -285,
     176,
     -31,
-    -10,
-    -50,
-    54,
-    -9
+    0,
+    -57,
+    125,
+    -5
   ],
   "places": [
     [
-      1183,
+      755,
       "Pistoia",
       3
     ]
@@ -72,72 +66,69 @@
       "s0": 0,
       "km": 2.2,
       "land": {
-        "farm": 34,
-        "lawn": 10,
-        "grass": 21,
-        "lot": 12,
-        "pave": 24
+        "lot": 15,
+        "farm": 30,
+        "grass": 19,
+        "lawn": 9,
+        "pave": 27
       },
       "types": {
-        "yes": 684,
-        "residential": 100,
-        "shed": 40,
-        "industrial": 314
+        "yes": 1056,
+        "residential": 98,
+        "shed": 14,
+        "industrial": 326
       },
-      "built": 0.26,
+      "built": 0.34,
       "maxH": 44,
-      "cross": 19,
+      "cross": 18,
       "places": [
         "Pistoia",
-        "Candeglia",
+        "Nespolo",
         "Le Fornaci",
-        "Casermette",
-        "La Vergine"
+        "Casermette"
       ],
       "perKm": [
         {
           "s0": 0,
           "land": {
-            "farm": 41,
-            "lawn": 10,
+            "lot": 14,
+            "farm": 32,
             "grass": 37,
-            "lot": 4,
-            "pave": 9
+            "lawn": 10,
+            "pave": 8
           },
           "types": {
-            "yes": 104,
-            "residential": 100,
-            "shed": 26
+            "yes": 378,
+            "residential": 98
           },
           "maxH": 44
         },
         {
           "s0": 1000,
           "land": {
-            "grass": 9,
-            "farm": 34,
             "lot": 19,
-            "lawn": 12,
-            "pave": 27
+            "farm": 33,
+            "grass": 5,
+            "lawn": 11,
+            "pave": 33
           },
           "types": {
-            "yes": 528,
+            "yes": 510,
             "shed": 14,
-            "industrial": 152
+            "industrial": 318
           },
           "maxH": 14
         },
         {
           "s0": 2000,
           "land": {
-            "lot": 23,
-            "pave": 77
+            "pave": 100
           },
           "types": {
-            "industrial": 162,
-            "yes": 52
+            "yes": 168,
+            "industrial": 8
           },
-          "maxH": 0
+          "maxH": 3
         }
       ]
     }

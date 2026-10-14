@@ -22,20 +22,25 @@ Italian. Read `NEXT_SESSION.md` first: it has the state, the decisions taken wit
   `opts.horizon`, `opts.steer` + `setCamX()`, and `render(s, speed, things)` where a thing is
   `{z, lat, img, hm, wm?, lift?, rot?, alpha?}` drawn in painter's order; `thing.screen` gets the drawn box.
   Keep the originals in `tools/pixel-path/templates/` untouched for diffing.
-- `data/`: the baked route, 2215 m, the way the owner drives it (checked on a Street View walk-through they recorded):
-  out of the Panorama car park, Via Pietro Gherardini, Via Ginetta Chirici, Via Ubaldo Fantacci, Via Bure Vecchia Nord,
-  Via Enrico Fermi, Via Dino Buzzati, Via Luigi Salvatorelli. `route.json` at the root is the routing input (the repo
-  root is Pixel Path's TRIP): `route.mjs --out . --from "43.938129,10.939320" --to "43.930245,10.944464"` (Google Maps'
-  pins for the Panorama and UFP), then set the `from`/`to` names in route.json before baking. A 1.1 km shortcut straight
-  down Via Bure Vecchia Nord was tried and dropped: it is not the road they drive.
+- `data/`: the baked route, 2173 m, the way the owner drives it (checked on a Street View walk-through they recorded):
+  up the car park lane along the Panorama's west side (the Panorama on the right), straight to the small roundabout,
+  Via Pietro Gherardini, Via Ginetta Chirici, Via Ubaldo Fantacci, Via Bure Vecchia Nord, Via Enrico Fermi, Via Dino
+  Buzzati, Via Luigi Salvatorelli past Utensilferramenta (on the right). `route.json` at the root is the routing input
+  (the repo root is Pixel Path's TRIP): `route.mjs --out . --from "43.937618,10.938431" --via "43.938660,10.938543"
+  --to "43.930355,10.945292"` (south end of the lane, its north end, 70 m past UFP's door), then set the `from`/`to`
+  names in route.json before baking. After a rebake that moves the route, `git show HEAD:data/c0000.json > old.json`
+  and `node tools/rebase.mjs --old old.json` moves the real buildings and landmarks to the new metres (by their place
+  on the map); "add"/"land" entries and main.js's car park are by hand. Rejected: a 1.1 km shortcut down Via Bure
+  Vecchia Nord (not their road), OSRM's loop through the car park aisles (not their road either).
 - `art/`: scenery kit (`kit.json`, PNGs), `plan.json`, `raw/` (pixelated inputs of clean.mjs), `codex/` (prompts,
-  `REFERENCE.md` with the real road, `ref/` reference photos, `MESSAGGIO-CODEX.md`). 11 pictures are real (Codex, first
-  round, 3 of them recovered from the closed PR #3); `pistoia-apartment-1`, `lm-panorama` and `lm-mensa` are placeholders. `lm-ufp` is a stand-in drawn by
-  `game/sprites.js` from a description of the real building (`node tools/ufp-standin.mjs` writes it to art/raw, needs the
-  local server); a Codex picture imported later replaces it. Codex's first, invented warehouse (`extra-ufp`) is gone.
+  `REFERENCE.md` with the real road, `ref/` reference photos, `MESSAGGIO-CODEX.md`). All 14 `pistoia-*` and both
+  landmarks are real Codex pictures (two rounds; the second came as PR #4, imported by hand and closed because it was
+  based on an old branch). The Panorama's `b-panorama-bay` (four pilaster bays, repeats) and `b-panorama-entrance` were
+  cut from Codex's whole-facade `lm-panorama` (no longer used). `tools/ufp-standin.mjs` (the code-drawn `lm-ufp`) is
+  only a fallback now. Codex's first, invented warehouse (`extra-ufp`) is gone.
 - Real buildings: `art/buildings-custom.json` gives mapped buildings their own picture (matched by [s, side] within
   6 m), adds ones the map lacks (`add`: the Panorama, 170 m of facade along the car park lane, a pattern of `pics`
-  repeated every `tile` metres) and fixes land (`land`: the car park is `lot`). `node tools/buildings.mjs` (run by
+  repeated every `tile` metres; the pictures of one pattern share one pixel scale, so one without the roof sign stands lower) and fixes land (`land`: the car park is `lot`). `node tools/buildings.mjs` (run by
   plan-art.sh) writes `data/buildings.json` (road.js loads it as `env.buildings`, layout.js applies it) and adds role
   `custom` jobs to plan.json, never used by the generic kit. Placeholders are ignored, so a building keeps its generic
   look until its picture is real. `node tools/standins.mjs` draws code stand-ins for the Panorama and UFP's second
@@ -44,17 +49,27 @@ Italian. Read `NEXT_SESSION.md` first: it has the state, the decisions taken wit
   is merged into `data/landmarks.json` by `node tools/landmarks.mjs` (plan-art.sh runs it; run it after any rebake).
   A landmark with a real picture replaces the frontage at its real place (layout.js); placeholders are never shown.
   OSM/OSRM give where buildings are and their size and type, never their look: faithful pictures need photos.
+- The road itself: `node tools/realroad.mjs` (run after any rebake; `--cache` reuses `.cache/realroad.json`) reads OSM
+  along the route (traffic signals: none on this road; STOP and give-way on our road; marked crossings; roundabouts)
+  and merges `art/road-custom.json` (hand fixes from the owner's video: dropped signs, each roundabout island's look,
+  `stretches` with width, sidewalks, one-way carriageways with a median (`dual`), the car park bays (`lot`), hedges,
+  walls, reeds, kerb parking, tree rows, `open` streets, `roles` for generic pictures; `props` like the mast, the
+  rubbish heap, the bollards; `noTowers`) into `data/road.json`. road.js loads it as `env.road`; layout.js marks
+  segments (`q.ring`, `q.isl`, `q.dual`, `q.bays`, `q.mark`, `q.park`...) and road.js's `groundCol` paints them.
+  Without data/road.json the game falls back to Pixel Path's rule (a signal and a crosswalk at every town junction).
+  `buildings-custom.json` entries with `"hide": true` keep a mapped building from showing.
 - `assets/rox/face.png`: Rox's face, 53x70 RGBA cut-out from the owner's photo.
 - `tools/pixel-path/`: the Pixel Path skill (scripts + templates). `tools/codex-art.mjs`: free art via Codex/ChatGPT
   (`prompts`, `import`). `tools/plan-art.sh [moderate|detailed]`: the art plan with Pistoia subjects.
   `tools/test/`: headless tests (see its README).
 - `.github/workflows/pages.yml`: deploys index.html, game/, data/, assets/, art/*.png + kit.json on push to main.
 
-## Known gaps from the real road (see NEXT_SESSION.md, section B)
+## Known gaps from the real road (see NEXT_SESSION.md)
 
-- Traffic signals: layout.js puts one at every crossing in a built-up stretch (a Pixel Path rule, not map data).
-- The Panorama car park lane is drawn as a two-lane street with a centre line; OSRM's route wiggles through the aisles.
-- Roundabouts are driven through but their central island is not drawn.
+- Roundabouts: the road does not curve round the island as tightly as the real ring (headings are smoothed over
+  ±60 m); the island is an oval on the left.
+- Hedges, walls and reeds are code-drawn pieces facing the camera: blocky up close.
+- Most `b-*` buildings still wait for their Codex pictures (generic look until then).
 
 ## Conventions
 
@@ -72,7 +87,9 @@ Italian. Read `NEXT_SESSION.md` first: it has the state, the decisions taken wit
 
 1. `python3 -m http.server 8765 --bind 127.0.0.1` from the repo root.
 2. `node tools/test/ui.mjs /tmp/shots` and `node tools/test/drive.mjs investi|chase /tmp/shots ...`, then look at the
-   screenshots with Read. Also try a phone size (`390 844 ... mobile` and `844 390 ... mobile`).
+   screenshots with Read. Also try a phone size (`390 844 ... mobile` and `844 390 ... mobile`). For the scenery,
+   `node tools/test/at.mjs /tmp/at 0,500,1000` shoots the empty road at given metres. Outside the cloud image:
+   Playwright in a scratch folder (`PLAYWRIGHT=<dir>/node_modules/playwright/index.mjs`) and `CHROME=<installed chrome>`.
 3. Expected noise: the AudioContext warning in headless runs.
 4. After importing art, check `clean.mjs`'s output: `cut` / `boxed` pictures are dropped. `codex-art.mjs import` pads
    each picture to the plan size with a margin; pictures imported before that fix were re-padded with
