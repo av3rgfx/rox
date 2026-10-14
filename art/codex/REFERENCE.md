@@ -37,16 +37,21 @@ un **cartello triangolare bianco col monogramma rosso UFP**. In basso a sinistra
 sotto una piccola pensilina, un **trabattello di alluminio** appoggiato al muro, paletti arancioni sul marciapiede.
 Accanto c'è una palazzina di uffici color mattone con una vetrata blu.
 
-## Le immagini già fatte (primo giro di Codex), da ricontrollare
+## Le immagini già fatte (due giri di Codex), da ricontrollare
 
 | immagine | giudizio |
 | --- | --- |
-| `pistoia-shop-1` (negozio "La Bottega" con archi) | troppo centro storico: da rifare più periferico |
-| `pistoia-shop-2` (bar caffè su palazzina con persiane) | accettabile, un po' da cartolina |
+| `pistoia-shop-1` (negozio a un piano con vetrina, secondo giro) | va bene |
+| `pistoia-shop-2` (bar caffè su palazzina, secondo giro) | accettabile, ancora un po' da cartolina |
+| `pistoia-apartment-1` (condominio giallo di quattro piani) | va bene |
 | `pistoia-house-1`, `-2`, `-3` (villette intonacate) | vanno bene |
 | `pistoia-farm-1` (casa colonica) | va bene: lungo Via Bure Vecchia Nord ce n'è una in mattoni rossi |
 | `pistoia-tower-1` (condominio alto) | va bene |
 | `pistoia-industrial-1`, `-2` (capannoni) | vanno bene, sono il tipo più presente |
 | `pistoia-tree-1` (cipresso), `pistoia-tree-2` (pino a ombrello) | vanno bene |
 | `pistoia-bush-1` (pianta in vaso), `pistoia-street-1` (cassonetto) | vanno bene |
-| `lm-ufp` (disegnato dal codice dalla descrizione qui sopra) | segnaposto fedele ma semplice: da rifare in pixel art più ricca |
+| `lm-ufp` (capannone a costoloni con la scritta sul tetto) | molto fedele: va bene |
+| `lm-mensa` (Ex Mensa, torre rossa) | va bene |
+| `b-panorama-bay`, `b-panorama-entrance` | ritagliate dal `lm-panorama` di Codex (4 campate ripetibili e l'ingresso con l'insegna): vanno bene |
+| `b-ufp-side` (secondo capannone di Utensilferramenta) | disegno provvisorio fatto dal codice: da rifare |
+| tutte le altre `b-*` | mancano: finché non ci sono, l'edificio usa un'immagine generica |

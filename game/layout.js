@@ -133,7 +133,7 @@ export function buildChunk(d, env) {
     const sg = Math.sign(side) || 1, g0 = sg > 0 ? segs[k0].R : segs[k0].L; if (g0 === 'water') continue;
     let edge = 0; for (let k = k0; k <= k1; k++) edge = Math.max(edge, segs[k].rw + segs[k].sw + 0.4);
     const custom = own || customFront(d.s0 + s, sg);
-    if (custom) { const pics = custom.pics || [custom.pic], at = d.s0 + s, look = i => ({ pic: pics[i % pics.length], role: 'custom', pool: null, flip: false, tint: 0 }), h = custom.hgt || 9;
+    if (custom) { const pics = custom.pics || [custom.pic], at = d.s0 + s, h = custom.hgt || 9, top = Math.max(...pics.map(q => kit.info(q).h)), look = i => ({ pic: pics[i % pics.length], role: 'custom', pool: null, flip: false, tint: 0, hgt: h * kit.info(pics[i % pics.length]).h / top });   // one pixel scale for the whole pattern: a picture without the roof sign is lower
       const setback = Math.max(edge, Math.abs(side)), p0 = { at, len: len + 0.4, side: sg * setback, hgt: h, ...look(0), depth: depth || 0, name: nm(ni), type, real: true, custom: true };
       planes.push(...splitFront(p0, 'row', look, () => h, () => custom.tile || len + 0.4)); continue; }
     const dense = denseAt(d.s0 + s) || g0 === 'pave', first = choose(type, hgt, d.s0 + s, sg, 1, dense); if (!first) continue;
@@ -228,7 +228,7 @@ export function splitFront(p, mode, chooseNext, heightFor, natural) {
       const c = chooseNext(i); if (!c) break; cur = { ...p, ...c, hgt: heightFor(c.pic, 0, at), name: null }; }
     return out; }
   const nat = natural(p.pic, p.hgt), N = clamp(Math.round(p.len / nat), 1, 60), w = p.len / N;
-  let cur = p; for (let i = 0; i < N; i++) { if (i) { const c = chooseNext(i); if (c) cur = { ...p, ...c, name: null, hgt: p.custom ? p.hgt : p.hgt * (0.9 + hrnd((p.at + i * w) * 10, 7) * 0.2) }; }   // ROX: one real building keeps one height
+  let cur = p; for (let i = 0; i < N; i++) { if (i) { const c = chooseNext(i); if (c) cur = { ...p, ...c, name: null, hgt: p.custom ? (c.hgt || p.hgt) : p.hgt * (0.9 + hrnd((p.at + i * w) * 10, 7) * 0.2) }; }   // ROX: one real building keeps one height
     out.push({ ...cur, at: p.at + i * w, len: w + (i < N - 1 ? 0.05 : 0) }); }
   return out;
 }

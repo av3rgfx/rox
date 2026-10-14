@@ -29,13 +29,14 @@ Italian. Read `NEXT_SESSION.md` first: it has the state, the decisions taken wit
   pins for the Panorama and UFP), then set the `from`/`to` names in route.json before baking. A 1.1 km shortcut straight
   down Via Bure Vecchia Nord was tried and dropped: it is not the road they drive.
 - `art/`: scenery kit (`kit.json`, PNGs), `plan.json`, `raw/` (pixelated inputs of clean.mjs), `codex/` (prompts,
-  `REFERENCE.md` with the real road, `ref/` reference photos, `MESSAGGIO-CODEX.md`). 11 pictures are real (Codex, first
-  round, 3 of them recovered from the closed PR #3); `pistoia-apartment-1`, `lm-panorama` and `lm-mensa` are placeholders. `lm-ufp` is a stand-in drawn by
-  `game/sprites.js` from a description of the real building (`node tools/ufp-standin.mjs` writes it to art/raw, needs the
-  local server); a Codex picture imported later replaces it. Codex's first, invented warehouse (`extra-ufp`) is gone.
+  `REFERENCE.md` with the real road, `ref/` reference photos, `MESSAGGIO-CODEX.md`). All 14 `pistoia-*` and both
+  landmarks are real Codex pictures (two rounds; the second came as PR #4, imported by hand and closed because it was
+  based on an old branch). The Panorama's `b-panorama-bay` (four pilaster bays, repeats) and `b-panorama-entrance` were
+  cut from Codex's whole-facade `lm-panorama` (no longer used). `tools/ufp-standin.mjs` (the code-drawn `lm-ufp`) is
+  only a fallback now. Codex's first, invented warehouse (`extra-ufp`) is gone.
 - Real buildings: `art/buildings-custom.json` gives mapped buildings their own picture (matched by [s, side] within
   6 m), adds ones the map lacks (`add`: the Panorama, 170 m of facade along the car park lane, a pattern of `pics`
-  repeated every `tile` metres) and fixes land (`land`: the car park is `lot`). `node tools/buildings.mjs` (run by
+  repeated every `tile` metres; the pictures of one pattern share one pixel scale, so one without the roof sign stands lower) and fixes land (`land`: the car park is `lot`). `node tools/buildings.mjs` (run by
   plan-art.sh) writes `data/buildings.json` (road.js loads it as `env.buildings`, layout.js applies it) and adds role
   `custom` jobs to plan.json, never used by the generic kit. Placeholders are ignored, so a building keeps its generic
   look until its picture is real. `node tools/standins.mjs` draws code stand-ins for the Panorama and UFP's second

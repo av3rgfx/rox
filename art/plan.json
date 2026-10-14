@@ -249,9 +249,9 @@
       "theme": "pistoia",
       "kind": "facade",
       "width": 192,
-      "height": 95,
+      "height": 122,
       "hm": 12,
-      "prompt": "the full front elevation of one 24-metre bay of the long facade of the Panorama hypermarket at the Le Tre Mura shopping centre in Pistoia: cream-white rendered wall, tall square terracotta-red pilasters at both sides joined at the top by a projecting pergola-like cornice of red beams, a band of tall glass panels with dark frames between them, slim cypress trees in front, flat roof, no sign, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos, pixel art game asset, isolated on a plain white background, no ground, no shadow, 16-bit style, afternoon light, the whole subject inside the picture with a margin on every side, nothing cut off"
+      "prompt": "the full front elevation of a 19-metre stretch (four pilaster bays) of the long facade of the Panorama hypermarket at the Le Tre Mura shopping centre in Pistoia: cream-white rendered wall, tall square terracotta-red pilasters at both sides joined at the top by a projecting pergola-like cornice of red beams, a band of tall glass panels with dark frames between them, slim cypress trees in front, flat roof, no sign, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos, pixel art game asset, isolated on a plain white background, no ground, no shadow, 16-bit style, afternoon light, the whole subject inside the picture with a margin on every side, nothing cut off"
     },
     {
       "name": "b-panorama-entrance",
@@ -262,7 +262,7 @@
       "theme": "pistoia",
       "kind": "facade",
       "width": 192,
-      "height": 95,
+      "height": 122,
       "hm": 12,
       "prompt": "the full front elevation of the main entrance of the Panorama hypermarket at the Le Tre Mura shopping centre in Pistoia: a big recessed glazed entrance with sliding doors and red door frames under a projecting canopy, framed by tall terracotta-red pilasters and a pergola-like cornice of red beams, cream-white walls, and above it on the flat roof a big red sign reading PANORAMA, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos, pixel art game asset, isolated on a plain white background, no ground, no shadow, 16-bit style, afternoon light, the whole subject inside the picture with a margin on every side, nothing cut off"
     },

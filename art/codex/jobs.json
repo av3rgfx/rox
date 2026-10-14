@@ -199,9 +199,9 @@
     "shape": "landscape",
     "target": [
       192,
-      95
+      122
     ],
-    "prompt": "The full front elevation of one 24-metre bay of the long facade of the Panorama hypermarket at the Le Tre Mura shopping centre in Pistoia: cream-white rendered wall, tall square terracotta-red pilasters at both sides joined at the top by a projecting pergola-like cornice of red beams, a band of tall glass panels with dark frames between them, slim cypress trees in front, flat roof, no sign, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos. Orthographic, perfectly straight-on front view: no perspective, no side walls visible, the building's base is a straight horizontal line. Setting: the modern outskirts of Pistoia today (suburban and industrial zone), not a historic town centre and not a postcard village. True 16-bit pixel art game asset: big clearly visible square pixels, crisp hard edges, no anti-aliasing, no blur, no gradients, a limited palette of flat colours, soft afternoon light from the left. Isolated on a plain pure white (#FFFFFF) background, no ground, no shadow on the ground, no sky, no scenery, no frame, no text except what is asked. The whole subject is inside the picture with a white margin on every side, nothing cut off."
+    "prompt": "The full front elevation of a 19-metre stretch (four pilaster bays) of the long facade of the Panorama hypermarket at the Le Tre Mura shopping centre in Pistoia: cream-white rendered wall, tall square terracotta-red pilasters at both sides joined at the top by a projecting pergola-like cornice of red beams, a band of tall glass panels with dark frames between them, slim cypress trees in front, flat roof, no sign, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos. Orthographic, perfectly straight-on front view: no perspective, no side walls visible, the building's base is a straight horizontal line. Setting: the modern outskirts of Pistoia today (suburban and industrial zone), not a historic town centre and not a postcard village. True 16-bit pixel art game asset: big clearly visible square pixels, crisp hard edges, no anti-aliasing, no blur, no gradients, a limited palette of flat colours, soft afternoon light from the left. Isolated on a plain pure white (#FFFFFF) background, no ground, no shadow on the ground, no sky, no scenery, no frame, no text except what is asked. The whole subject is inside the picture with a white margin on every side, nothing cut off."
   },
   {
     "name": "b-panorama-entrance",
@@ -211,7 +211,7 @@
     "shape": "landscape",
     "target": [
       192,
-      95
+      122
     ],
     "prompt": "The full front elevation of the main entrance of the Panorama hypermarket at the Le Tre Mura shopping centre in Pistoia: a big recessed glazed entrance with sliding doors and red door frames under a projecting canopy, framed by tall terracotta-red pilasters and a pergola-like cornice of red beams, cream-white walls, and above it on the flat roof a big red sign reading PANORAMA, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos. Orthographic, perfectly straight-on front view: no perspective, no side walls visible, the building's base is a straight horizontal line. Setting: the modern outskirts of Pistoia today (suburban and industrial zone), not a historic town centre and not a postcard village. True 16-bit pixel art game asset: big clearly visible square pixels, crisp hard edges, no anti-aliasing, no blur, no gradients, a limited palette of flat colours, soft afternoon light from the left. Isolated on a plain pure white (#FFFFFF) background, no ground, no shadow on the ground, no sky, no scenery, no frame, no text except what is asked. The whole subject is inside the picture with a white margin on every side, nothing cut off."
   },
