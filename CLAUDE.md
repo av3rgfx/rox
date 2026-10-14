@@ -50,6 +50,12 @@ Italian. Read `NEXT_SESSION.md` first: it has the state, the decisions taken wit
   `tools/test/`: headless tests (see its README).
 - `.github/workflows/pages.yml`: deploys index.html, game/, data/, assets/, art/*.png + kit.json on push to main.
 
+## Known gaps from the real road (see NEXT_SESSION.md, section B)
+
+- Traffic signals: layout.js puts one at every crossing in a built-up stretch (a Pixel Path rule, not map data).
+- The Panorama car park lane is drawn as a two-lane street with a centre line; OSRM's route wiggles through the aisles.
+- Roundabouts are driven through but their central island is not drawn.
+
 ## Conventions
 
 - Plain ES modules, no build, no npm dependencies for the game. Serve statically (`python3 -m http.server`).
