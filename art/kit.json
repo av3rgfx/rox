@@ -1,0 +1,271 @@
+{
+  "themes": [
+    {
+      "id": "pistoia",
+      "from": 0,
+      "name": "the outskirts of Pistoia, Tuscany, Italy: ochre and cream plastered villas with terracotta tiled roofs and green wooden shutters, 1970s condominiums, industrial sheds and plant nurseries"
+    }
+  ],
+  "pictures": {
+    "pistoia-shop-1": {
+      "file": "art/pistoia-shop-1.png",
+      "role": "shop",
+      "theme": "pistoia",
+      "kind": "facade",
+      "w": 160,
+      "h": 154,
+      "hm": 10,
+      "avg": [
+        168,
+        155,
+        129
+      ],
+      "placeholder": true,
+      "drop": false,
+      "flags": []
+    },
+    "pistoia-shop-2": {
+      "file": "art/pistoia-shop-2.png",
+      "role": "shop",
+      "theme": "pistoia",
+      "kind": "facade",
+      "w": 160,
+      "h": 154,
+      "hm": 10,
+      "avg": [
+        133,
+        139,
+        149
+      ],
+      "placeholder": true,
+      "drop": false,
+      "flags": []
+    },
+    "pistoia-shop-3": {
+      "file": "art/pistoia-shop-3.png",
+      "role": "shop",
+      "theme": "pistoia",
+      "kind": "facade",
+      "w": 160,
+      "h": 154,
+      "hm": 10,
+      "avg": [
+        164,
+        172,
+        165
+      ],
+      "placeholder": true,
+      "drop": false,
+      "flags": []
+    },
+    "pistoia-house-1": {
+      "file": "art/pistoia-house-1.png",
+      "role": "house",
+      "theme": "pistoia",
+      "kind": "facade",
+      "w": 148,
+      "h": 114,
+      "hm": 8,
+      "avg": [
+        165,
+        106,
+        84
+      ],
+      "placeholder": true,
+      "drop": false,
+      "flags": []
+    },
+    "pistoia-house-2": {
+      "file": "art/pistoia-house-2.png",
+      "role": "house",
+      "theme": "pistoia",
+      "kind": "facade",
+      "w": 148,
+      "h": 114,
+      "hm": 8,
+      "avg": [
+        131,
+        84,
+        70
+      ],
+      "placeholder": true,
+      "drop": false,
+      "flags": []
+    },
+    "pistoia-house-3": {
+      "file": "art/pistoia-house-3.png",
+      "role": "house",
+      "theme": "pistoia",
+      "kind": "facade",
+      "w": 148,
+      "h": 114,
+      "hm": 8,
+      "avg": [
+        134,
+        147,
+        157
+      ],
+      "placeholder": true,
+      "drop": false,
+      "flags": []
+    },
+    "pistoia-industrial-1": {
+      "file": "art/pistoia-industrial-1.png",
+      "role": "industrial",
+      "theme": "pistoia",
+      "kind": "facade",
+      "w": 184,
+      "h": 110,
+      "hm": 9,
+      "avg": [
+        146,
+        148,
+        152
+      ],
+      "placeholder": true,
+      "drop": false,
+      "flags": []
+    },
+    "pistoia-industrial-2": {
+      "file": "art/pistoia-industrial-2.png",
+      "role": "industrial",
+      "theme": "pistoia",
+      "kind": "facade",
+      "w": 184,
+      "h": 110,
+      "hm": 9,
+      "avg": [
+        146,
+        148,
+        152
+      ],
+      "placeholder": true,
+      "drop": false,
+      "flags": []
+    },
+    "pistoia-farm-1": {
+      "file": "art/pistoia-farm-1.png",
+      "role": "farm",
+      "theme": "pistoia",
+      "kind": "facade",
+      "w": 176,
+      "h": 120,
+      "hm": 8,
+      "avg": [
+        158,
+        57,
+        47
+      ],
+      "placeholder": true,
+      "drop": false,
+      "flags": []
+    },
+    "pistoia-tower-1": {
+      "file": "art/pistoia-tower-1.png",
+      "role": "tower",
+      "theme": "pistoia",
+      "kind": "facade",
+      "w": 116,
+      "h": 250,
+      "hm": 60,
+      "avg": [
+        105,
+        124,
+        144
+      ],
+      "placeholder": true,
+      "drop": false,
+      "flags": []
+    },
+    "pistoia-tree-1": {
+      "file": "art/pistoia-tree-1.png",
+      "role": "tree",
+      "theme": "pistoia",
+      "kind": "sprite",
+      "w": 120,
+      "h": 160,
+      "hm": 9,
+      "avg": [
+        81,
+        115,
+        58
+      ],
+      "placeholder": true,
+      "drop": false,
+      "flags": []
+    },
+    "pistoia-tree-2": {
+      "file": "art/pistoia-tree-2.png",
+      "role": "tree",
+      "theme": "pistoia",
+      "kind": "sprite",
+      "w": 120,
+      "h": 160,
+      "hm": 9,
+      "avg": [
+        81,
+        115,
+        58
+      ],
+      "placeholder": true,
+      "drop": false,
+      "flags": []
+    },
+    "pistoia-bush-1": {
+      "file": "art/pistoia-bush-1.png",
+      "role": "bush",
+      "theme": "pistoia",
+      "kind": "sprite",
+      "w": 83,
+      "h": 61,
+      "hm": 1.6,
+      "avg": [
+        87,
+        136,
+        70
+      ],
+      "placeholder": true,
+      "drop": false,
+      "flags": []
+    },
+    "pistoia-street-1": {
+      "file": "art/pistoia-street-1.png",
+      "role": "street",
+      "theme": "pistoia",
+      "kind": "sprite",
+      "w": 76,
+      "h": 54,
+      "hm": 1.4,
+      "avg": [
+        95,
+        73,
+        56
+      ],
+      "placeholder": true,
+      "drop": false,
+      "flags": []
+    },
+    "lm-Q3673382": {
+      "file": "art/lm-Q3673382.png",
+      "role": "landmark",
+      "theme": "pistoia",
+      "kind": "landmark",
+      "w": 89,
+      "h": 230,
+      "hm": 35,
+      "avg": [
+        204,
+        196,
+        178
+      ],
+      "label": "Chiesa di Santa Maria Assunta",
+      "placeholder": true,
+      "drop": false,
+      "flags": []
+    }
+  },
+  "landmarks": {
+    "Q3673382": "lm-Q3673382"
+  },
+  "detail": "moderate"
+}

@@ -1,0 +1,149 @@
+{
+  "title": "Via Bure Vecchia Nord 95, Pistoia, Italy to Via Luigi Salvatorelli 161, Pistoia, Italy",
+  "from": "Via Bure Vecchia Nord 95, Pistoia, Italy",
+  "to": "Via Luigi Salvatorelli 161, Pistoia, Italy",
+  "stops": [
+    {
+      "name": "Via Bure Vecchia Nord 95, Pistoia, Italy",
+      "at": 0
+    },
+    {
+      "name": "Via Luigi Salvatorelli 161, Pistoia, Italy",
+      "at": 2246
+    }
+  ],
+  "total": 2246,
+  "chunk": 10000,
+  "step": 10,
+  "count": 1,
+  "country": "it",
+  "drive": "right",
+  "units": "km",
+  "centre": "white",
+  "dry": false,
+  "line": [
+    1093957,
+    4393829,
+    -29,
+    59,
+    -115,
+    -2,
+    43,
+    -2,
+    6,
+    28,
+    -129,
+    14,
+    -7,
+    137,
+    -53,
+    21,
+    -50,
+    -322,
+    271,
+    -30,
+    90,
+    -63,
+    53,
+    -140,
+    134,
+    -115,
+    57,
+    -285,
+    176,
+    -31,
+    0,
+    -57,
+    107,
+    -4
+  ],
+  "places": [
+    [
+      1162,
+      "Pistoia",
+      3
+    ]
+  ],
+  "chunks": [
+    {
+      "c": 0,
+      "s0": 0,
+      "km": 2.2,
+      "land": {
+        "farm": 34,
+        "lawn": 9,
+        "grass": 19,
+        "lot": 12,
+        "pave": 25
+      },
+      "types": {
+        "shed": 78,
+        "yes": 818,
+        "residential": 54,
+        "industrial": 314
+      },
+      "built": 0.28,
+      "maxH": 44,
+      "cross": 20,
+      "places": [
+        "Pistoia",
+        "Candeglia",
+        "Nespolo",
+        "Le Fornaci",
+        "Casermette",
+        "La Vergine"
+      ],
+      "perKm": [
+        {
+          "s0": 0,
+          "land": {
+            "farm": 43,
+            "lawn": 10,
+            "grass": 36,
+            "lot": 4,
+            "pave": 8
+          },
+          "types": {
+            "shed": 44,
+            "yes": 72,
+            "residential": 54
+          },
+          "maxH": 44
+        },
+        {
+          "s0": 1000,
+          "land": {
+            "grass": 8,
+            "farm": 35,
+            "lot": 20,
+            "lawn": 11,
+            "pave": 28
+          },
+          "types": {
+            "shed": 34,
+            "yes": 496,
+            "industrial": 314
+          },
+          "maxH": 14
+        },
+        {
+          "s0": 2000,
+          "land": {
+            "lot": 16,
+            "pave": 84
+          },
+          "types": {
+            "yes": 250
+          },
+          "maxH": 3
+        }
+      ]
+    }
+  ],
+  "credits": [
+    "Map data © OpenStreetMap contributors (ODbL), openstreetmap.org/copyright",
+    "Route: OSRM (https://router.project-osrm.org, driving)",
+    "Elevation: Terrain Tiles (Mapzen/Tilezen on AWS Open Data; SRTM, GMTED, ETOPO1 and others)",
+    "Landmarks: Wikidata (CC0)"
+  ]
+}

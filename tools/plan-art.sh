@@ -1,0 +1,21 @@
+#!/bin/sh
+# Plans the scenery pictures for the Panorama -> Utensilferramenta road (writes art/plan.json), then the free
+# placeholders and the Codex prompts. Usage: sh tools/plan-art.sh [moderate|detailed]
+set -e
+cd "$(dirname "$0")/.."
+DETAIL="${1:-moderate}"
+node tools/pixel-path/scripts/plan-art.mjs --trip . --detail "$DETAIL" \
+ --theme "pistoia|0|the outskirts of Pistoia, Tuscany, Italy: ochre and cream plastered villas with terracotta tiled roofs and green wooden shutters, 1970s condominiums, industrial sheds and plant nurseries" \
+ --subject "pistoia:house=a two-storey Tuscan villa with ochre plaster, a terracotta tiled hip roof, green wooden shutters and a small balcony|a two-storey cream plastered Italian family house from the 1970s with a terracotta roof, brown roller shutters and a front gate|a small pale pink Italian villa with a terracotta roof, white window frames, green shutters and a hedge-free front|a three-storey Italian semi-detached house with light yellow plaster, a terracotta roof and wooden balconies" \
+ --subject "pistoia:shop=a single-storey Italian suburban shop building with a big glass shopfront, an awning and a sign with an invented name, beige plaster|a two-storey Italian building with a bar caffe at street level, a striped awning, invented name sign, flats above with shutters|a modern Italian retail park building with grey cladding, a big glass entrance and a large blank orange sign band|an Italian car dealer showroom with big windows and an invented name sign" \
+ --subject "pistoia:industrial=a big grey prefabricated concrete industrial warehouse of an Italian industrial zone, ribbed panels, a large roller door, small high windows|a long Italian workshop shed with corrugated metal walls painted light blue, a sliding door and an invented company name sign|a white prefabricated factory building with a row of square windows and a green roller door|a brick red industrial building with a sawtooth roof and big metal doors" \
+ --subject "pistoia:farm=an old Tuscan stone farmhouse (casa colonica) with a terracotta roof, a small dovecote tower and an outside staircase|a rustic Tuscan barn of stone and brick with a terracotta roof and wooden doors" \
+ --subject "pistoia:tower=a tall twelve storey Italian residential tower block from the 1970s with beige plaster, rows of balconies and brown roller shutters" \
+ --subject "pistoia:apartment=a four storey Italian condominium from the 1970s, yellow plaster, balconies with metal railings, roller shutters|a five storey Italian apartment block with salmon pink plaster, long balconies and green shutters" \
+ --subject "pistoia:terrace=one house of a row of old Tuscan terraced houses, faded ochre plaster, green shutters, terracotta roof" \
+ --subject "pistoia:tree=a tall slender Italian cypress tree|an umbrella stone pine tree typical of Tuscany|a young olive tree with silver-green leaves" \
+ --subject "pistoia:bush=a round potted shrub from a Pistoia plant nursery, in a black plastic pot|a row of small potted conifers from a plant nursery" \
+ --subject "pistoia:street=an Italian green rubbish bin for recycling on wheels|an Italian bus stop sign on a pole with a small shelter|a red Italian post box" \
+ --subject "lm-Q3673382=a Tuscan Romanesque country church with a plain stone facade, a terracotta roof and a square brick bell tower"
+node tools/pixel-path/scripts/placeholder-art.mjs --trip .
+node tools/codex-art.mjs prompts
