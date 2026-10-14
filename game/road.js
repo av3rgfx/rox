@@ -37,6 +37,7 @@ export async function createRoad(canvas, opts = {}) {
   let ROAD = null; try { ROAD = await (await fetch('data/road.json')).json(); } catch {}   // ROX: real signs, crossings, roundabouts (tools/realroad.mjs)
   for (const lm of LMS) { const a = KITJ.landmarks?.[lm.qid]; if (a && KITJ.pictures[a] && !KITJ.pictures[a].drop && !KITJ.pictures[a].placeholder) lm.art = a; }   // a landmark is its real picture or nothing (its brown sign still names it)
   const signed = LMS.filter(l => l.art || l.score >= 2).slice(0, Math.max(6, Math.round(LEN / 4000))); for (const l of LMS) l.signed = signed.includes(l);
+  if (ROAD?.noTowers) for (const p of Object.values(KITJ.pictures || {})) if (p.role === 'tower') p.drop = true;   // ROX: no tower blocks on this road (art/road-custom.json)
   const KIT = makeKit(KITJ);
 
   // ============================================================ PICTURES
@@ -189,9 +190,9 @@ export async function createRoad(canvas, opts = {}) {
       if (q.cls === 'tr') c = [150 + patch * 12, 128 + patch * 10, 96];
       else if (!cr && rw > 3.2) {
         if (q.cls === 'mw') { if (Math.abs(al - rw / 2) < 0.08 && (FAST || along % 12 < 4)) c = [222, 222, 214]; if (al < 0.5 && al > 0.3) c = [200, 200, 192]; }
-        else if (q.ring) { /* a roundabout is one way: no centre line */ }
+        else if (q.ring || q.noLines) { /* a roundabout is one way, a car park lane has no lines */ }
         else if (IDX.centre === 'yellow' ? (al < 0.17 && al > 0.04) : (al < 0.08 && (FAST || along % 9 < 4))) c = CENTRE;
-        if (Math.abs(al - (rw - 0.3)) < 0.07 && !q.town) c = [214, 214, 206]; }
+        if (Math.abs(al - (rw - 0.3)) < 0.07 && !q.town && !q.noLines) c = [214, 214, 206]; }
       for (const x2 of xw) { const e = along - (x2.at - x2.w / 2), e2 = along - (x2.at + x2.w / 2); if ((x2.zebra ? Math.abs(e) < 1.5 : e > -4 && e < -1 || e2 > 1 && e2 < 4) && al < rw && (Math.floor(lat / 0.6) & 1)) c = [222, 222, 214]; }
       if (q.mark && lat * DRIVE > 0 && al < rw - 0.2) { const e = q.mark.at - along; if (q.mark.type === 'stop' ? e > 0 && e < 0.5 : e > 0 && e < 0.7 && (e < 0.7 - Math.abs((al % 0.9) - 0.45) * 1.4)) c = [226, 226, 218]; }   // ROX: the stop line, or the give-way teeth
     } else if (q.town && al < rw + 0.25) c = [176, 172, 160];   // the curb
@@ -199,6 +200,12 @@ export async function createRoad(canvas, opts = {}) {
       if (q.town) { const sx = Math.floor(al / 1.5), sz = FAST ? 0 : Math.floor(along / 1.5), seam = !FAST && ((al % 1.5 < 0.05) || (along % 1.5 < 0.05)), v0 = 172 + ((hash(sx, sz) & 15) - 8) * 1.2 + ((hh & 7) - 4); c = seam ? [140, 136, 128] : [v0, v0 - 4, v0 - 12]; }   // sidewalk slabs on a fixed 1.5 m grid
       else { const v = (hh & 15) - 8, m = lat > 0 ? q.R : q.L; c = m === 'desert' || m === 'sand' ? [190 + v, 162 + v, 124 + v] : q.bridge ? [140, 140, 146] : [118 + v, 132 + v, 84 + v * 0.6]; }   // a gravel or grass verge
     } else c = besideCol(lat > 0 ? q.R : q.L, lat, along, cell, hh);
+    if (q.dual && lat < -rw) { const off = -lat - rw, M = q.dual.med;   // ROX: the median, then the other carriageway (oncoming cars), its lane line and edge line
+      if (off < M) c = off < 0.3 || off > M - 0.3 ? [200, 198, 190] : [96 + (hh & 7), 132 + (hh & 7), 66];
+      else if (off < M + 2 * rw) { const o2 = off - M, patch = (hash(Math.floor(lat / 3), Math.floor(along / 5)) & 255) / 255, v0 = 70 + patch * 10; c = (Math.abs(o2 - rw) < 0.08 && (FAST || along % 9 < 4)) || Math.abs(o2 - (2 * rw - 0.3)) < 0.07 ? [214, 214, 206] : [v0, v0, v0 + 5]; } }
+    if (q.bays && lat < -rw && -lat - rw < 32) { const B = q.bays, off = -lat - rw, pitch = B.pitch || 16, aisle = B.aisle || 6, bed = B.bed ?? 1.2, m = ((along - B.from) % pitch + pitch) % pitch, row = m >= aisle;   // ROX: rows of parking bays at right angles to the lane, a planter at each row's head
+      if (off < bed) c = row ? (off < 0.2 || m - aisle < 0.2 || pitch - m < 0.2 ? [200, 198, 190] : [70 + (hh & 7), 110 + (hh & 7), 52]) : [76, 76, 80];
+      else { const patch = (hash(Math.floor(lat / 3), Math.floor(along / 5)) & 255) / 255, v0 = 72 + patch * 9; c = row && ((off - bed) % 2.5 < 0.12 || Math.abs(m - aisle - (pitch - aisle) / 2) < 0.08) ? [222, 222, 214] : [v0, v0, v0 + 5]; } }
     if (q.isl && lat < -rw) { const I = q.isl, d = Math.hypot((along - I.at) / I.a, (-lat - rw - 0.25 - I.b) / I.b);   // ROX: a roundabout island: kerb, a ring of hedge, mown grass
       if (d < 1) { const kb = (1 - d) * Math.min(I.a, I.b), v = (hh & 15) - 8;
         c = kb < 0.55 ? (I.kerb === 'brick' ? ((Math.floor(along / 0.5) & 1) ? [158, 78, 54] : [132, 62, 46]) : (Math.floor(along / 1) & 1) ? [222, 220, 212] : [196, 194, 186])
@@ -267,6 +274,22 @@ export async function createRoad(canvas, opts = {}) {
     const [x, y, zc] = projectWorld(proj, p.z, b.side, 0); if (zc < 1.5 || x < -60 || x > W + 60) return; const sc = FOCAL / zc, px = m => Math.max(1, Math.round(m * sc));
     clipped(p.occ, () => {
       if (b.code === 'post') { g.fillStyle = '#8a8a90'; g.fillRect(Math.round(x), Math.round(y - 1 * sc), px(0.15), px(1)); return; }
+      // ROX: roadside things drawn by code: a hedge, a wall, reeds (each a 4 m piece facing you), a lattice mast, an orange bollard, a heap of dumped rubbish
+      if (b.code === 'hedge' || b.code === 'wall' || b.code === 'reeds') { const reeds = b.code === 'reeds', hm = reeds ? 2.6 : b.code === 'wall' ? 1.9 : 1.8, h = hm * sc, w = 3.8 * sc; if (h > H * 1.6) return; const X = Math.round(x - w / 2), seed = Math.round(b.side * 7 + y);
+        if (b.code === 'wall') { const Y = Math.round(y - h); g.fillStyle = '#d8d4c8'; g.fillRect(X, Y, Math.round(w), Math.round(h)); g.fillStyle = '#a8a498'; g.fillRect(X, Y, Math.round(w), px(0.15)); g.fillRect(X, Math.round(y - px(0.25)), Math.round(w), px(0.25)); return; }
+        // a hedge: a dark mass with a bumpy top and lit leaves; reeds: stalks of all heights, pale at the tips
+        const st = Math.max(1, px(reeds ? 0.18 : 0.5)); if (!reeds) { g.fillStyle = '#24481f'; g.fillRect(X, Math.round(y - h * 0.75), Math.round(w), Math.round(h * 0.75)); }
+        for (let i = 0, xx = X; xx < X + w; i++, xx += st) { const k = hash(seed, i) & 15, top = h * (reeds ? 0.45 + k / 28 : 0.72 + k / 60);
+          g.fillStyle = reeds ? (k & 1 ? '#7e8e3e' : '#94a24a') : (k < 5 ? '#3f7236' : '#2f5a2a'); g.fillRect(xx, Math.round(y - top), Math.max(1, reeds ? st - 1 : st), Math.round(top * (reeds ? 1 : 0.4)));
+          if (reeds) { g.fillStyle = '#c8c482'; g.fillRect(xx, Math.round(y - top), Math.max(1, st - 1), Math.max(1, px(0.2))); } else if (k > 11) { g.fillStyle = '#5a8a46'; g.fillRect(xx, Math.round(y - top), st, Math.max(1, px(0.15))); } }
+        return; }
+      if (b.code === 'mast') { const h = 32 * sc; if (h > H * 12) return; g.strokeStyle = '#8a9098'; g.lineWidth = Math.max(1, px(0.12)); const wb = 2.6 * sc, wt = 0.8 * sc, n = 10; g.beginPath();
+        for (let i = 0; i <= n; i++) { const yy = y - h * i / n, hw = (wb + (wt - wb) * i / n) / 2; g.moveTo(x - hw, yy); g.lineTo(x + hw, yy); if (i < n) { const y2 = y - h * (i + 1) / n, hw2 = (wb + (wt - wb) * (i + 1) / n) / 2; g.moveTo(x - hw, yy); g.lineTo(x + hw2, y2); g.moveTo(x + hw, yy); g.lineTo(x - hw2, y2); } }
+        g.moveTo(x - wb / 2, y); g.lineTo(x - wt / 2, y - h); g.moveTo(x + wb / 2, y); g.lineTo(x + wt / 2, y - h); g.stroke(); g.fillStyle = '#d8d8d0'; for (const dy of [0.92, 0.84]) g.fillRect(Math.round(x - wt), Math.round(y - h * dy), Math.max(1, Math.round(wt * 2)), px(0.9)); return; }
+      if (b.code === 'bollard') { const h = 0.9 * sc; g.fillStyle = '#e8741c'; g.fillRect(Math.round(x), Math.round(y - h), px(0.22), Math.round(h)); g.fillStyle = '#f2f0e8'; g.fillRect(Math.round(x), Math.round(y - h * 0.75), px(0.22), Math.max(1, Math.round(h * 0.12))); return; }
+      if (b.code === 'rubbish') { const cols = ['#2a2a2e', '#3c5a8a', '#a07850', '#e8e4da', '#5a6a3a', '#1e1e22', '#c8b090', '#7a2a2a'];   // a heap: bags, boxes, a mattress, wider at the bottom
+        for (let i = 0; i < 22; i++) { const k = hash(i, 911), lvl = i < 10 ? 0 : i < 17 ? 1 : 2, span = (2.8 - lvl * 0.9) * sc, w = (0.35 + (k & 7) / 18) * sc, hh = (0.3 + ((k >> 3) & 7) / 20) * sc, dx = (((k >> 6) & 31) / 31 - 0.5) * span;
+          g.fillStyle = cols[(k >> 12) & 7]; g.fillRect(Math.round(x + dx - w / 2), Math.round(y - hh - lvl * 0.32 * sc), Math.max(1, Math.round(w)), Math.max(1, Math.round(hh))); } return; }
       if (b.code === 'fence') { g.fillStyle = '#5a4630'; g.fillRect(Math.round(x), Math.round(y - 1.1 * sc), px(0.1), px(1.1)); return; }
       if (b.code === 'pole') { const h = 9 * sc; if (h > H * 1.8) return; g.fillStyle = '#5b4632'; g.fillRect(Math.round(x), Math.round(y - h), px(0.22), Math.round(h)); g.fillRect(Math.round(x - 0.9 * sc), Math.round(y - h + 0.6 * sc), px(1.8 + 0.22), px(0.12)); g.fillStyle = '#d8d8cc'; for (const dx of [-0.8, 0.8]) g.fillRect(Math.round(x + dx * sc), Math.round(y - h + 0.4 * sc), px(0.1), px(0.2)); return; }
       if (b.code === 'lamp') { const h = 6 * sc, arm = -Math.sign(b.side) * 1.1 * sc; if (h > H * 1.8) return; g.fillStyle = '#3c3c44'; g.fillRect(Math.round(x), Math.round(y - h), px(0.14), Math.round(h)); g.fillRect(Math.round(Math.min(x, x + arm)), Math.round(y - h), Math.round(Math.abs(arm)) + 1, px(0.1)); g.fillStyle = '#c8c8be'; g.fillRect(Math.round(x + arm - 0.25 * sc), Math.round(y - h + 0.1 * sc), px(0.5), px(0.15));

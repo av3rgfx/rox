@@ -168,12 +168,20 @@ function apeRear() {
   R(3, 38, 34, 4, [52, 52, 58]); R(4, 41, 8, 8, [24, 24, 28]); R(28, 41, 8, 8, [24, 24, 28]); R(5, 33, 4, 4, [200, 40, 40]); R(31, 33, 4, 4, [200, 40, 40]);
   return c;
 }
+// a box van from behind, parked along Via Fermi with the lorries of the industrial zone
+function truckRear() {
+  const c = canv(60, 70), x = ctxOf(c), R = (a, b, w, h, col) => { x.fillStyle = rgb(col); x.fillRect(a, b, w, h); };
+  R(2, 2, 56, 52, [232, 232, 226]); R(2, 2, 56, 3, [250, 250, 246]); R(29, 6, 2, 46, [170, 170, 170]); for (const hx of [12, 44]) R(hx, 26, 4, 3, [90, 90, 96]);   // the box, its two doors, the handles
+  R(2, 54, 56, 5, [52, 52, 58]); R(4, 56, 6, 4, [200, 40, 40]); R(50, 56, 6, 4, [200, 40, 40]); R(22, 55, 16, 5, [236, 236, 228]); R(22, 55, 2, 5, [40, 70, 170]);
+  R(5, 59, 12, 9, [24, 24, 28]); R(43, 59, 12, 9, [24, 24, 28]);
+  return c;
+}
 export const CAR_COLOURS = [[214, 48, 40], [240, 240, 232], [60, 110, 180], [40, 40, 46], [230, 196, 60], [120, 160, 90], [170, 170, 178]];
 export function buildCars() {
   return {
     you: outline(carRear([206, 36, 36], false, 'UFP 50')), youBrake: outline(carRear([206, 36, 36], true, 'UFP 50')),
     rear: CAR_COLOURS.map(c => outline(carRear(c, false, ['FI 123', 'PT 666', 'LU 007', 'PO 420', 'PT 050'][(c[0] + c[1]) % 5]))),
-    front: CAR_COLOURS.map(c => outline(carFront(c))), ape: outline(apeRear()),
+    front: CAR_COLOURS.map(c => outline(carFront(c))), ape: outline(apeRear()), truck: outline(truckRear()),
   };
 }
 

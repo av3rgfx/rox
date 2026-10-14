@@ -31,7 +31,7 @@ else {
   if (!osm) { console.error('Overpass did not answer: try --overpass URL, or --cache'); process.exit(1); }
   mkdirSync(dirname(CACHE), { recursive: true }); writeFileSync(CACHE, JSON.stringify(osm));
 }
-const out = { signals: [], signs: [], zebras: [], roundabouts: [], stretches: [] };
+const out = { signals: [], signs: [], zebras: [], roundabouts: [], stretches: [], props: [], noTowers: false };
 const ON = 4.5;   // a node this close to the route line is on our road (a side street's sign stands further off)
 for (const e of osm.elements) {
   if (e.type !== 'node') continue; const t = e.tags || {}, p = project(XY([e.lon, e.lat])); if (p.d > ON || p.s < 2 || p.s > IDX.total - 2) continue; const s = Math.round(p.s);
@@ -55,7 +55,7 @@ for (const rb of out.roundabouts) if (!out.signs.some(([s]) => Math.abs(s - rb.s
 // the hand fixes
 const H = readJSON(join(ROOT, 'art/road-custom.json'), {});
 for (const k of ['signs', 'zebras', 'signals']) { if (H.drop?.[k]) out[k] = out[k].filter(v => !H.drop[k].some(d => Math.abs((Array.isArray(v) ? v[0] : v) - d) < 8)); if (H.add?.[k]) out[k].push(...H.add[k]); }
-out.stretches = H.stretches || []; if (H.roundabouts) for (const rb of out.roundabouts) Object.assign(rb, H.roundabouts[rb.osm] || {});
+out.stretches = H.stretches || []; out.props = H.props || []; out.noTowers = !!H.noTowers; if (H.roundabouts) for (const rb of out.roundabouts) Object.assign(rb, H.roundabouts[rb.osm] || {});
 out.signs.sort((a, b) => a[0] - b[0]); out.zebras = [...new Set(out.zebras)].sort((a, b) => a - b); out.signals.sort((a, b) => a - b);
 writeFileSync(join(ROOT, 'data/road.json'), '{\n' + Object.entries(out).map(([k, v]) => ` "${k}": ${JSON.stringify(v)}`).join(',\n') + '\n}\n');
 console.log(`data/road.json: ${out.signals.length} signals, ${out.signs.length} signs (${out.signs.map(([s, k]) => `${k} ${s}`).join(', ')}), ${out.zebras.length} crossings (${out.zebras.join(', ')}), ${out.roundabouts.length} roundabouts (${out.roundabouts.map(r => `${r.s0}-${r.s1} r${r.r}`).join(', ')}), ${out.stretches.length} stretches by hand`);

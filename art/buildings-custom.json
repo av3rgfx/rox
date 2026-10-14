@@ -19,5 +19,6 @@
   {"pic": "b-villa-a", "add": {"s": 485, "len": 4, "side": 36}, "hgt": 9, "note": "houses north of the Via Sestini roundabout (not a front in the bake: added at its old place)"},
   {"pic": "b-condo-b", "add": {"s": 651, "len": 22, "side": 26}, "hgt": 13, "tile": 20, "note": "Via Ginetta Chirici (not a front in the bake: added at its old place)"},
   {"pic": "b-petrol", "add": {"s": 768, "len": 26, "side": -5}, "hgt": 6, "note": "the petrol station on Via Ginetta Chirici, left (not a front in the bake: added at its old place)"},
-  {"pic": "b-ufp-side", "add": {"s": 2079, "len": 16, "side": 15}, "hgt": 11, "tile": 16, "note": "the west end of Utensilferramenta's facade on Via Luigi Salvatorelli, right, before the picture of the front (lm-ufp)"}
+  {"pic": "b-ufp-side", "add": {"s": 2076, "len": 21.4, "side": 15}, "hgt": 11, "tile": 21.4, "note": "the west end of Utensilferramenta's facade on Via Luigi Salvatorelli, right, before the picture of the front (lm-ufp)"},
+  {"hide": true, "fronts": [[106, 1], [234, 1]], "note": "the far side of the shopping centre (Le Tre Mura) behind the Panorama: the bake sees it 50 m off and the kit would stand tower blocks there"}
 ]

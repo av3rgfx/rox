@@ -97,13 +97,18 @@ export function buildChunk(d, env) {
   // built-up: buildings within 40 m on either side, or paved/lawn land. Towns get sidewalks; open road a verge.
   const frontAt = new Uint8Array(n); for (const [s, len] of d.fronts) for (let k = Math.max(0, Math.floor((s - 40) / SEG)); k <= Math.min(n - 1, Math.ceil((s + len + 40) / SEG)); k++) frontAt[k] = 1;
   for (let k = 0; k < n; k++) { const q = segs[k], town = frontAt[k] || q.L === 'pave' || q.R === 'pave'; q.town = town; q.rw0 = CLASSW[q.cls][0]; q.sw0 = town ? Math.max(CLASSW[q.cls][1], q.cls === 'sv' ? 1.2 : 2) : Math.min(1.6, CLASSW[q.cls][1]); }
+  // ROX: the real road by stretches (art/road-custom.json via data/road.json): width, sidewalks, a one-way carriageway
+  // with the other one beyond a median (dual), the car park's bays (lot), hedges and walls, parked cars, trees
+  const RD = env.road;
+  for (const st of RD?.stretches || []) for (const q of segs) if (q.s >= st.from && q.s < st.to) { if (st.rw) q.rw0 = st.rw; if (st.sw != null) q.sw0 = st.sw; if (st.town != null) q.town = st.town;
+    if (st.dual) q.dual = { med: st.dual }; if (st.lot) q.bays = { from: st.from, ...st.lot }; if (st.lines === false) q.noLines = true; if (st.edge) q.edge = st.edge; if (st.park) q.park = st.park; if (st.trucks) q.trucks = true; if (st.trees) q.trees = st.trees; if (st.open) q.open = true; if (st.roles) q.roles = st.roles; }
+  for (const rb of RD?.roundabouts || []) for (const q of segs) if (q.s > rb.s0 - 8 && q.s < rb.s1 + 8) q.rw0 = Math.min(q.rw0, rb.rw || 4.2);   // a ring is two lanes one way
   for (let k = 0; k < n; k++) { let a = 0, b = 0, t = 0; for (let j = -8; j <= 8; j++) { const q = segs[clamp(k + j, 0, n - 1)]; a += q.rw0; b += q.sw0; t += q.town ? 1 : 0; } segs[k].rw = a / 17; segs[k].sw = b / 17; segs[k].walk = t > 8; }
   if (idx.dry) for (const q of segs) for (const sd of ['L', 'R']) if (q[sd] === 'farm' || q[sd] === 'grass') q[sd] = 'desert';
   // ROX: land the map gets wrong, set by hand (data/buildings.json "land": the Panorama car park is asphalt and bays, not fields)
   for (const b of env.buildings || []) if (b.land) for (const q of segs) if (q.s >= b.land.from && q.s < b.land.to) { if (b.land.L) q.L = b.land.L; if (b.land.R) q.R = b.land.R; }
-  // ROX: the real road (data/road.json, tools/realroad.mjs). A roundabout is a one-way ring with its island on the left
-  // (Italy goes round anticlockwise): an oval of grass behind a kerb, drawn by road.js where q.isl says
-  const RD = env.road;
+  // ROX: a roundabout (data/road.json, tools/realroad.mjs) is a one-way ring with its island on the left (Italy goes
+  // round anticlockwise): an oval of grass behind a kerb, drawn by road.js where q.isl says
   for (const rb of RD?.roundabouts || []) { const at = (rb.s0 + rb.s1) / 2, b = clamp(rb.r - 7, 3, 16), isl = { at, a: Math.max((rb.s1 - rb.s0) / 2 + 3, b), b, kerb: rb.kerb || 'concrete', deco: rb.deco || 'grass' };   // deco: grass (a few bushes), bushes, trees, none
     for (const q of segs) { if (q.s > rb.s0 - 8 && q.s < rb.s1 + 8) q.ring = true; if (Math.abs(q.s - at) < isl.a + 1) q.isl = isl; } }
 
@@ -115,13 +120,13 @@ export function buildChunk(d, env) {
   // dense: the paved share of the land within 200 m along the road (both sides). A dense stretch builds continuous street
   // walls; a suburb of houses on lawns does not, even in the same 10 km as a city centre.
   const paveCum = new Float32Array(n + 1); for (let k = 0; k < n; k++) paveCum[k + 1] = paveCum[k] + ((segs[k].L === 'pave') + (segs[k].R === 'pave')) / 2;
-  const denseAt = s => { const k = clamp(Math.round((s - d.s0) / SEG), 0, n - 1), a = Math.max(0, k - 100), b = Math.min(n, k + 100); return paveCum[b] - paveCum[a] > (b - a) * 0.6; };
+  const denseAt = s => { const k = clamp(Math.round((s - d.s0) / SEG), 0, n - 1), a = Math.max(0, k - 100), b = Math.min(n, k + 100); return !segs[k].open && paveCum[b] - paveCum[a] > (b - a) * 0.6; };   // ROX: not where the real street is open (art/road-custom.json)
   for (const q of segs) q.dense = denseAt(q.s);
 
   // 2. buildings on their footprints
   const planes = [], recent = { [-1]: [], [1]: [] }, remember = (sg, k) => { const r = recent[sg]; r.push(k); if (r.length > 6) r.shift(); };
   const choose = (type, h, s, sg, salt, dense) => {
-    const roles = rolesFor(type, h, dense), pool = kit.pool(roles, s), pic = pickFrom(pool, hash(Math.round(s), salt + d.c * 31), recent[sg]); if (!pic) return null;
+    const roles = segAt(segs, d, s)?.roles || rolesFor(type, h, dense), pool = kit.pool(roles, s), pic = pickFrom(pool, hash(Math.round(s), salt + d.c * 31), recent[sg]); if (!pic) return null;
     const look = lookFor(pic, s, sg, pool.length); remember(sg, pic); return { pic, role: kit.info(pic)?.role, pool, ...look };
   };
   // a look: a mirrored and/or tinted copy, only needed when the kit is small (with 8+ pictures per pool: plain)
@@ -132,13 +137,14 @@ export function buildChunk(d, env) {
   // stands (within 6 m along the road, same side), or added where the map has none (the Panorama). Its picture, or a
   // pattern of pictures repeated module by module along its real length, replaces the kit's; never a placeholder.
   const real = n2 => kit.info(n2) && !kit.info(n2).placeholder && !kit.info(n2).drop;
-  const customFront = (at, sg) => (env.buildings || []).find(b => (b.pics || [b.pic]).every(real) && (b.fronts || []).some(([fs, fsg]) => Math.abs(fs - at) <= 6 && fsg === sg));
+  const customFront = (at, sg) => (env.buildings || []).find(b => (b.hide || (b.pics || [b.pic]).every(real)) && (b.fronts || []).some(([fs, fsg]) => Math.abs(fs - at) <= 6 && fsg === sg));
   const added = (env.buildings || []).filter(b => b.add && (b.pics || [b.pic]).every(real) && b.add.s >= d.s0 && b.add.s < d.s0 + d.len).map(b => [b.add.s - d.s0, b.add.len, b.add.side, 'custom', b.hgt, -1, 20, b]);
   for (const [s, len, side, type, hgt, ni, depth, own] of [...d.fronts, ...added]) {
     const k0 = Math.max(0, Math.round(s / SEG)), k1 = Math.min(n - 1, Math.round((s + len) / SEG)); if (k1 <= k0 || segs[k0].bridge) continue;
     const sg = Math.sign(side) || 1, g0 = sg > 0 ? segs[k0].R : segs[k0].L; if (g0 === 'water') continue;
     let edge = 0; for (let k = k0; k <= k1; k++) edge = Math.max(edge, segs[k].rw + segs[k].sw + 0.4);
     const custom = own || customFront(d.s0 + s, sg);
+    if (custom?.hide) continue;   // ROX: a mapped building that must not show (the far side of the shopping centre behind the Panorama)
     if (custom) { const pics = custom.pics || [custom.pic], at = d.s0 + s, h = custom.hgt || 9, top = Math.max(...pics.map(q => kit.info(q).h)), look = i => ({ pic: pics[i % pics.length], role: 'custom', pool: null, flip: false, tint: 0, hgt: h * kit.info(pics[i % pics.length]).h / top });   // one pixel scale for the whole pattern: a picture without the roof sign is lower
       const setback = Math.max(edge, Math.abs(side)), p0 = { at, len: len + 0.4, side: sg * setback, hgt: h, ...look(0), depth: depth || 0, name: nm(ni), type, real: true, custom: true };
       planes.push(...splitFront(p0, 'row', look, () => h, () => custom.tile || len + 0.4)); continue; }
@@ -217,12 +223,17 @@ export function buildChunk(d, env) {
   for (const rb of RD?.roundabouts || []) { const q0 = segs.find(q => q.isl && Math.abs(q.isl.at - (rb.s0 + rb.s1) / 2) < 0.5); if (!q0 || q0.isl.deco === 'none') continue; const I = q0.isl, n = I.deco === 'trees' ? 7 : I.deco === 'grass' ? 4 : 9;
     for (let i = 0; i < n; i++) { const ang = i / n * Math.PI * 2 + hrnd(I.at, i) * 0.6, rr = 0.25 + hrnd(I.at, i + 20) * 0.5, at = I.at + Math.cos(ang) * I.a * rr, k = Math.round((at - d.s0) / SEG), q = segs[k]; if (!q) continue;
       const pool = kit.pool(I.deco === 'trees' && i % 2 ? ['tree'] : ['bush'], at), pic = pickFrom(pool, hash(Math.round(at), 41 + i)); if (pic) q.bill.push({ pic, side: -(q.rw + 0.25 + I.b + Math.sin(ang) * I.b * rr), scale: I.deco === 'trees' && i % 2 ? 0.6 : 0.55 + hrnd(at, 9) * 0.2, isl: true }); } }
+  // ROX: hedges, walls and reeds along the edge, rows of trees, and props placed by hand (data/road.json)
+  for (let k = 0; k < n; k++) { const q = segs[k]; if (q.cross || q.isl) continue; const edge = q.rw + q.sw + 0.9;
+    if (q.edge && k % 2 === 0) for (const sd of ['L', 'R']) { const e = q.edge[sd], sg = sd === 'L' ? -1 : 1; if (e && hrnd(q.s, sg * 31) < (e === 'hedge' ? 0.85 : 1)) q.bill.push({ code: e, side: sg * edge }); }   // a hedge has gaps
+    if (q.trees && k % 6 === 0) for (const sd of q.trees) { const sg = sd === 'L' ? -1 : 1, pic = pickFrom(kit.pool(['tree'], q.s), hash(Math.round(q.s), 77)); if (pic) q.bill.push({ pic, side: sg * (edge + 0.6), scale: 1.1 + hrnd(q.s, 79) * 0.3 }); } }
+  for (const pr of RD?.props || []) for (let at = pr.at ?? pr.from; at <= (pr.to ?? pr.at); at += pr.every || 1e9) { const q = segs[Math.round((at - d.s0) / SEG)]; if (q) q.bill.push({ code: pr.code, side: pr.side, far: true }); }
   // landmarks with a picture stand at their real place; close to the road a building landmark replaces the frontage
   for (const lm of env.landmarks || []) { if (!lm.art || lm.s < d.s0 || lm.s >= d.s0 + d.len) continue; const info = kit.info(lm.art); if (!info) continue;
     const k = clamp(Math.round((lm.s - d.s0) / SEG), 0, n - 1), q = segs[k], sg = Math.sign(lm.side) || 1, hm = lm.h, wm = Math.max(4, hm * info.w / info.h);
     if (Math.abs(lm.side) < 60 && lm.kind !== 'bridge') { const at = lm.s - wm / 2, side = sg * Math.max(q.rw + q.sw + 1, Math.min(Math.abs(lm.side), 25));
-      for (let i = planes.length - 1; i >= 0; i--) { const p = planes[i]; if (Math.sign(p.side) === sg && p.at < at + wm + 4 && p.at + p.len > at - 4) planes.splice(i, 1); }
-      planes.push({ at, len: wm, side, hgt: hm, pic: lm.art, flip: false, tint: 0, cap: true, capD: 20, landmark: lm.name }); planes.sort((a, b) => a.at - b.at); }
+      for (let i = planes.length - 1; i >= 0; i--) { const p = planes[i]; if (Math.sign(p.side) === sg && p.at < at + wm + 4 && p.at + p.len > at - 4 && !(p.custom && p.at + p.len < at + 1)) planes.splice(i, 1); }   /* ROX: a building placed by hand just before it stays */
+      planes.push({ at, len: wm, side, hgt: hm, pic: lm.art, flip: false, tint: 0, cap: !planes.some(p => Math.sign(p.side) === sg && Math.abs(p.at + p.len - at) < 2), capD: 20, landmark: lm.name });   /* ROX: no side wall where a building joins it (it would repeat the front) */ planes.sort((a, b) => a.at - b.at); }
     else q.bill.push({ pic: lm.art, side: lm.side, hm, wm, far: true, landmark: lm.name }); }
   // keep the road and the near sidewalk clear
   for (const q of segs) q.bill = q.bill.filter(b => b.far || b.code === 'post' || Math.abs(b.side) > q.rw + 0.3);

@@ -1,5 +1,5 @@
 {
- "note": "Hand fixes to the road furniture of data/road.json (tools/realroad.mjs merges them). drop: OSM features that are not for us (within 8 m); add: ones the map lacks. roundabouts: by OSM way id, the island's look (deco grass|bushes|trees|none, kerb concrete|brick), from the video.",
+ "note": "Hand fixes to the road of data/road.json (tools/realroad.mjs merges them), from the owner's Street View walk-through. drop: OSM features that are not for us (within 8 m); add: ones the map lacks. roundabouts: by OSM way id, the island's look (deco grass|bushes|trees|none, kerb concrete|brick). stretches: from-to metres with rw (half the asphalt), sw (sidewalk or verge), town, lines:false, dual (a one-way carriageway, the other beyond a median this wide), lot (bays at right angles on the left: from, pitch, aisle, bed), edge {L,R: hedge|wall|reeds}, park [L,R] (cars at the kerb), trucks, trees [L,R], open (no street wall pulled to the sidewalk), roles (the only generic pictures there, e.g. industrial). props: code-drawn things (mast, bollard, rubbish) at, or from-to every. noTowers: no tower blocks in the kit.",
  "drop": {
   "signs": [
    9,
@@ -13,7 +13,115 @@
   ]
  },
  "add": {},
- "stretches": [],
+ "stretches": [
+  {
+   "from": 0,
+   "to": 142,
+   "rw": 3.4,
+   "sw": 2.2,
+   "lines": false,
+   "lot": {
+    "from": 6,
+    "pitch": 16.1,
+    "aisle": 6,
+    "bed": 1.2
+   },
+   "note": "up the car park lane: no lines, rows of bays on the left (an aisle at every STOP of the map), the Panorama's walkway on the right"
+  },
+  {
+   "from": 290,
+   "to": 430,
+   "rw": 3.6,
+   "dual": 4,
+   "note": "Via Pietro Gherardini: two lanes one way, a grass median, the other carriageway beyond"
+  },
+  {
+   "from": 550,
+   "to": 840,
+   "rw": 3.6,
+   "dual": 4,
+   "open": true,
+   "note": "Via Ginetta Chirici: the same, buildings set back behind gardens"
+  },
+  {
+   "from": 1180,
+   "to": 1240,
+   "rw": 3.0,
+   "sw": 0.6,
+   "town": false,
+   "open": true,
+   "edge": {
+    "L": "wall",
+    "R": "hedge"
+   },
+   "note": "Via Bure Vecchia Nord: narrow, no sidewalks, a white wall on the left"
+  },
+  {
+   "from": 1240,
+   "to": 1610,
+   "rw": 3.0,
+   "sw": 0.6,
+   "town": false,
+   "open": true,
+   "edge": {
+    "L": "hedge",
+    "R": "hedge"
+   },
+   "note": "Via Bure Vecchia Nord: narrow between hedges, fields, farmhouses"
+  },
+  {
+   "from": 1610,
+   "to": 1850,
+   "rw": 3.6,
+   "sw": 1.6,
+   "park": [
+    "L",
+    "R"
+   ],
+   "note": "Via Bure Vecchia Nord, the industrial end: sheds, cars parked on both sides",
+   "roles": [
+    "industrial"
+   ]
+  },
+  {
+   "from": 1880,
+   "to": 2010,
+   "rw": 4.0,
+   "trees": [
+    "R"
+   ],
+   "park": [
+    "R"
+   ],
+   "trucks": true,
+   "note": "Via Enrico Fermi: a row of big trees, cars and vans parked on the right",
+   "roles": [
+    "industrial"
+   ]
+  },
+  {
+   "from": 2010,
+   "to": 2080,
+   "rw": 3.8,
+   "open": true,
+   "edge": {
+    "R": "reeds"
+   },
+   "note": "Via Dino Buzzati: reeds on the right",
+   "roles": [
+    "industrial"
+   ]
+  },
+  {
+   "from": 2080,
+   "to": 2173,
+   "rw": 3.6,
+   "note": "Via Luigi Salvatorelli: Utensilferramenta on the right",
+   "roles": [
+    "industrial"
+   ]
+  }
+ ],
  "roundabouts": {
   "126563688": {
    "deco": "bushes",
@@ -36,5 +144,28 @@
    "kerb": "brick",
    "note": "Via Fermi: small, raised, red brick kerb, bushes"
   }
- }
+ },
+ "props": [
+  {
+   "at": 2068,
+   "code": "mast",
+   "side": -15,
+   "note": "the telecom mast at the corner of Via Buzzati and Via Salvatorelli"
+  },
+  {
+   "at": 2076,
+   "code": "rubbish",
+   "side": 6.5,
+   "note": "rubbish dumped at the corner (it is there in the 2026 pictures)"
+  },
+  {
+   "from": 2084,
+   "to": 2124,
+   "every": 3,
+   "code": "bollard",
+   "side": 4.3,
+   "note": "the orange bollards along Utensilferramenta"
+  }
+ ],
+ "noTowers": true
 }

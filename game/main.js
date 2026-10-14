@@ -88,11 +88,8 @@ function reset(mode) {
   const q = road.roadAt(0);
   Object.assign(G, { mode, live: mode !== 'attract', pos: 0, speed: 0, lat: q.rw / 2, camX: q.rw / 2, t: 0, score: 0, combo: 0, comboT: 0, maxCombo: 0, hits: 0, roxes: 0, missed: 0,
     clock: 13 * 3600 + 58 * 60 + 15, deadline: 14 * 3600, crashes: 0, ents: [], parts: [], floats: [], shake: 0, invT: 0, slipT: 0, boostT: 0, hornT: 0, finished: false, endT: 0, result: null,
-    nextRox: 70, nextTraffic: 160, nextCoffee: 380, wall: false, braking: false, sayT: 0 });
+    nextRox: 70, nextTraffic: 160, nextCoffee: 380, nextPark: 0, wall: false, braking: false, sayT: 0 });
   G.ents.push({ kind: 'finish', s: FINISH, lat: 0 }, { kind: 'ufp', s: LEN - 8, lat: 0 });
-  // the Panorama car park, left of the lane (the Panorama itself is on the right): parked cars, noses and tails towards you
-  for (let s = 8; s < 140; s += 5.2) for (const sg of [-1]) { if (Math.random() < 0.3) continue; const q2 = road.roadAt(s), front = Math.random() < 0.5;
-    G.ents.push({ kind: 'parked', s, lat: sg * (q2.rw + 2.4), img: front ? pick(CARS.front) : pick(CARS.rear) }); }
   if (mode === 'chase') G.ents.push(G.boss = { kind: 'boss', s: 75, lat: q.rw / 2, vs: 0, hp: BOSS_HP, flee: 0, inv: 0, dodgeCool: 0, turbo: 0, turboCool: 0, tgtLat: q.rw / 2, tgtT: 2, dropT: 3, sayT: 1.5, said: null, saidT: 0, lift: 0, vz: 0, rot: 0 });
   else G.boss = null;
 }
@@ -110,15 +107,25 @@ function spawnRox(s, forced) {
   G.ents.push(e); G.roxes++;
   return e;
 }
+const oppLane = q => q.dual ? -(q.rw * 1.5 + q.dual.med) : -q.rw / 2;   // oncoming cars: the left lane, or the other carriageway beyond the median
 function spawnTraffic(s) {
   const q = road.roadAt(s); if (q.rw < 3.8) return;   // a lane each way at least
   const r = Math.random();
   if (r < 0.5) G.ents.push({ kind: 'car', s, lat: q.rw / 2 + rnd(-0.3, 0.3), vs: rnd(8, 12), img: pick(CARS.rear), len: 3.8 });
-  else if (r < 0.85) { if (!road.roadAt(s + 120).ring) G.ents.push({ kind: 'car', s: s + 120, lat: -q.rw / 2 + rnd(-0.3, 0.3), vs: -rnd(10, 14), img: pick(CARS.front), len: 3.8, oncoming: true }); }
+  else if (r < 0.85) { if (!road.roadAt(s + 120).ring) G.ents.push({ kind: 'car', s: s + 120, lat: oppLane(road.roadAt(s + 120)), dl: rnd(-0.3, 0.3), vs: -rnd(10, 14), img: pick(CARS.front), len: 3.8, oncoming: true }); }
   else G.ents.push({ kind: 'car', s, lat: q.rw / 2, vs: rnd(5, 7), img: CARS.ape, len: 2.8, ape: true });
+}
+// parked cars, laid out as the road ahead is built (the road's stretches are only known then)
+function spawnParked(a, b) {
+  const B = road.roadAt(a).bays;   // the Panorama car park, left of the lane: rows of bays at right angles to it, so you see the cars nose or tail on
+  if (B) { const pitch = B.pitch || 16, aisle = B.aisle || 6, bed = B.bed ?? 1.2; for (let s = B.from + aisle + Math.ceil((a - B.from - aisle) / pitch) * pitch; s < b; s += pitch) if (road.roadAt(s + 8).bays)
+    for (const [ds, front] of [[2.5, true], [7.5, false]]) for (let j = 0; j < 8; j++) if (Math.random() < 0.7) G.ents.push({ kind: 'parked', s: s + ds, lat: -(road.roadAt(s + ds).rw + bed + 1.25 + j * 2.5), img: front ? pick(CARS.front) : pick(CARS.rear) }); }
+  for (let s = a; s < b; s += rnd(6, 9)) { const q2 = road.roadAt(s); if (!q2.park || Math.random() < 0.3) continue;   // cars and vans at the kerb, half on the sidewalk, where the real street has them
+    for (const sd of q2.park) { const sg = sd === 'L' ? -1 : 1, truck = q2.trucks && Math.random() < 0.35; G.ents.push({ kind: 'parked', s, lat: sg * (q2.rw + (truck ? 0.3 : 0.1)), img: truck ? CARS.truck : sg > 0 ? pick(CARS.rear) : pick(CARS.front), hm: truck ? 3.1 : 1.45 }); } }
 }
 function spawns() {
   const ahead = G.pos + 190;
+  while (G.nextPark < G.pos + 260 && road.ready(G.nextPark + 40)) { spawnParked(G.nextPark, G.nextPark + 40); G.nextPark += 40; }
   if (G.mode !== 'chase') {
     while (G.nextRox < ahead && G.nextRox < FINISH - 90) { spawnRox(G.nextRox); G.nextRox += rnd(34, 70); }
     if (!G.wall && ahead > FINISH - 30) { G.wall = true; const q = road.roadAt(FINISH - 25); ['wave', 'eat', 'phone', 'wave'].forEach((t, i) => { const e = spawnRox(FINISH - 25 - (i % 2) * 3, t); e.lat = (-1.5 + i) * q.rw / 2.2; e.cross = 0; }); }
@@ -214,8 +221,9 @@ function step(dt) {
       }
     } else if (e.kind === 'parked') {
       if (G.invT <= 0 && Math.abs(e.lat - G.lat) < 1.75 && e.s < front && e.s + 3.8 > rear) crash(e);   // onto the bays: straight into a parked car
+      if (e.s < G.pos - 20) e.gone = true;
     } else if (e.kind === 'car') {
-      e.s += e.vs * dt;
+      e.s += e.vs * dt; if (e.oncoming) e.lat = oppLane(road.roadAt(e.s)) + (e.dl || 0);
       if (G.invT <= 0 && Math.abs(e.lat - G.lat) < 1.75 && e.s < front && e.s + e.len > rear) crash(e);
       if (e.s < G.pos - 20 || e.s > G.pos + 1000 || (e.oncoming && road.roadAt(e.s).ring)) e.gone = true;   // oncoming cars take another exit before a roundabout (it is one way)
     } else if (e.kind === 'fennel' || e.kind === 'wet') {
@@ -284,7 +292,7 @@ function things() {
     if (e.kind === 'rox') { const im = roxImg(e); th = add(e, im, hmOf(im), e.lift, e.rot); if (e.state === 'idle' && e.lift < 0.3) add({ s: e.s + 0.05 }, PROPS.shadow, 0.16, 0, 0, e.lat, im.width / PPM * 1.1); }
     else if (e.kind === 'boss') { const im = Math.floor(G.t * 3) % 2 ? ROX.chase : ROX.chase2; th = add(e, im, hmOf(im) * 1.4, e.lift, e.rot); add({ s: e.s + 0.05 }, PROPS.shadow, 0.25, 0, 0, e.lat, 2.2); }   // the Grizzly XL
     else if (e.kind === 'car') th = add(e, e.img, e.ape ? 1.6 : 1.45);
-    else if (e.kind === 'parked') th = add(e, e.img, 1.45);
+    else if (e.kind === 'parked') th = add(e, e.img, e.hm || 1.45);
     else if (e.kind === 'fennel') th = add(e, PROPS.fennel, 0.55);
     else if (e.kind === 'wet') th = add(e, PROPS.wet, 0.8);
     else if (e.kind === 'coffee') th = add(e, PROPS.coffee, 0.5, 0.25 + Math.sin(G.t * 5) * 0.12);
