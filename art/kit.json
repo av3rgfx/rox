@@ -13,18 +13,16 @@
       "theme": "pistoia",
       "kind": "facade",
       "w": 148,
-      "h": 88,
+      "h": 105,
       "hm": 10,
       "avg": [
-        139,
-        119,
-        96
+        155,
+        136,
+        110
       ],
       "placeholder": false,
       "drop": false,
-      "flags": [
-        "holes filled (636 px)"
-      ]
+      "flags": []
     },
     "pistoia-shop-2": {
       "file": "art/pistoia-shop-2.png",
@@ -32,17 +30,17 @@
       "theme": "pistoia",
       "kind": "facade",
       "w": 148,
-      "h": 142,
+      "h": 148,
       "hm": 10,
       "avg": [
-        136,
-        96,
-        65
+        152,
+        127,
+        97
       ],
       "placeholder": false,
       "drop": false,
       "flags": [
-        "holes filled (1140 px)"
+        "holes filled (551 px)"
       ]
     },
     "pistoia-house-1": {
@@ -190,16 +188,17 @@
       "role": "landmark",
       "theme": "pistoia",
       "kind": "landmark",
-      "w": 177,
-      "h": 144,
+      "w": 244,
+      "h": 100,
       "hm": 9,
       "avg": [
-        204,
-        195,
-        177
+        117,
+        104,
+        95
       ],
       "label": "Ex Mensa Sant'Agostino",
-      "placeholder": true,
+      "qid": "mensa",
+      "placeholder": false,
       "drop": false,
       "flags": []
     },
@@ -208,13 +207,13 @@
       "role": "landmark",
       "theme": "pistoia",
       "kind": "landmark",
-      "w": 378,
-      "h": 198,
+      "w": 244,
+      "h": 130,
       "hm": 12,
       "avg": [
-        168,
-        149,
-        113
+        169,
+        154,
+        118
       ],
       "label": "Utensilferramenta",
       "qid": "ufp",
@@ -263,15 +262,15 @@
       "role": "apartment",
       "theme": "pistoia",
       "kind": "facade",
-      "w": 128,
-      "h": 188,
+      "w": 118,
+      "h": 162,
       "hm": 18,
       "avg": [
-        125,
         142,
-        154
+        121,
+        93
       ],
-      "placeholder": true,
+      "placeholder": false,
       "drop": false,
       "flags": []
     },
@@ -299,16 +298,17 @@
       "role": "landmark",
       "theme": "pistoia",
       "kind": "landmark",
-      "w": 177,
-      "h": 144,
+      "w": 244,
+      "h": 73,
       "hm": 12,
       "avg": [
-        204,
-        195,
-        177
+        170,
+        128,
+        115
       ],
       "label": "Panorama",
-      "placeholder": true,
+      "qid": "panorama",
+      "placeholder": false,
       "drop": false,
       "flags": []
     }
