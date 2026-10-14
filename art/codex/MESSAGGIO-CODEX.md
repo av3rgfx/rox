@@ -14,11 +14,11 @@ Poi:
 
 1. Esegui:
      node tools/codex-art.mjs prompts
-     node tools/codex-art.mjs prompts --only pistoia-apartment-1,lm-panorama,lm-mensa,lm-ufp --out art/codex/PROMPTS-NUOVE.md
+     node tools/codex-art.mjs prompts --only pistoia-apartment-1,lm-mensa,lm-ufp,b-panorama-bay,b-panorama-entrance,b-mural,b-villa-a,b-villa-b,b-condo-a,b-condo-b,b-petrol,b-brick-shed,b-garden-wall,b-house-white,b-long-shed,b-farmhouse-orange,b-farmhouse-brick,b-grey-shed,b-lattice,b-white-shed,b-ufp-side --out art/codex/PROMPTS-NUOVE.md
    Così i prompt includono le eventuali foto in art/codex/ref/.
 
 2. Genera le immagini di art/codex/PROMPTS-NUOVE.md con il tuo strumento di generazione immagini, usando ESATTAMENTE il prompt e il formato indicati, e salvale come PNG nel percorso indicato (art/codex/in/<nome>.png), senza ridimensionarle.
-   Quando per un'immagine sono indicate delle foto di riferimento, passale allo strumento come immagini di riferimento e aggiungi al prompt la frase indicata: l'edificio deve somigliare a quello della foto (forma, piani, colori, materiali, finestre, porte, insegne), raddrizzato in vista frontale. Senza foto, segui con cura la descrizione dell'edificio vero che è nel prompt (lm-panorama, lm-mensa e soprattutto lm-ufp, Utensilferramenta: vedi anche art/codex/REFERENCE.md): non inventare dettagli che la contraddicono. lm-ufp ora è un disegno provvisorio fatto dal codice: la tua immagine lo sostituisce.
+   Quando per un'immagine sono indicate delle foto di riferimento, passale allo strumento come immagini di riferimento e aggiungi al prompt la frase indicata: l'edificio deve somigliare a quello della foto (forma, piani, colori, materiali, finestre, porte, insegne), raddrizzato in vista frontale. Senza foto, segui con cura la descrizione dell'edificio vero che è nel prompt: ogni b-* è un edificio preciso della strada (vedi art/buildings-custom.json e art/codex/REFERENCE.md), b-panorama-* e lm-ufp sono il Panorama e Utensilferramenta. Non inventare dettagli che la contraddicono. b-panorama-bay, b-panorama-entrance, b-ufp-side e lm-ufp ora sono disegni provvisori fatti dal codice: le tue immagini li sostituiscono. b-panorama-bay deve potersi ripetere uno accanto all'altro (i due bordi laterali uguali, un pilastro per lato).
 
 3. Controlla le immagini già fatte (art/pistoia-*.png) confrontandole con art/codex/REFERENCE.md e con le foto della strada in art/codex/ref/strada-*.jpg, se ci sono. Rigenera con il prompt di art/codex/PROMPTS.md quelle che REFERENCE.md segna "da rifare" e quelle che secondo te non sembrano la periferia di Pistoia (per esempio da centro storico o da cartolina). Le altre lasciale stare.
 

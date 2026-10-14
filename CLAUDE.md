@@ -33,8 +33,14 @@ Italian. Read `NEXT_SESSION.md` first: it has the state, the decisions taken wit
   round, 3 of them recovered from the closed PR #3); `pistoia-apartment-1`, `lm-panorama` and `lm-mensa` are placeholders. `lm-ufp` is a stand-in drawn by
   `game/sprites.js` from a description of the real building (`node tools/ufp-standin.mjs` writes it to art/raw, needs the
   local server); a Codex picture imported later replaces it. Codex's first, invented warehouse (`extra-ufp`) is gone.
-- Landmarks: `art/landmarks-custom.json` (Panorama at the start, Ex Mensa Sant'Agostino, UFP, placed from their OSM
-  footprints)
+- Real buildings: `art/buildings-custom.json` gives mapped buildings their own picture (matched by [s, side] within
+  6 m), adds ones the map lacks (`add`: the Panorama, 170 m of facade along the car park lane, a pattern of `pics`
+  repeated every `tile` metres) and fixes land (`land`: the car park is `lot`). `node tools/buildings.mjs` (run by
+  plan-art.sh) writes `data/buildings.json` (road.js loads it as `env.buildings`, layout.js applies it) and adds role
+  `custom` jobs to plan.json, never used by the generic kit. Placeholders are ignored, so a building keeps its generic
+  look until its picture is real. `node tools/standins.mjs` draws code stand-ins for the Panorama and UFP's second
+  warehouse into art/raw. main.js adds parked cars along the car park lane (solid).
+- Landmarks: `art/landmarks-custom.json` (Ex Mensa Sant'Agostino, UFP, placed from their OSM footprints)
   is merged into `data/landmarks.json` by `node tools/landmarks.mjs` (plan-art.sh runs it; run it after any rebake).
   A landmark with a real picture replaces the frontage at its real place (layout.js); placeholders are never shown.
   OSM/OSRM give where buildings are and their size and type, never their look: faithful pictures need photos.

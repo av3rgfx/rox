@@ -49,14 +49,17 @@ Ultimo aggiornamento: 14 ottobre 2026 (fine della prima sessione).
    Rox sul Grizzly come boss. Da progettare insieme (scena a sé dopo il traguardo, o terza modalità).
 5. **Classifica condivisa** tra colleghi (ora solo record locale): proposta Supabase (connesso alla sessione) con una
    tabella punteggi e nome del giocatore; valutare anche anti-cheat minimo.
-6. **Grafica dei palazzi**: 14 immagini del primo giro di Codex sono nel gioco (PR #3 di Codex chiusa e integrata, con
-   un margine aggiunto: senza, la pulizia ne scartava 5 come "tagliate"). Mancano `pistoia-apartment-1` e i landmark
-   `lm-panorama` e `lm-mensa`. `lm-ufp` per ora è disegnato dal codice da una descrizione dell'edificio vero (capannone
-   color sabbia a costoloni, scritta UTENSILFERRAMENTA PISTOIESE sul tetto, triangolo rosso UFP). Panorama e UFP sono
-   descritti da un video di Street View fatto dal proprietario: Street View solo guardato e descritto a parole, mai
-   usato come immagine di riferimento (termini di Google). Messaggio per Codex: `art/codex/MESSAGGIO-CODEX.md`. Quando
-   arriva la PR di Codex: controllare `clean.mjs` (immagini scartate), `art/contact.png`, provare il gioco e i landmark
-   al loro posto (Panorama m 23 a sinistra, Mensa m 1965 a destra, UFP m 2210 a destra).
+6. **Grafica: la strada 1:1**. Il proprietario vuole la strada identica a quella vera, Panorama e Utensilferramenta
+   compresi. Fatto finora: ogni edificio della mappa vicino alla strada ha la sua immagine dedicata
+   (`art/buildings-custom.json`, 18 immagini `b-*` descritte dal video di Street View del proprietario, guardato e
+   descritto a parole, mai usato come riferimento); il Panorama è una facciata di 170 m lungo il parcheggio, che ha
+   asfalto e auto parcheggiate; Utensilferramenta è un landmark (`lm-ufp`) più il secondo capannone (`b-ufp-side`).
+   Panorama e UFP hanno disegni provvisori fatti dal codice; tutte le altre `b-*`, `lm-mensa` e `pistoia-apartment-1`
+   aspettano Codex (`art/codex/PROMPTS-NUOVE.md`, messaggio in `art/codex/MESSAGGIO-CODEX.md`). Quando arriva la PR di
+   Codex: controllare `clean.mjs` (immagini scartate), `art/contact.png`, e provare il gioco su tutta la strada.
+   Limiti da ricordare: le posizioni sono quelle di OpenStreetMap (gli edifici mancanti dalla mappa non ci sono, le
+   rotonde non sono disegnate come isole), la pixel art è un'approssimazione, dietro gli edifici veri restano edifici
+   generici.
 7. **Playtest con persone vere**: regolare la difficoltà. Valori attuali (2,2 km): Investi 105 s (13:58:15 → 14:00),
    un Rox ogni 34–70 m; Chase: Rox parte 75 m avanti, velocità 15–30 m/s contro 35 del giocatore, 5 cuori, colpo
    valido entro 1,7 m di lato. I record ripartono da zero (chiave `rox-best-v3`).

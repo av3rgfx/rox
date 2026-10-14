@@ -90,6 +90,9 @@ function reset(mode) {
     clock: 13 * 3600 + 58 * 60 + 15, deadline: 14 * 3600, crashes: 0, ents: [], parts: [], floats: [], shake: 0, invT: 0, slipT: 0, boostT: 0, hornT: 0, finished: false, endT: 0, result: null,
     nextRox: 70, nextTraffic: 160, nextCoffee: 380, wall: false, braking: false, sayT: 0 });
   G.ents.push({ kind: 'finish', s: FINISH, lat: 0 }, { kind: 'ufp', s: LEN - 8, lat: 0 });
+  // the Panorama car park: rows of parked cars on both sides of the lane, noses and tails towards you
+  for (let s = 14; s < 236; s += 5.2) for (const sg of [-1, 1]) { if (Math.random() < 0.3) continue; const q2 = road.roadAt(s), front = Math.random() < 0.5;
+    G.ents.push({ kind: 'parked', s, lat: sg * (q2.rw + 2.4), img: front ? pick(CARS.front) : pick(CARS.rear) }); }
   if (mode === 'chase') G.ents.push(G.boss = { kind: 'boss', s: 75, lat: q.rw / 2, vs: 0, hp: BOSS_HP, flee: 0, inv: 0, dodgeCool: 0, turbo: 0, turboCool: 0, tgtLat: q.rw / 2, tgtT: 2, dropT: 3, sayT: 1.5, said: null, saidT: 0, lift: 0, vz: 0, rot: 0 });
   else G.boss = null;
 }
@@ -142,7 +145,7 @@ function hitRox(e) {
 }
 function crash(e) {
   G.invT = 1.6; G.shake = 0.5; G.crashes++; sfx('crash');
-  if (e.oncoming) { G.speed = 0; } else { G.speed = Math.min(G.speed, e.vs) * 0.4; e.vs += 5; }
+  if (e.oncoming || e.kind === 'parked') { G.speed = 0; } else { G.speed = Math.min(G.speed, e.vs) * 0.4; e.vs += 5; }
   G.lat += (G.lat < e.lat ? -1 : 1) * 1.2;
   if (G.mode !== 'chase') { G.clock += 5; float('+5 SEC', W / 2 - 20, H * 0.45, '#ff5a4a', 2); }
   if (G.live) toast(pick(['CHE BOTTA!', 'ASSICURAZIONE!', 'MA CHI TI HA DATO LA PATENTE?']), 1100);
@@ -209,6 +212,8 @@ function step(dt) {
         if (e.lift < 0) { e.lift = 0; e.vz = Math.abs(e.vz) > 3 ? -e.vz * 0.35 : 0; e.rotV *= 0.5; }
         if (e.t > 2.4) e.gone = true;
       }
+    } else if (e.kind === 'parked') {
+      if (G.invT <= 0 && Math.abs(e.lat - G.lat) < 1.75 && e.s < front && e.s + 3.8 > rear) crash(e);   // onto the bays: straight into a parked car
     } else if (e.kind === 'car') {
       e.s += e.vs * dt;
       if (G.invT <= 0 && Math.abs(e.lat - G.lat) < 1.75 && e.s < front && e.s + e.len > rear) crash(e);
@@ -279,6 +284,7 @@ function things() {
     if (e.kind === 'rox') { const im = roxImg(e); th = add(e, im, hmOf(im), e.lift, e.rot); if (e.state === 'idle' && e.lift < 0.3) add({ s: e.s + 0.05 }, PROPS.shadow, 0.16, 0, 0, e.lat, im.width / PPM * 1.1); }
     else if (e.kind === 'boss') { const im = Math.floor(G.t * 3) % 2 ? ROX.chase : ROX.chase2; th = add(e, im, hmOf(im) * 1.4, e.lift, e.rot); add({ s: e.s + 0.05 }, PROPS.shadow, 0.25, 0, 0, e.lat, 2.2); }   // the Grizzly XL
     else if (e.kind === 'car') th = add(e, e.img, e.ape ? 1.6 : 1.45);
+    else if (e.kind === 'parked') th = add(e, e.img, 1.45);
     else if (e.kind === 'fennel') th = add(e, PROPS.fennel, 0.55);
     else if (e.kind === 'wet') th = add(e, PROPS.wet, 0.8);
     else if (e.kind === 'coffee') th = add(e, PROPS.coffee, 0.5, 0.25 + Math.sin(G.t * 5) * 0.12);

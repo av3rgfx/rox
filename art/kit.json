@@ -294,27 +294,318 @@
         "holes filled (510 px)"
       ]
     },
-    "lm-panorama": {
-      "file": "art/lm-panorama.png",
-      "role": "landmark",
+    "b-panorama-bay": {
+      "file": "art/b-panorama-bay.png",
+      "role": "custom",
       "theme": "pistoia",
-      "kind": "landmark",
-      "w": 177,
-      "h": 144,
+      "kind": "facade",
+      "w": 194,
+      "h": 86,
       "hm": 12,
       "avg": [
-        204,
-        195,
-        177
+        148,
+        136,
+        124
       ],
-      "label": "Panorama",
+      "placeholder": false,
+      "drop": false,
+      "flags": [
+        "holes filled (700 px)"
+      ]
+    },
+    "b-panorama-entrance": {
+      "file": "art/b-panorama-entrance.png",
+      "role": "custom",
+      "theme": "pistoia",
+      "kind": "facade",
+      "w": 194,
+      "h": 96,
+      "hm": 12,
+      "avg": [
+        164,
+        131,
+        127
+      ],
+      "placeholder": false,
+      "drop": false,
+      "flags": [
+        "holes filled (568 px)"
+      ]
+    },
+    "b-mural": {
+      "file": "art/b-mural.png",
+      "role": "custom",
+      "theme": "pistoia",
+      "kind": "facade",
+      "w": 184,
+      "h": 88,
+      "hm": 7,
+      "avg": [
+        176,
+        160,
+        140
+      ],
       "placeholder": true,
+      "drop": false,
+      "flags": []
+    },
+    "b-villa-a": {
+      "file": "art/b-villa-a.png",
+      "role": "custom",
+      "theme": "pistoia",
+      "kind": "facade",
+      "w": 184,
+      "h": 115,
+      "hm": 9,
+      "avg": [
+        214,
+        196,
+        160
+      ],
+      "placeholder": true,
+      "drop": false,
+      "flags": []
+    },
+    "b-villa-b": {
+      "file": "art/b-villa-b.png",
+      "role": "custom",
+      "theme": "pistoia",
+      "kind": "facade",
+      "w": 184,
+      "h": 88,
+      "hm": 7,
+      "avg": [
+        232,
+        226,
+        210
+      ],
+      "placeholder": true,
+      "drop": false,
+      "flags": []
+    },
+    "b-condo-a": {
+      "file": "art/b-condo-a.png",
+      "role": "custom",
+      "theme": "pistoia",
+      "kind": "facade",
+      "w": 184,
+      "h": 117,
+      "hm": 13,
+      "avg": [
+        222,
+        204,
+        150
+      ],
+      "placeholder": true,
+      "drop": false,
+      "flags": []
+    },
+    "b-condo-b": {
+      "file": "art/b-condo-b.png",
+      "role": "custom",
+      "theme": "pistoia",
+      "kind": "facade",
+      "w": 184,
+      "h": 117,
+      "hm": 13,
+      "avg": [
+        176,
+        160,
+        140
+      ],
+      "placeholder": true,
+      "drop": false,
+      "flags": []
+    },
+    "b-petrol": {
+      "file": "art/b-petrol.png",
+      "role": "custom",
+      "theme": "pistoia",
+      "kind": "facade",
+      "w": 184,
+      "h": 74,
+      "hm": 6,
+      "avg": [
+        176,
+        160,
+        140
+      ],
+      "placeholder": true,
+      "drop": false,
+      "flags": []
+    },
+    "b-brick-shed": {
+      "file": "art/b-brick-shed.png",
+      "role": "custom",
+      "theme": "pistoia",
+      "kind": "facade",
+      "w": 184,
+      "h": 61,
+      "hm": 5,
+      "avg": [
+        232,
+        226,
+        210
+      ],
+      "placeholder": true,
+      "drop": false,
+      "flags": []
+    },
+    "b-garden-wall": {
+      "file": "art/b-garden-wall.png",
+      "role": "custom",
+      "theme": "pistoia",
+      "kind": "facade",
+      "w": 184,
+      "h": 56,
+      "hm": 3,
+      "avg": [
+        150,
+        92,
+        72
+      ],
+      "placeholder": true,
+      "drop": false,
+      "flags": []
+    },
+    "b-house-white": {
+      "file": "art/b-house-white.png",
+      "role": "custom",
+      "theme": "pistoia",
+      "kind": "facade",
+      "w": 184,
+      "h": 88,
+      "hm": 7,
+      "avg": [
+        232,
+        226,
+        210
+      ],
+      "placeholder": true,
+      "drop": false,
+      "flags": []
+    },
+    "b-long-shed": {
+      "file": "art/b-long-shed.png",
+      "role": "custom",
+      "theme": "pistoia",
+      "kind": "facade",
+      "w": 184,
+      "h": 56,
+      "hm": 6,
+      "avg": [
+        150,
+        92,
+        72
+      ],
+      "placeholder": true,
+      "drop": false,
+      "flags": []
+    },
+    "b-farmhouse-orange": {
+      "file": "art/b-farmhouse-orange.png",
+      "role": "custom",
+      "theme": "pistoia",
+      "kind": "facade",
+      "w": 184,
+      "h": 102,
+      "hm": 8,
+      "avg": [
+        232,
+        226,
+        210
+      ],
+      "placeholder": true,
+      "drop": false,
+      "flags": []
+    },
+    "b-farmhouse-brick": {
+      "file": "art/b-farmhouse-brick.png",
+      "role": "custom",
+      "theme": "pistoia",
+      "kind": "facade",
+      "w": 184,
+      "h": 102,
+      "hm": 8,
+      "avg": [
+        222,
+        204,
+        150
+      ],
+      "placeholder": true,
+      "drop": false,
+      "flags": []
+    },
+    "b-grey-shed": {
+      "file": "art/b-grey-shed.png",
+      "role": "custom",
+      "theme": "pistoia",
+      "kind": "facade",
+      "w": 184,
+      "h": 64,
+      "hm": 9,
+      "avg": [
+        214,
+        196,
+        160
+      ],
+      "placeholder": true,
+      "drop": false,
+      "flags": []
+    },
+    "b-lattice": {
+      "file": "art/b-lattice.png",
+      "role": "custom",
+      "theme": "pistoia",
+      "kind": "facade",
+      "w": 184,
+      "h": 69,
+      "hm": 12,
+      "avg": [
+        160,
+        176,
+        186
+      ],
+      "placeholder": true,
+      "drop": false,
+      "flags": []
+    },
+    "b-white-shed": {
+      "file": "art/b-white-shed.png",
+      "role": "custom",
+      "theme": "pistoia",
+      "kind": "facade",
+      "w": 184,
+      "h": 69,
+      "hm": 8,
+      "avg": [
+        222,
+        204,
+        150
+      ],
+      "placeholder": true,
+      "drop": false,
+      "flags": []
+    },
+    "b-ufp-side": {
+      "file": "art/b-ufp-side.png",
+      "role": "custom",
+      "theme": "pistoia",
+      "kind": "facade",
+      "w": 192,
+      "h": 88,
+      "hm": 11,
+      "avg": [
+        200,
+        177,
+        128
+      ],
+      "placeholder": false,
       "drop": false,
       "flags": []
     }
   },
   "landmarks": {
-    "panorama": "lm-panorama",
     "mensa": "lm-mensa",
     "ufp": "lm-ufp"
   },

@@ -1,9 +1,12 @@
 # Grafica dei palazzi con Codex (gratis)
 
-Il gioco usa **17 immagini** per la strada:
-- 14 edifici e oggetti "tipici" (`pistoia-*`), ripetuti lungo tutta la strada;
-- 3 **landmark** (`lm-*`), ognuno al suo posto vero: il **Panorama** alla partenza, l'Ex Mensa Sant'Agostino e
-  **Utensilferramenta** all'arrivo.
+Il gioco usa **34 immagini** per la strada:
+- 18 **edifici veri** (`b-*`), ognuno sull'edificio della mappa che rappresenta, alla sua lunghezza reale: il
+  **Panorama** (170 m di facciata lungo il parcheggio, campate ripetute con l'ingresso in mezzo), le villette di Via
+  Sestini, i condomini di Via Chirici, il distributore, le case coloniche di Via Bure Vecchia Nord, i capannoni,
+  il secondo capannone di Utensilferramenta. L'elenco con le descrizioni è `art/buildings-custom.json`;
+- 2 **landmark** (`lm-*`): l'Ex Mensa Sant'Agostino e **Utensilferramenta** all'arrivo;
+- 14 edifici e oggetti "tipici" (`pistoia-*`) per quello che sta dietro e tra gli edifici veri.
 
 Finché un'immagine manca, il gioco usa un disegno provvisorio (per i landmark: niente; Utensilferramenta per ora è
 disegnato dal codice da una descrizione dell'edificio vero).
@@ -21,8 +24,8 @@ Wikipedia e da un video di Street View guardato e descritto a parole); se arriva
 
 - [`art/codex/PROMPTS.md`](art/codex/PROMPTS.md): tutte le 17 immagini, ciascuna con prompt, formato, nome del file
   e foto di riferimento.
-- [`art/codex/PROMPTS-NUOVE.md`](art/codex/PROMPTS-NUOVE.md): solo quelle da fare adesso (`pistoia-apartment-1`
-  e i 3 landmark).
+- [`art/codex/PROMPTS-NUOVE.md`](art/codex/PROMPTS-NUOVE.md): solo quelle da fare adesso (21: gli edifici veri, i
+  landmark e `pistoia-apartment-1`).
 - `art/codex/ref/`: le foto di riferimento.
 
 Si rigenerano con `node tools/codex-art.mjs prompts` (tutte) e

@@ -25,7 +25,8 @@ moderni e case basse, poche case vecchie.
   stile antico. Case anni '60–'90 intonacate, condomini color mattone, capannoni in cemento e lamiera, insegne semplici.
 - Alberi: cipressi, platani e alberi giovani nelle aiuole; piante in vaso dei vivai.
 - Gli edifici "generici" (`pistoia-*`) vengono ripetuti in tutta la strada, quindi devono essere tipici della zona,
-  non copie di un edificio preciso. Gli edifici precisi sono i landmark (`lm-*`), ognuno al suo posto vero.
+  non copie di un edificio preciso. Gli edifici precisi sono i `b-*` (elenco con descrizioni e posizioni in `art/buildings-custom.json`) e i landmark
+  (`lm-*`), ognuno al suo posto vero.
 
 ## Utensilferramenta com'è davvero (`lm-ufp`)
 

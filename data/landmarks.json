@@ -1,18 +1,5 @@
 [
   {
-    "name": "Panorama",
-    "qid": "panorama",
-    "kind": "station",
-    "s": 23,
-    "side": -50,
-    "h": 12,
-    "w": 60,
-    "links": 2,
-    "score": 3,
-    "desc": "the Panorama hypermarket of the Centro Commerciale Le Tre Mura (OSM: building=commercial, 3 levels, 16000 m2), left of the start; its wall runs along the car park lane",
-    "custom": true
-  },
-  {
     "name": "Ex Mensa Sant'Agostino",
     "qid": "mensa",
     "kind": "station",

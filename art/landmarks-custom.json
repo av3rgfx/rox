@@ -1,5 +1,4 @@
 [
-  {"name": "Panorama", "qid": "panorama", "kind": "station", "s": 23, "side": -50, "h": 12, "w": 60, "links": 2, "score": 3, "desc": "the Panorama hypermarket of the Centro Commerciale Le Tre Mura (OSM: building=commercial, 3 levels, 16000 m2), left of the start; its wall runs along the car park lane"},
   {"name": "Ex Mensa Sant'Agostino", "qid": "mensa", "kind": "station", "s": 1965, "side": 45, "h": 9, "w": 30, "links": 2, "score": 3, "desc": "the former Sant'Agostino canteen, 1980, by architect Leonardo Ricci (it.wikipedia: Mensa Sant'Agostino), right side on Via Enrico Fermi"},
   {"name": "Utensilferramenta", "qid": "ufp", "kind": "station", "s": 2210, "side": 47, "h": 12, "w": 45, "links": 2, "score": 3, "desc": "Utensilferramenta Pistoiese S.p.A., Via Luigi Salvatorelli: the warehouse at the end of the road, right side (OSM building 1809 m2)"}
 ]
