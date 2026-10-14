@@ -22,13 +22,39 @@ Italian. Read `NEXT_SESSION.md` first: it has the state, the decisions taken wit
   `opts.horizon`, `opts.steer` + `setCamX()`, and `render(s, speed, things)` where a thing is
   `{z, lat, img, hm, wm?, lift?, rot?, alpha?}` drawn in painter's order; `thing.screen` gets the drawn box.
   Keep the originals in `tools/pixel-path/templates/` untouched for diffing.
-- `data/`: the baked route (2246 m). `route.json` at the root is the routing input (the repo root is Pixel Path's TRIP).
-- `art/`: scenery kit (`kit.json`, PNGs), `plan.json`, `codex/PROMPTS.md` + `jobs.json`. Placeholders until real art.
+- `data/`: the baked route, 2215 m, the way the owner drives it (checked on a Street View walk-through they recorded):
+  out of the Panorama car park, Via Pietro Gherardini, Via Ginetta Chirici, Via Ubaldo Fantacci, Via Bure Vecchia Nord,
+  Via Enrico Fermi, Via Dino Buzzati, Via Luigi Salvatorelli. `route.json` at the root is the routing input (the repo
+  root is Pixel Path's TRIP): `route.mjs --out . --from "43.938129,10.939320" --to "43.930245,10.944464"` (Google Maps'
+  pins for the Panorama and UFP), then set the `from`/`to` names in route.json before baking. A 1.1 km shortcut straight
+  down Via Bure Vecchia Nord was tried and dropped: it is not the road they drive.
+- `art/`: scenery kit (`kit.json`, PNGs), `plan.json`, `raw/` (pixelated inputs of clean.mjs), `codex/` (prompts,
+  `REFERENCE.md` with the real road, `ref/` reference photos, `MESSAGGIO-CODEX.md`). 11 pictures are real (Codex, first
+  round, 3 of them recovered from the closed PR #3); `pistoia-apartment-1`, `lm-panorama` and `lm-mensa` are placeholders. `lm-ufp` is a stand-in drawn by
+  `game/sprites.js` from a description of the real building (`node tools/ufp-standin.mjs` writes it to art/raw, needs the
+  local server); a Codex picture imported later replaces it. Codex's first, invented warehouse (`extra-ufp`) is gone.
+- Real buildings: `art/buildings-custom.json` gives mapped buildings their own picture (matched by [s, side] within
+  6 m), adds ones the map lacks (`add`: the Panorama, 170 m of facade along the car park lane, a pattern of `pics`
+  repeated every `tile` metres) and fixes land (`land`: the car park is `lot`). `node tools/buildings.mjs` (run by
+  plan-art.sh) writes `data/buildings.json` (road.js loads it as `env.buildings`, layout.js applies it) and adds role
+  `custom` jobs to plan.json, never used by the generic kit. Placeholders are ignored, so a building keeps its generic
+  look until its picture is real. `node tools/standins.mjs` draws code stand-ins for the Panorama and UFP's second
+  warehouse into art/raw. main.js adds parked cars along the car park lane (solid).
+- Landmarks: `art/landmarks-custom.json` (Ex Mensa Sant'Agostino, UFP, placed from their OSM footprints)
+  is merged into `data/landmarks.json` by `node tools/landmarks.mjs` (plan-art.sh runs it; run it after any rebake).
+  A landmark with a real picture replaces the frontage at its real place (layout.js); placeholders are never shown.
+  OSM/OSRM give where buildings are and their size and type, never their look: faithful pictures need photos.
 - `assets/rox/face.png`: Rox's face, 53x70 RGBA cut-out from the owner's photo.
 - `tools/pixel-path/`: the Pixel Path skill (scripts + templates). `tools/codex-art.mjs`: free art via Codex/ChatGPT
   (`prompts`, `import`). `tools/plan-art.sh [moderate|detailed]`: the art plan with Pistoia subjects.
   `tools/test/`: headless tests (see its README).
 - `.github/workflows/pages.yml`: deploys index.html, game/, data/, assets/, art/*.png + kit.json on push to main.
+
+## Known gaps from the real road (see NEXT_SESSION.md, section B)
+
+- Traffic signals: layout.js puts one at every crossing in a built-up stretch (a Pixel Path rule, not map data).
+- The Panorama car park lane is drawn as a two-lane street with a centre line; OSRM's route wiggles through the aisles.
+- Roundabouts are driven through but their central island is not drawn.
 
 ## Conventions
 
@@ -39,18 +65,23 @@ Italian. Read `NEXT_SESSION.md` first: it has the state, the decisions taken wit
   `G.pos + CARZ`, front at `+3.4`. Rox pictures: 40 px per metre (`PPM`).
 - Careful when editing one-liners with comments: a `//` comment added mid-line swallows the code after it
   (it happened once). Use `/* */` or put code before the comment, and run
-  `node --input-type=module --check < game/main.js`.
+  `node --input-type=module --check < game/main.js`. The check does not catch it when the swallowed code is a whole
+  statement (it happened twice): load the page and look for `pageerror`.
 
 ## Checking a change
 
 1. `python3 -m http.server 8765 --bind 127.0.0.1` from the repo root.
 2. `node tools/test/ui.mjs /tmp/shots` and `node tools/test/drive.mjs investi|chase /tmp/shots ...`, then look at the
    screenshots with Read. Also try a phone size (`390 844 ... mobile` and `844 390 ... mobile`).
-3. Expected noise: one 404 for `art/extra-ufp.png` until the Codex warehouse exists; the AudioContext warning in
-   headless runs.
+3. Expected noise: the AudioContext warning in headless runs.
+4. After importing art, check `clean.mjs`'s output: `cut` / `boxed` pictures are dropped. `codex-art.mjs import` pads
+   each picture to the plan size with a margin; pictures imported before that fix were re-padded with
+   `import --src art/raw`.
 
 ## Network notes (cloud sessions)
 
 - Overpass: `overpass-api.de` and its lz4/z mirrors returned 503, kumi/private.coffee timed out; the mail.ru mirror
   worked: `bake.mjs --trip . --overpass https://maps.mail.ru/osm/tools/overpass/api/interpreter`.
-- Rebaking is only needed if the route changes (`route.mjs --out . --from ... --to ...`).
+- Rebaking is only needed if the route changes. After a rebake run `sh tools/plan-art.sh` (the kit's roles follow the
+  frontage) and diff the job names with the old plan: new names need new pictures
+  (`node tools/codex-art.mjs prompts --only a,b --out art/codex/PROMPTS-NUOVE.md`).

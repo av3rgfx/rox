@@ -1,7 +1,7 @@
 # ROX
 
 Un gioco di guida in pixel art su Rox, sulla strada vera dal **Panorama** (Via Bure Vecchia Nord, Pistoia) a
-**Utensilferramenta Pistoiese** (Via Luigi Salvatorelli): 2,2 km presi da OpenStreetMap, con edifici, campi, colline e
+**Utensilferramenta Pistoiese** (Via Luigi Salvatorelli): 2,2 km presi da OpenStreetMap, la strada che si fa davvero (fuori dal parcheggio del Panorama, Via Gherardini, Via Chirici, Via Fantacci, Via Bure Vecchia Nord, Via Fermi, Via Buzzati, Via Salvatorelli), con edifici, campi, colline e
 orizzonte reali. Si gioca da PC e da telefono.
 
 Stato del lavoro e cose da fare: [NEXT_SESSION.md](NEXT_SESSION.md). Note tecniche: [CLAUDE.md](CLAUDE.md).

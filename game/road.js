@@ -33,6 +33,7 @@ export async function createRoad(canvas, opts = {}) {
   let KITJ = { themes: [{ id: 'default', from: 0 }], pictures: {} };
   try { KITJ = await (await fetch('art/kit.json')).json(); } catch { console.warn('no art/kit.json: drawing without pictures'); }
   let LMS = []; try { LMS = await (await fetch('data/landmarks.json')).json(); } catch {}
+  let BLD = []; try { BLD = await (await fetch('data/buildings.json')).json(); } catch {}   // ROX: the real look of each mapped building
   for (const lm of LMS) { const a = KITJ.landmarks?.[lm.qid]; if (a && KITJ.pictures[a] && !KITJ.pictures[a].drop && !KITJ.pictures[a].placeholder) lm.art = a; }   // a landmark is its real picture or nothing (its brown sign still names it)
   const signed = LMS.filter(l => l.art || l.score >= 2).slice(0, Math.max(6, Math.round(LEN / 4000))); for (const l of LMS) l.signed = signed.includes(l);
   const KIT = makeKit(KITJ);
@@ -74,7 +75,7 @@ export async function createRoad(canvas, opts = {}) {
   }
 
   // ============================================================ STREAMING
-  const CHUNKS = new Map(), env = { idx: IDX, kit: KIT, landmarks: LMS };
+  const CHUNKS = new Map(), env = { idx: IDX, kit: KIT, landmarks: LMS, buildings: BLD };
   async function loadChunk(c) {
     if (c < 0 || c >= IDX.count || CHUNKS.has(c)) return; CHUNKS.set(c, { loading: true });
     try { const d = await (await fetch(`data/c${String(c).padStart(4, '0')}.json`)).json(); CHUNKS.set(c, buildChunk(d, env)); }

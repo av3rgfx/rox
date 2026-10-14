@@ -1,0 +1,23 @@
+# Foto di riferimento
+
+Le mappe (OpenStreetMap, OSRM) dicono **dove** sono gli edifici, quanto sono grandi e di che tipo, ma non **come
+sono fatti**: niente colori, insegne o facciate. Per un'immagine fedele serve una foto.
+
+Metti qui le foto, chiamate col nome dell'immagine da generare più `-1`, `-2`... (jpg, png o webp):
+
+| file | cosa fotografare |
+| --- | --- |
+| `lm-ufp-1.jpg` | **Utensilferramenta**, la facciata vista da Via Salvatorelli, il più possibile di fronte e intera |
+| `lm-ufp-2.jpg` | (facoltativa) un'altra foto dell'ingresso o dell'insegna |
+| `lm-mensa-1.jpg` | **Ex Mensa Sant'Agostino**, su Via Enrico Fermi, sulla destra |
+| `lm-panorama-1.jpg` | **il Panorama** (Le Tre Mura) visto dal parcheggio |
+| `strada-1.jpg`, `strada-2.jpg`... | (facoltative) foto della strada: servono a Codex per capire com'è la zona e correggere le immagini generiche |
+
+Consigli: di giorno, di fronte all'edificio, senza auto davanti se possibile. Non servono foto belle: servono foto
+chiare. Le foto restano solo nel repository (non finiscono sul sito del gioco).
+
+**Niente foto?** Va bene anche una descrizione a parole di chi conosce l'edificio (forma, piani, colori, insegne, porte):
+Claude la mette nel prompt in `tools/plan-art.sh`. Street View si può guardare per descrivere, ma le sue immagini non
+vanno usate come riferimento (i termini di Google lo vietano); Mapillary, che sarebbe libero, non copre questa zona.
+
+Dopo aver aggiunto le foto: `node tools/codex-art.mjs prompts` aggiorna `art/codex/PROMPTS.md` con i riferimenti.

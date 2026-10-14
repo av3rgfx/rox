@@ -76,7 +76,8 @@ export function pickFrom(pool, k, avoid) {
 }
 
 // ------------------------------------------------------------------ one chunk
-// env: { idx (index.json), kit (makeKit), landmarks (landmarks.json with .art filled in by the kit), signs (sign maker ids) }
+// env: { idx (index.json), kit (makeKit), landmarks (landmarks.json with .art filled in by the kit), signs (sign maker ids),
+//        buildings (ROX: data/buildings.json, the real look of each mapped building, see customFront below) }
 export function buildChunk(d, env) {
   const { idx, kit } = env, TOTAL = idx.total, DRIVE = idx.drive === 'left' ? -1 : 1, n = Math.round(d.len / SEG) + 1, segs = new Array(n), smp = d.samples, nm = i => (i >= 0 ? d.names[i] : null), step = d.step || 10;
   // 1. slices
@@ -98,6 +99,8 @@ export function buildChunk(d, env) {
   for (let k = 0; k < n; k++) { const q = segs[k], town = frontAt[k] || q.L === 'pave' || q.R === 'pave'; q.town = town; q.rw0 = CLASSW[q.cls][0]; q.sw0 = town ? Math.max(CLASSW[q.cls][1], q.cls === 'sv' ? 1.2 : 2) : Math.min(1.6, CLASSW[q.cls][1]); }
   for (let k = 0; k < n; k++) { let a = 0, b = 0, t = 0; for (let j = -8; j <= 8; j++) { const q = segs[clamp(k + j, 0, n - 1)]; a += q.rw0; b += q.sw0; t += q.town ? 1 : 0; } segs[k].rw = a / 17; segs[k].sw = b / 17; segs[k].walk = t > 8; }
   if (idx.dry) for (const q of segs) for (const sd of ['L', 'R']) if (q[sd] === 'farm' || q[sd] === 'grass') q[sd] = 'desert';
+  // ROX: land the map gets wrong, set by hand (data/buildings.json "land": the Panorama car park is asphalt and bays, not fields)
+  for (const b of env.buildings || []) if (b.land) for (const q of segs) if (q.s >= b.land.from && q.s < b.land.to) { if (b.land.L) q.L = b.land.L; if (b.land.R) q.R = b.land.R; }
 
   // crossings (a crosswalk and a gap in the street wall) and railway crossings
   const cross = (d.cross || []).map(([s, w, ni]) => ({ at: d.s0 + s, w, name: nm(ni) })).filter(c => c.name !== segAt(segs, d, c.at)?.road);
@@ -119,10 +122,20 @@ export function buildChunk(d, env) {
   const lookFor = (pic, s, sg, poolN) => poolN >= 8 ? { flip: false, tint: 0 } : { flip: hrnd(s, 91 + sg) < 0.5, tint: poolN >= 4 ? (hrnd(s, 93) < 0.6 ? 0 : 1 + (hash(Math.round(s), 95) % 3)) : hash(Math.round(s), 95) % 4 };
   const natural = (pic, h) => { const p = kit.info(pic); return p ? Math.max(5, h * p.w / p.h) : 12; };
   const heightFor = (pic, osmH, s) => { const p = kit.info(pic), base = p?.hm || ROLE_H[p?.role] || 9; if (osmH > 2) return clamp(osmH, base * 0.7, base * 1.7); return base * (0.9 + hrnd(s, 7) * 0.2); };
-  for (const [s, len, side, type, hgt, ni, depth] of d.fronts) {
+  // ROX: a mapped building with its own picture (data/buildings.json, written by tools/buildings.mjs): matched by where it
+  // stands (within 6 m along the road, same side), or added where the map has none (the Panorama). Its picture, or a
+  // pattern of pictures repeated module by module along its real length, replaces the kit's; never a placeholder.
+  const real = n2 => kit.info(n2) && !kit.info(n2).placeholder && !kit.info(n2).drop;
+  const customFront = (at, sg) => (env.buildings || []).find(b => (b.pics || [b.pic]).every(real) && (b.fronts || []).some(([fs, fsg]) => Math.abs(fs - at) <= 6 && fsg === sg));
+  const added = (env.buildings || []).filter(b => b.add && (b.pics || [b.pic]).every(real) && b.add.s >= d.s0 && b.add.s < d.s0 + d.len).map(b => [b.add.s - d.s0, b.add.len, b.add.side, 'custom', b.hgt, -1, 20, b]);
+  for (const [s, len, side, type, hgt, ni, depth, own] of [...d.fronts, ...added]) {
     const k0 = Math.max(0, Math.round(s / SEG)), k1 = Math.min(n - 1, Math.round((s + len) / SEG)); if (k1 <= k0 || segs[k0].bridge) continue;
     const sg = Math.sign(side) || 1, g0 = sg > 0 ? segs[k0].R : segs[k0].L; if (g0 === 'water') continue;
     let edge = 0; for (let k = k0; k <= k1; k++) edge = Math.max(edge, segs[k].rw + segs[k].sw + 0.4);
+    const custom = own || customFront(d.s0 + s, sg);
+    if (custom) { const pics = custom.pics || [custom.pic], at = d.s0 + s, look = i => ({ pic: pics[i % pics.length], role: 'custom', pool: null, flip: false, tint: 0 }), h = custom.hgt || 9;
+      const setback = Math.max(edge, Math.abs(side)), p0 = { at, len: len + 0.4, side: sg * setback, hgt: h, ...look(0), depth: depth || 0, name: nm(ni), type, real: true, custom: true };
+      planes.push(...splitFront(p0, 'row', look, () => h, () => custom.tile || len + 0.4)); continue; }
     const dense = denseAt(d.s0 + s) || g0 === 'pave', first = choose(type, hgt, d.s0 + s, sg, 1, dense); if (!first) continue;
     const h = heightFor(first.pic, hgt, d.s0 + s), role = kit.info(first.pic)?.role, name = nm(ni);
     // in a dense street a building sits at most 3 m behind the sidewalk: one mapped far back leaves a hole in the street wall
@@ -215,7 +228,7 @@ export function splitFront(p, mode, chooseNext, heightFor, natural) {
       const c = chooseNext(i); if (!c) break; cur = { ...p, ...c, hgt: heightFor(c.pic, 0, at), name: null }; }
     return out; }
   const nat = natural(p.pic, p.hgt), N = clamp(Math.round(p.len / nat), 1, 60), w = p.len / N;
-  let cur = p; for (let i = 0; i < N; i++) { if (i) { const c = chooseNext(i); if (c) cur = { ...p, ...c, name: null, hgt: p.hgt * (0.9 + hrnd((p.at + i * w) * 10, 7) * 0.2) }; }
+  let cur = p; for (let i = 0; i < N; i++) { if (i) { const c = chooseNext(i); if (c) cur = { ...p, ...c, name: null, hgt: p.custom ? p.hgt : p.hgt * (0.9 + hrnd((p.at + i * w) * 10, 7) * 0.2) }; }   // ROX: one real building keeps one height
     out.push({ ...cur, at: p.at + i * w, len: w + (i < N - 1 ? 0.05 : 0) }); }
   return out;
 }
