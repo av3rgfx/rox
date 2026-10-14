@@ -92,23 +92,6 @@
       "drop": false,
       "flags": []
     },
-    "pistoia-house-3": {
-      "file": "art/pistoia-house-3.png",
-      "role": "house",
-      "theme": "pistoia",
-      "kind": "facade",
-      "w": 148,
-      "h": 114,
-      "hm": 8,
-      "avg": [
-        134,
-        147,
-        157
-      ],
-      "placeholder": true,
-      "drop": false,
-      "flags": []
-    },
     "pistoia-industrial-1": {
       "file": "art/pistoia-industrial-1.png",
       "role": "industrial",
@@ -138,40 +121,6 @@
         146,
         148,
         152
-      ],
-      "placeholder": true,
-      "drop": false,
-      "flags": []
-    },
-    "pistoia-farm-1": {
-      "file": "art/pistoia-farm-1.png",
-      "role": "farm",
-      "theme": "pistoia",
-      "kind": "facade",
-      "w": 176,
-      "h": 120,
-      "hm": 8,
-      "avg": [
-        158,
-        57,
-        47
-      ],
-      "placeholder": true,
-      "drop": false,
-      "flags": []
-    },
-    "pistoia-tower-1": {
-      "file": "art/pistoia-tower-1.png",
-      "role": "tower",
-      "theme": "pistoia",
-      "kind": "facade",
-      "w": 116,
-      "h": 250,
-      "hm": 60,
-      "avg": [
-        105,
-        124,
-        144
       ],
       "placeholder": true,
       "drop": false,
@@ -245,27 +194,58 @@
       "drop": false,
       "flags": []
     },
-    "lm-Q3673382": {
-      "file": "art/lm-Q3673382.png",
-      "role": "landmark",
+    "pistoia-shop-4": {
+      "file": "art/pistoia-shop-4.png",
+      "role": "shop",
       "theme": "pistoia",
-      "kind": "landmark",
-      "w": 89,
-      "h": 230,
-      "hm": 35,
+      "kind": "facade",
+      "w": 160,
+      "h": 154,
+      "hm": 10,
       "avg": [
-        204,
-        196,
-        178
+        144,
+        112,
+        98
       ],
-      "label": "Chiesa di Santa Maria Assunta",
+      "placeholder": true,
+      "drop": false,
+      "flags": []
+    },
+    "pistoia-shop-5": {
+      "file": "art/pistoia-shop-5.png",
+      "role": "shop",
+      "theme": "pistoia",
+      "kind": "facade",
+      "w": 160,
+      "h": 154,
+      "hm": 10,
+      "avg": [
+        118,
+        95,
+        91
+      ],
+      "placeholder": true,
+      "drop": false,
+      "flags": []
+    },
+    "pistoia-shop-6": {
+      "file": "art/pistoia-shop-6.png",
+      "role": "shop",
+      "theme": "pistoia",
+      "kind": "facade",
+      "w": 160,
+      "h": 154,
+      "hm": 10,
+      "avg": [
+        159,
+        158,
+        135
+      ],
       "placeholder": true,
       "drop": false,
       "flags": []
     }
   },
-  "landmarks": {
-    "Q3673382": "lm-Q3673382"
-  },
+  "landmarks": {},
   "detail": "moderate"
 }

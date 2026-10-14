@@ -1,17 +1,17 @@
 [
   {
-    "name": "Chiesa di Santa Maria Assunta",
-    "qid": "Q3673382",
+    "name": "Sant'Agostino",
+    "qid": "Q55180567",
     "kind": "church",
-    "s": 196,
-    "side": 684,
+    "s": 624,
+    "side": 313,
     "h": 35,
     "w": 30,
     "tags": {
       "building": "church"
     },
-    "links": 2,
-    "desc": "church in Pistoia, Italy",
-    "score": 0.8
+    "links": 0,
+    "desc": "",
+    "score": 0.44
   }
 ]

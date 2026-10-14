@@ -1,13 +1,15 @@
 # Stato del progetto e prossima sessione
 
-Ultimo aggiornamento: 14 ottobre 2026 (prima sessione).
+Ultimo aggiornamento: 14 ottobre 2026 (fine della prima sessione).
 
 ## Cosa c'è già (funziona, testato in headless su PC e telefono)
 
-- Percorso reale Panorama (Via Bure Vecchia Nord 95, centro commerciale Le Tre Mura, 43.93831, 10.93926) →
-  Utensilferramenta Pistoiese (Via Luigi Salvatorelli 161, 43.93037, 10.94511): 2,2 km da OpenStreetMap.
+- Percorso reale, come su Google Maps: dal Panorama (si parte su Via Bure Vecchia Nord accanto al parcheggio,
+  43.938067, 10.940142) giù per Via Bure Vecchia Nord, Via Enrico Fermi, Via Dino Buzzati, fino a Utensilferramenta
+  Pistoiese (Via Luigi Salvatorelli 161, 43.930245, 10.944464): 1145 m da OpenStreetMap. La prima versione partiva
+  dentro il parcheggio e faceva un giro di 1 km in più (2,2 km): corretto su segnalazione del proprietario.
 - Due modalità complete:
-  - **INVESTI ROX**: partenza 13:58:15, timbratura entro le 14:00; Rox in 9 varianti (attraversa, saluta, telefona,
+  - **INVESTI ROX**: partenza 13:59:00, timbratura entro le 14:00 (un minuto); Rox in 9 varianti (attraversa, saluta, telefona,
     mangia finocchio, carrello del Panorama, Grizzly, dorme, d'oro); combo fino a x8; traffico (−5 s), Ape, caffè turbo;
     muro di 4 Rox prima del traguardo "TIMBRA QUI"; titoli finali da "Collega modello" a "Leggenda della Ferramenta".
   - **ROX CHASE**: Rox sul Grizzly seduto al contrario, 5 cuori, lancia finocchi e cartelli di pavimento bagnato,
@@ -46,12 +48,16 @@ Ultimo aggiornamento: 14 ottobre 2026 (prima sessione).
    Rox sul Grizzly come boss. Da progettare insieme (scena a sé dopo il traguardo, o terza modalità).
 5. **Classifica condivisa** tra colleghi (ora solo record locale): proposta Supabase (connesso alla sessione) con una
    tabella punteggi e nome del giocatore; valutare anche anti-cheat minimo.
-6. **Grafica dei palazzi**: quando arrivano le immagini da Codex/ChatGPT, `node tools/codex-art.mjs import`, poi
+6. **Grafica dei palazzi**: il proprietario ha generato con Codex le 16 immagini del primo piano, ma non sono ancora
+   nel repository. Col nuovo percorso il piano ha 14 immagini + il magazzino: ne servono 3 nuove (`pistoia-shop-4/5/6`,
+   prompt in `art/codex/PROMPTS-NUOVE.md`); `pistoia-house-3`, `pistoia-farm-1`, `pistoia-tower-1` e la chiesa
+   `lm-Q3673382` non servono più (la strada nuova non ha quei tipi di edificio). Quando arrivano le immagini da Codex/ChatGPT, `node tools/codex-art.mjs import`, poi
    `node tools/pixel-path/scripts/clean.mjs --trip .`, guardare `art/contact.png`, provare il gioco e correggere.
    Il magazzino UFP (`extra-ufp`) viene usato da solo se `art/extra-ufp.png` esiste.
-7. **Playtest con persone vere**: regolare la difficoltà. Valori attuali: Investi 105 s per 2,2 km (il bot arriva
-   in ~86 s senza incidenti); Chase velocità Rox 21–30 m/s contro 35 del giocatore, colpo valido entro 1,7 m di
-   lato (il bot vince in ~35 s).
+7. **Playtest con persone vere**: regolare la difficoltà. Valori attuali (percorso da 1,1 km): Investi 60 s, un Rox
+   ogni 24–46 m (il bot arriva in ~38 s senza incidenti, 28 Rox su 33); Chase: Rox parte 45 m avanti, velocità
+   13–26 m/s contro 35 del giocatore, 5 cuori, colpo valido entro 1,7 m di lato (il bot vince in ~25 s, a metà strada).
+   I record locali sono ripartiti da zero (chiave `rox-best-v2`).
 
 ## Come provarlo
 

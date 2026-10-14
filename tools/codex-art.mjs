@@ -2,6 +2,7 @@
 //
 //   node tools/codex-art.mjs prompts     writes art/codex/PROMPTS.md and art/codex/jobs.json from art/plan.json:
 //                                       one ready-to-paste prompt per picture, with the file name to save it as
+//     [--only a,b --out art/codex/PROMPTS-NUOVE.md]   just some pictures, in a file of their own
 //   node tools/codex-art.mjs import      reads every art/codex/in/<name>.png (any size, as the image model made it),
 //                                       turns it into real pixel art at the size the game needs and writes
 //                                       art/raw/<name>.png; then run Pixel Path's cleanup:
@@ -37,14 +38,16 @@ function codexPrompt(j) {
 }
 
 if (cmd === 'prompts') {
-  const jobs = [...plan.jobs, ...EXTRA].map(j => ({ name: j.name, file: `art/codex/in/${j.name}.png`, size: SHAPE(j.width, j.height).size, shape: SHAPE(j.width, j.height).word, target: [j.width, j.height], prompt: codexPrompt(j) }));
-  mkdirSync(join(CODEX, 'in'), { recursive: true }); writeJSON(join(CODEX, 'jobs.json'), jobs, true);
-  const md = [`# Immagini per ROX (${jobs.length})`, '',
+  const only = A.only ? new Set(A.only.split(',')) : null, all = [...plan.jobs, ...EXTRA].filter(j => !only || only.has(j.name));
+  const jobs = all.map(j => ({ name: j.name, file: `art/codex/in/${j.name}.png`, size: SHAPE(j.width, j.height).size, shape: SHAPE(j.width, j.height).word, target: [j.width, j.height], prompt: codexPrompt(j) }));
+  mkdirSync(join(CODEX, 'in'), { recursive: true }); if (!only) writeJSON(join(CODEX, 'jobs.json'), jobs, true);
+  const md = [`# ${only ? 'Immagini nuove' : 'Immagini'} per ROX (${jobs.length})`, '',
+    ...(only ? ['Solo le immagini nuove: quelle già fatte con gli altri nomi restano valide.', ''] : []),
     'Ogni immagine: genera con il prompt qui sotto, nel formato indicato, e salvala **esattamente** con il nome indicato in `art/codex/in/`.',
     'Poi: `node tools/codex-art.mjs import` e `node tools/pixel-path/scripts/clean.mjs --trip .` (vedi README).', '',
     ...jobs.flatMap((j, i) => [`## ${i + 1}. ${j.name}`, '', `- Salva come: \`${j.file}\``, `- Formato: ${j.size} (${j.shape})`, '', '```', j.prompt, '```', ''])].join('\n');
-  writeFileSync(join(CODEX, 'PROMPTS.md'), md);
-  console.log(`art/codex/PROMPTS.md: ${jobs.length} prompts (${plan.jobs.length} scenery from the plan + ${EXTRA.length} extra)`);
+  const out = A.out ? join(ROOT, A.out) : join(CODEX, 'PROMPTS.md'); writeFileSync(out, md);
+  console.log(`${out.slice(ROOT.length + 1)}: ${jobs.length} prompts${only ? '' : ` (${plan.jobs.length} scenery from the plan + ${EXTRA.length} extra)`}`);
 }
 else if (cmd === 'import') {
   const only = A.only ? new Set(A.only.split(',')) : null, IN = join(CODEX, 'in'), jobs = [...plan.jobs, ...EXTRA];

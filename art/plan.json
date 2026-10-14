@@ -7,9 +7,7 @@
       "name": "the outskirts of Pistoia, Tuscany, Italy: ochre and cream plastered villas with terracotta tiled roofs and green wooden shutters, 1970s condominiums, industrial sheds and plant nurseries"
     }
   ],
-  "landmarks": {
-    "Q3673382": "lm-Q3673382"
-  },
+  "landmarks": {},
   "jobs": [
     {
       "name": "pistoia-shop-1",
@@ -54,46 +52,46 @@
       "prompt": "the full front elevation of a modern Italian retail park building with grey cladding, a big glass entrance and a large blank orange sign band, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos, pixel art game asset, isolated on a plain white background, no ground, no shadow, 16-bit style, afternoon light, the whole subject inside the picture with a margin on every side, nothing cut off"
     },
     {
-      "name": "pistoia-house-1",
+      "name": "pistoia-shop-4",
       "style": "rd_pro__default",
       "remove_bg": true,
-      "seed": 52438213,
+      "seed": 28819610,
       "palette": "/home/user/rox/tools/pixel-path/templates/palette.png",
-      "role": "house",
+      "role": "shop",
       "theme": "pistoia",
       "kind": "facade",
       "width": 160,
-      "height": 128,
-      "hm": 8,
-      "prompt": "the full front elevation of a two-storey Tuscan villa with ochre plaster, a terracotta tiled hip roof, green wooden shutters and a small balcony, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos, pixel art game asset, isolated on a plain white background, no ground, no shadow, 16-bit style, afternoon light, the whole subject inside the picture with a margin on every side, nothing cut off"
+      "height": 160,
+      "hm": 10,
+      "prompt": "the full front elevation of an Italian car dealer showroom with big windows and an invented name sign, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos, pixel art game asset, isolated on a plain white background, no ground, no shadow, 16-bit style, afternoon light, the whole subject inside the picture with a margin on every side, nothing cut off"
     },
     {
-      "name": "pistoia-house-2",
+      "name": "pistoia-shop-5",
       "style": "rd_pro__default",
       "remove_bg": true,
-      "seed": 187858815,
+      "seed": 95790124,
       "palette": "/home/user/rox/tools/pixel-path/templates/palette.png",
-      "role": "house",
+      "role": "shop",
       "theme": "pistoia",
       "kind": "facade",
       "width": 160,
-      "height": 128,
-      "hm": 8,
-      "prompt": "the full front elevation of a two-storey cream plastered Italian family house from the 1970s with a terracotta roof, brown roller shutters and a front gate, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos, pixel art game asset, isolated on a plain white background, no ground, no shadow, 16-bit style, afternoon light, the whole subject inside the picture with a margin on every side, nothing cut off"
+      "height": 160,
+      "hm": 10,
+      "prompt": "the full front elevation of a two-storey Italian commercial building with a pizzeria and a hairdresser at street level, red and white awnings, invented names, offices above, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos, pixel art game asset, isolated on a plain white background, no ground, no shadow, 16-bit style, afternoon light, the whole subject inside the picture with a margin on every side, nothing cut off"
     },
     {
-      "name": "pistoia-house-3",
+      "name": "pistoia-shop-6",
       "style": "rd_pro__default",
       "remove_bg": true,
-      "seed": 182766585,
+      "seed": 61352686,
       "palette": "/home/user/rox/tools/pixel-path/templates/palette.png",
-      "role": "house",
+      "role": "shop",
       "theme": "pistoia",
       "kind": "facade",
       "width": 160,
-      "height": 128,
-      "hm": 8,
-      "prompt": "the full front elevation of a small pale pink Italian villa with a terracotta roof, white window frames, green shutters and a hedge-free front, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos, pixel art game asset, isolated on a plain white background, no ground, no shadow, 16-bit style, afternoon light, the whole subject inside the picture with a margin on every side, nothing cut off"
+      "height": 160,
+      "hm": 10,
+      "prompt": "the full front elevation of a low modern Italian commercial unit with dark grey metal cladding, a glass door and a big yellow blank sign band, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos, pixel art game asset, isolated on a plain white background, no ground, no shadow, 16-bit style, afternoon light, the whole subject inside the picture with a margin on every side, nothing cut off"
     },
     {
       "name": "pistoia-industrial-1",
@@ -124,32 +122,32 @@
       "prompt": "the full front elevation of a long Italian workshop shed with corrugated metal walls painted light blue, a sliding door and an invented company name sign, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos, pixel art game asset, isolated on a plain white background, no ground, no shadow, 16-bit style, afternoon light, the whole subject inside the picture with a margin on every side, nothing cut off"
     },
     {
-      "name": "pistoia-farm-1",
+      "name": "pistoia-house-1",
       "style": "rd_pro__default",
       "remove_bg": true,
-      "seed": 249085035,
+      "seed": 52438213,
       "palette": "/home/user/rox/tools/pixel-path/templates/palette.png",
-      "role": "farm",
+      "role": "house",
       "theme": "pistoia",
       "kind": "facade",
-      "width": 192,
+      "width": 160,
       "height": 128,
       "hm": 8,
-      "prompt": "the full front elevation of an old Tuscan stone farmhouse (casa colonica) with a terracotta roof, a small dovecote tower and an outside staircase, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos, pixel art game asset, isolated on a plain white background, no ground, no shadow, 16-bit style, afternoon light, the whole subject inside the picture with a margin on every side, nothing cut off"
+      "prompt": "the full front elevation of a two-storey Tuscan villa with ochre plaster, a terracotta tiled hip roof, green wooden shutters and a small balcony, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos, pixel art game asset, isolated on a plain white background, no ground, no shadow, 16-bit style, afternoon light, the whole subject inside the picture with a margin on every side, nothing cut off"
     },
     {
-      "name": "pistoia-tower-1",
+      "name": "pistoia-house-2",
       "style": "rd_pro__default",
       "remove_bg": true,
-      "seed": 250545104,
+      "seed": 187858815,
       "palette": "/home/user/rox/tools/pixel-path/templates/palette.png",
-      "role": "tower",
+      "role": "house",
       "theme": "pistoia",
       "kind": "facade",
-      "width": 128,
-      "height": 256,
-      "hm": 60,
-      "prompt": "the full front elevation of a tall twelve storey Italian residential tower block from the 1970s with beige plaster, rows of balconies and brown roller shutters, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos, pixel art game asset, isolated on a plain white background, no ground, no shadow, 16-bit style, afternoon light, the whole subject inside the picture with a margin on every side, nothing cut off"
+      "width": 160,
+      "height": 128,
+      "hm": 8,
+      "prompt": "the full front elevation of a two-storey cream plastered Italian family house from the 1970s with a terracotta roof, brown roller shutters and a front gate, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos, pixel art game asset, isolated on a plain white background, no ground, no shadow, 16-bit style, afternoon light, the whole subject inside the picture with a margin on every side, nothing cut off"
     },
     {
       "name": "pistoia-tree-1",
@@ -206,22 +204,6 @@
       "height": 96,
       "hm": 1.4,
       "prompt": "an Italian green rubbish bin for recycling on wheels, pixel art game asset, isolated on a plain white background, no ground, no shadow, 16-bit style, afternoon light, the whole subject inside the picture with a margin on every side, nothing cut off"
-    },
-    {
-      "name": "lm-Q3673382",
-      "style": "rd_pro__default",
-      "remove_bg": true,
-      "seed": 44595389,
-      "palette": "/home/user/rox/tools/pixel-path/templates/palette.png",
-      "role": "landmark",
-      "theme": "pistoia",
-      "kind": "landmark",
-      "width": 128,
-      "height": 256,
-      "hm": 35,
-      "qid": "Q3673382",
-      "label": "Chiesa di Santa Maria Assunta",
-      "prompt": "a Tuscan Romanesque country church with a plain stone facade, a terracotta roof and a square brick bell tower, as seen from the street, its full recognisable shape, seen straight on, pixel art game asset, isolated on a plain white background, no ground, no shadow, 16-bit style, afternoon light, the whole subject inside the picture with a margin on every side, nothing cut off"
     }
   ]
 }

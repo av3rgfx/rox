@@ -22,7 +22,11 @@ Italian. Read `NEXT_SESSION.md` first: it has the state, the decisions taken wit
   `opts.horizon`, `opts.steer` + `setCamX()`, and `render(s, speed, things)` where a thing is
   `{z, lat, img, hm, wm?, lift?, rot?, alpha?}` drawn in painter's order; `thing.screen` gets the drawn box.
   Keep the originals in `tools/pixel-path/templates/` untouched for diffing.
-- `data/`: the baked route (2246 m). `route.json` at the root is the routing input (the repo root is Pixel Path's TRIP).
+- `data/`: the baked route (1145 m: Via Bure Vecchia Nord from beside the Panorama, Via Enrico Fermi, Via Dino Buzzati,
+  Via Salvatorelli). `route.json` at the root is the routing input (the repo root is Pixel Path's TRIP).
+  Do not route from inside the Panorama car park: OSRM leaves it the wrong way and adds a 1 km loop (the first bake
+  did, 2246 m). Start on Via Bure Vecchia Nord: `route.mjs --out . --from "43.938067,10.940142" --to "43.930245,10.944464"`,
+  then set the `from`/`to` names in route.json before baking. The end point is Google Maps' pin for UFP.
 - `art/`: scenery kit (`kit.json`, PNGs), `plan.json`, `codex/PROMPTS.md` + `jobs.json`. Placeholders until real art.
 - `assets/rox/face.png`: Rox's face, 53x70 RGBA cut-out from the owner's photo.
 - `tools/pixel-path/`: the Pixel Path skill (scripts + templates). `tools/codex-art.mjs`: free art via Codex/ChatGPT
@@ -39,7 +43,8 @@ Italian. Read `NEXT_SESSION.md` first: it has the state, the decisions taken wit
   `G.pos + CARZ`, front at `+3.4`. Rox pictures: 40 px per metre (`PPM`).
 - Careful when editing one-liners with comments: a `//` comment added mid-line swallows the code after it
   (it happened once). Use `/* */` or put code before the comment, and run
-  `node --input-type=module --check < game/main.js`.
+  `node --input-type=module --check < game/main.js`. The check does not catch it when the swallowed code is a whole
+  statement (it happened twice): load the page and look for `pageerror`.
 
 ## Checking a change
 
@@ -53,4 +58,6 @@ Italian. Read `NEXT_SESSION.md` first: it has the state, the decisions taken wit
 
 - Overpass: `overpass-api.de` and its lz4/z mirrors returned 503, kumi/private.coffee timed out; the mail.ru mirror
   worked: `bake.mjs --trip . --overpass https://maps.mail.ru/osm/tools/overpass/api/interpreter`.
-- Rebaking is only needed if the route changes (`route.mjs --out . --from ... --to ...`).
+- Rebaking is only needed if the route changes. After a rebake run `sh tools/plan-art.sh` (the kit's roles follow the
+  frontage) and diff the job names with the old plan: new names need new pictures
+  (`node tools/codex-art.mjs prompts --only a,b --out art/codex/PROMPTS-NUOVE.md`).

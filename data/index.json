@@ -1,18 +1,18 @@
 {
-  "title": "Via Bure Vecchia Nord 95, Pistoia, Italy to Via Luigi Salvatorelli 161, Pistoia, Italy",
-  "from": "Via Bure Vecchia Nord 95, Pistoia, Italy",
-  "to": "Via Luigi Salvatorelli 161, Pistoia, Italy",
+  "title": "Panorama, Via Bure Vecchia Nord, Pistoia to Utensilferramenta Pistoiese, Via Luigi Salvatorelli 161, Pistoia",
+  "from": "Panorama, Via Bure Vecchia Nord, Pistoia",
+  "to": "Utensilferramenta Pistoiese, Via Luigi Salvatorelli 161, Pistoia",
   "stops": [
     {
-      "name": "Via Bure Vecchia Nord 95, Pistoia, Italy",
+      "name": "Panorama, Via Bure Vecchia Nord, Pistoia",
       "at": 0
     },
     {
-      "name": "Via Luigi Salvatorelli 161, Pistoia, Italy",
-      "at": 2246
+      "name": "Utensilferramenta Pistoiese, Via Luigi Salvatorelli 161, Pistoia",
+      "at": 1145
     }
   ],
-  "total": 2246,
+  "total": 1145,
   "chunk": 10000,
   "step": 10,
   "count": 1,
@@ -22,120 +22,91 @@
   "centre": "white",
   "dry": false,
   "line": [
-    1093957,
-    4393829,
-    -29,
-    59,
-    -115,
-    -2,
-    43,
-    -2,
-    6,
-    28,
-    -129,
-    14,
-    -7,
-    137,
-    -53,
-    21,
-    -50,
-    -322,
-    271,
-    -30,
-    90,
+    1094013,
+    4393807,
+    -15,
     -63,
+    -78,
+    -42,
+    64,
+    -33,
     53,
     -140,
     134,
     -115,
-    57,
-    -285,
-    176,
-    -31,
-    0,
-    -57,
-    107,
-    -4
+    56,
+    -284,
+    177,
+    -32,
+    -10,
+    -50,
+    54,
+    -9
   ],
   "places": [
     [
-      1162,
-      "Pistoia",
-      3
+      672,
+      "Sant'Agostino",
+      0.5
     ]
   ],
   "chunks": [
     {
       "c": 0,
       "s0": 0,
-      "km": 2.2,
+      "km": 1.1,
       "land": {
-        "farm": 34,
-        "lawn": 9,
-        "grass": 19,
-        "lot": 12,
-        "pave": 25
+        "lawn": 19,
+        "pave": 41,
+        "grass": 8,
+        "farm": 25,
+        "lot": 7
       },
       "types": {
-        "shed": 78,
-        "yes": 818,
-        "residential": 54,
+        "commercial": 166,
+        "residential": 16,
+        "yes": 720,
+        "church": 12,
+        "shed": 16,
         "industrial": 314
       },
-      "built": 0.28,
-      "maxH": 44,
-      "cross": 20,
+      "built": 0.54,
+      "maxH": 14,
+      "cross": 13,
       "places": [
-        "Pistoia",
-        "Candeglia",
-        "Nespolo",
-        "Le Fornaci",
-        "Casermette",
-        "La Vergine"
+        "Lo Sperone",
+        "Nespolo"
       ],
       "perKm": [
         {
           "s0": 0,
           "land": {
-            "farm": 43,
-            "lawn": 10,
-            "grass": 36,
-            "lot": 4,
-            "pave": 8
+            "lawn": 22,
+            "pave": 34,
+            "grass": 10,
+            "farm": 28,
+            "lot": 7
           },
           "types": {
-            "shed": 44,
-            "yes": 72,
-            "residential": 54
-          },
-          "maxH": 44
-        },
-        {
-          "s0": 1000,
-          "land": {
-            "grass": 8,
-            "farm": 35,
-            "lot": 20,
-            "lawn": 11,
-            "pave": 28
-          },
-          "types": {
-            "shed": 34,
-            "yes": 496,
+            "commercial": 166,
+            "residential": 16,
+            "yes": 666,
+            "church": 12,
+            "shed": 16,
             "industrial": 314
           },
           "maxH": 14
         },
         {
-          "s0": 2000,
+          "s0": 1000,
           "land": {
-            "lot": 16,
-            "pave": 84
+            "lot": 10,
+            "pave": 90
           },
           "types": {
-            "yes": 250
+            "yes": 54
           },
-          "maxH": 3
+          "maxH": 0
         }
       ]
     }

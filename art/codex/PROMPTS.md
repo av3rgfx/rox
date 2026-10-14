@@ -1,4 +1,4 @@
-# Immagini per ROX (16)
+# Immagini per ROX (15)
 
 Ogni immagine: genera con il prompt qui sotto, nel formato indicato, e salvala **esattamente** con il nome indicato in `art/codex/in/`.
 Poi: `node tools/codex-art.mjs import` e `node tools/pixel-path/scripts/clean.mjs --trip .` (vedi README).
@@ -30,31 +30,31 @@ The full front elevation of a two-storey Italian building with a bar caffe at st
 The full front elevation of a modern Italian retail park building with grey cladding, a big glass entrance and a large blank orange sign band, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos. Orthographic, perfectly straight-on front view: no perspective, no side walls visible, the building's base is a straight horizontal line. True 16-bit pixel art game asset: big clearly visible square pixels, crisp hard edges, no anti-aliasing, no blur, no gradients, a limited palette of flat colours, soft afternoon light from the left. Isolated on a plain pure white (#FFFFFF) background, no ground, no shadow on the ground, no sky, no scenery, no frame, no text except what is asked. The whole subject is inside the picture with a white margin on every side, nothing cut off.
 ```
 
-## 4. pistoia-house-1
+## 4. pistoia-shop-4
 
-- Salva come: `art/codex/in/pistoia-house-1.png`
-- Formato: 1536x1024 (landscape)
-
-```
-The full front elevation of a two-storey Tuscan villa with ochre plaster, a terracotta tiled hip roof, green wooden shutters and a small balcony, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos. Orthographic, perfectly straight-on front view: no perspective, no side walls visible, the building's base is a straight horizontal line. True 16-bit pixel art game asset: big clearly visible square pixels, crisp hard edges, no anti-aliasing, no blur, no gradients, a limited palette of flat colours, soft afternoon light from the left. Isolated on a plain pure white (#FFFFFF) background, no ground, no shadow on the ground, no sky, no scenery, no frame, no text except what is asked. The whole subject is inside the picture with a white margin on every side, nothing cut off.
-```
-
-## 5. pistoia-house-2
-
-- Salva come: `art/codex/in/pistoia-house-2.png`
-- Formato: 1536x1024 (landscape)
+- Salva come: `art/codex/in/pistoia-shop-4.png`
+- Formato: 1024x1024 (square)
 
 ```
-The full front elevation of a two-storey cream plastered Italian family house from the 1970s with a terracotta roof, brown roller shutters and a front gate, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos. Orthographic, perfectly straight-on front view: no perspective, no side walls visible, the building's base is a straight horizontal line. True 16-bit pixel art game asset: big clearly visible square pixels, crisp hard edges, no anti-aliasing, no blur, no gradients, a limited palette of flat colours, soft afternoon light from the left. Isolated on a plain pure white (#FFFFFF) background, no ground, no shadow on the ground, no sky, no scenery, no frame, no text except what is asked. The whole subject is inside the picture with a white margin on every side, nothing cut off.
+The full front elevation of an Italian car dealer showroom with big windows and an invented name sign, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos. Orthographic, perfectly straight-on front view: no perspective, no side walls visible, the building's base is a straight horizontal line. True 16-bit pixel art game asset: big clearly visible square pixels, crisp hard edges, no anti-aliasing, no blur, no gradients, a limited palette of flat colours, soft afternoon light from the left. Isolated on a plain pure white (#FFFFFF) background, no ground, no shadow on the ground, no sky, no scenery, no frame, no text except what is asked. The whole subject is inside the picture with a white margin on every side, nothing cut off.
 ```
 
-## 6. pistoia-house-3
+## 5. pistoia-shop-5
 
-- Salva come: `art/codex/in/pistoia-house-3.png`
-- Formato: 1536x1024 (landscape)
+- Salva come: `art/codex/in/pistoia-shop-5.png`
+- Formato: 1024x1024 (square)
 
 ```
-The full front elevation of a small pale pink Italian villa with a terracotta roof, white window frames, green shutters and a hedge-free front, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos. Orthographic, perfectly straight-on front view: no perspective, no side walls visible, the building's base is a straight horizontal line. True 16-bit pixel art game asset: big clearly visible square pixels, crisp hard edges, no anti-aliasing, no blur, no gradients, a limited palette of flat colours, soft afternoon light from the left. Isolated on a plain pure white (#FFFFFF) background, no ground, no shadow on the ground, no sky, no scenery, no frame, no text except what is asked. The whole subject is inside the picture with a white margin on every side, nothing cut off.
+The full front elevation of a two-storey Italian commercial building with a pizzeria and a hairdresser at street level, red and white awnings, invented names, offices above, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos. Orthographic, perfectly straight-on front view: no perspective, no side walls visible, the building's base is a straight horizontal line. True 16-bit pixel art game asset: big clearly visible square pixels, crisp hard edges, no anti-aliasing, no blur, no gradients, a limited palette of flat colours, soft afternoon light from the left. Isolated on a plain pure white (#FFFFFF) background, no ground, no shadow on the ground, no sky, no scenery, no frame, no text except what is asked. The whole subject is inside the picture with a white margin on every side, nothing cut off.
+```
+
+## 6. pistoia-shop-6
+
+- Salva come: `art/codex/in/pistoia-shop-6.png`
+- Formato: 1024x1024 (square)
+
+```
+The full front elevation of a low modern Italian commercial unit with dark grey metal cladding, a glass door and a big yellow blank sign band, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos. Orthographic, perfectly straight-on front view: no perspective, no side walls visible, the building's base is a straight horizontal line. True 16-bit pixel art game asset: big clearly visible square pixels, crisp hard edges, no anti-aliasing, no blur, no gradients, a limited palette of flat colours, soft afternoon light from the left. Isolated on a plain pure white (#FFFFFF) background, no ground, no shadow on the ground, no sky, no scenery, no frame, no text except what is asked. The whole subject is inside the picture with a white margin on every side, nothing cut off.
 ```
 
 ## 7. pistoia-industrial-1
@@ -75,22 +75,22 @@ The full front elevation of a big grey prefabricated concrete industrial warehou
 The full front elevation of a long Italian workshop shed with corrugated metal walls painted light blue, a sliding door and an invented company name sign, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos. Orthographic, perfectly straight-on front view: no perspective, no side walls visible, the building's base is a straight horizontal line. True 16-bit pixel art game asset: big clearly visible square pixels, crisp hard edges, no anti-aliasing, no blur, no gradients, a limited palette of flat colours, soft afternoon light from the left. Isolated on a plain pure white (#FFFFFF) background, no ground, no shadow on the ground, no sky, no scenery, no frame, no text except what is asked. The whole subject is inside the picture with a white margin on every side, nothing cut off.
 ```
 
-## 9. pistoia-farm-1
+## 9. pistoia-house-1
 
-- Salva come: `art/codex/in/pistoia-farm-1.png`
+- Salva come: `art/codex/in/pistoia-house-1.png`
 - Formato: 1536x1024 (landscape)
 
 ```
-The full front elevation of an old Tuscan stone farmhouse (casa colonica) with a terracotta roof, a small dovecote tower and an outside staircase, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos. Orthographic, perfectly straight-on front view: no perspective, no side walls visible, the building's base is a straight horizontal line. True 16-bit pixel art game asset: big clearly visible square pixels, crisp hard edges, no anti-aliasing, no blur, no gradients, a limited palette of flat colours, soft afternoon light from the left. Isolated on a plain pure white (#FFFFFF) background, no ground, no shadow on the ground, no sky, no scenery, no frame, no text except what is asked. The whole subject is inside the picture with a white margin on every side, nothing cut off.
+The full front elevation of a two-storey Tuscan villa with ochre plaster, a terracotta tiled hip roof, green wooden shutters and a small balcony, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos. Orthographic, perfectly straight-on front view: no perspective, no side walls visible, the building's base is a straight horizontal line. True 16-bit pixel art game asset: big clearly visible square pixels, crisp hard edges, no anti-aliasing, no blur, no gradients, a limited palette of flat colours, soft afternoon light from the left. Isolated on a plain pure white (#FFFFFF) background, no ground, no shadow on the ground, no sky, no scenery, no frame, no text except what is asked. The whole subject is inside the picture with a white margin on every side, nothing cut off.
 ```
 
-## 10. pistoia-tower-1
+## 10. pistoia-house-2
 
-- Salva come: `art/codex/in/pistoia-tower-1.png`
-- Formato: 1024x1536 (portrait)
+- Salva come: `art/codex/in/pistoia-house-2.png`
+- Formato: 1536x1024 (landscape)
 
 ```
-The full front elevation of a tall twelve storey Italian residential tower block from the 1970s with beige plaster, rows of balconies and brown roller shutters, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos. Orthographic, perfectly straight-on front view: no perspective, no side walls visible, the building's base is a straight horizontal line. True 16-bit pixel art game asset: big clearly visible square pixels, crisp hard edges, no anti-aliasing, no blur, no gradients, a limited palette of flat colours, soft afternoon light from the left. Isolated on a plain pure white (#FFFFFF) background, no ground, no shadow on the ground, no sky, no scenery, no frame, no text except what is asked. The whole subject is inside the picture with a white margin on every side, nothing cut off.
+The full front elevation of a two-storey cream plastered Italian family house from the 1970s with a terracotta roof, brown roller shutters and a front gate, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos. Orthographic, perfectly straight-on front view: no perspective, no side walls visible, the building's base is a straight horizontal line. True 16-bit pixel art game asset: big clearly visible square pixels, crisp hard edges, no anti-aliasing, no blur, no gradients, a limited palette of flat colours, soft afternoon light from the left. Isolated on a plain pure white (#FFFFFF) background, no ground, no shadow on the ground, no sky, no scenery, no frame, no text except what is asked. The whole subject is inside the picture with a white margin on every side, nothing cut off.
 ```
 
 ## 11. pistoia-tree-1
@@ -129,16 +129,7 @@ A round potted shrub from a Pistoia plant nursery, in a black plastic pot. True 
 An Italian green rubbish bin for recycling on wheels. True 16-bit pixel art game asset: big clearly visible square pixels, crisp hard edges, no anti-aliasing, no blur, no gradients, a limited palette of flat colours, soft afternoon light from the left. Isolated on a plain pure white (#FFFFFF) background, no ground, no shadow on the ground, no sky, no scenery, no frame, no text except what is asked. The whole subject is inside the picture with a white margin on every side, nothing cut off.
 ```
 
-## 15. lm-Q3673382
-
-- Salva come: `art/codex/in/lm-Q3673382.png`
-- Formato: 1024x1536 (portrait)
-
-```
-A Tuscan Romanesque country church with a plain stone facade, a terracotta roof and a square brick bell tower, as seen from the street, its full recognisable shape, seen straight on. Orthographic, perfectly straight-on front view: no perspective, no side walls visible, the building's base is a straight horizontal line. True 16-bit pixel art game asset: big clearly visible square pixels, crisp hard edges, no anti-aliasing, no blur, no gradients, a limited palette of flat colours, soft afternoon light from the left. Isolated on a plain pure white (#FFFFFF) background, no ground, no shadow on the ground, no sky, no scenery, no frame, no text except what is asked. The whole subject is inside the picture with a white margin on every side, nothing cut off.
-```
-
-## 16. extra-ufp
+## 15. extra-ufp
 
 - Salva come: `art/codex/in/extra-ufp.png`
 - Formato: 1536x1024 (landscape)

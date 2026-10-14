@@ -62,7 +62,7 @@ const TXT = new Map(), txt = (t, c, k) => { const key = t + c + k; if (!TXT.has(
 $('title-face').src = 'assets/rox/face.png';
 
 await makeRoad();
-const LEN = road.LEN, FINISH = LEN - 55;   // the clock-in banner; the warehouse stands just after it
+const LEN = road.LEN, FINISH = LEN - 55, BOSS_HP = 5;   // the clock-in banner; the warehouse stands just after it
 
 // ------------------------------------------------------------ input
 const keys = { left: false, right: false, gas: false, brake: false };
@@ -88,10 +88,10 @@ const G = { mode: 'attract', phase: 'menu', live: false };
 function reset(mode) {
   const q = road.roadAt(0);
   Object.assign(G, { mode, live: mode !== 'attract', pos: 0, speed: 0, lat: q.rw / 2, camX: q.rw / 2, t: 0, score: 0, combo: 0, comboT: 0, maxCombo: 0, hits: 0, roxes: 0, missed: 0,
-    clock: 13 * 3600 + 58 * 60 + 15, deadline: 14 * 3600, crashes: 0, ents: [], parts: [], floats: [], shake: 0, invT: 0, slipT: 0, boostT: 0, hornT: 0, finished: false, endT: 0, result: null,
-    nextRox: 70, nextTraffic: 160, nextCoffee: 380, wall: false, braking: false, sayT: 0 });
+    clock: 13 * 3600 + 59 * 60, deadline: 14 * 3600, crashes: 0, ents: [], parts: [], floats: [], shake: 0, invT: 0, slipT: 0, boostT: 0, hornT: 0, finished: false, endT: 0, result: null,
+    nextRox: 45, nextTraffic: 110, nextCoffee: 280, wall: false, braking: false, sayT: 0 });
   G.ents.push({ kind: 'finish', s: FINISH, lat: 0 }, { kind: 'ufp', s: LEN - 8, lat: 0 });
-  if (mode === 'chase') G.ents.push(G.boss = { kind: 'boss', s: 75, lat: q.rw / 2, vs: 0, hp: 5, flee: 0, inv: 0, dodgeCool: 0, turbo: 0, turboCool: 0, tgtLat: q.rw / 2, tgtT: 2, dropT: 3, sayT: 1.5, said: null, saidT: 0, lift: 0, vz: 0, rot: 0 });
+  if (mode === 'chase') G.ents.push(G.boss = { kind: 'boss', s: 45, lat: q.rw / 2, vs: 0, hp: BOSS_HP, flee: 0, inv: 0, dodgeCool: 0, turbo: 0, turboCool: 0, tgtLat: q.rw / 2, tgtT: 2, dropT: 3, sayT: 1.5, said: null, saidT: 0, lift: 0, vz: 0, rot: 0 });
   else G.boss = null;
 }
 const carFront = () => G.pos + CARZ + 3.4;
@@ -118,11 +118,11 @@ function spawnTraffic(s) {
 function spawns() {
   const ahead = G.pos + 190;
   if (G.mode !== 'chase') {
-    while (G.nextRox < ahead && G.nextRox < FINISH - 90) { spawnRox(G.nextRox); G.nextRox += rnd(34, 70); }
+    while (G.nextRox < ahead && G.nextRox < FINISH - 90) { spawnRox(G.nextRox); G.nextRox += rnd(24, 46); }
     if (!G.wall && ahead > FINISH - 30) { G.wall = true; const q = road.roadAt(FINISH - 25); ['wave', 'eat', 'phone', 'wave'].forEach((t, i) => { const e = spawnRox(FINISH - 25 - (i % 2) * 3, t); e.lat = (-1.5 + i) * q.rw / 2.2; e.cross = 0; }); }
   }
-  while (G.nextTraffic < ahead && G.nextTraffic < LEN - 120) { spawnTraffic(G.nextTraffic); G.nextTraffic += G.mode === 'chase' ? rnd(220, 380) : rnd(130, 240); }
-  while (G.nextCoffee < ahead && G.nextCoffee < LEN - 200) { const q = road.roadAt(G.nextCoffee); G.ents.push({ kind: 'coffee', s: G.nextCoffee, lat: rnd(-q.rw + 1, q.rw - 1) }); G.nextCoffee += rnd(330, 460); }
+  while (G.nextTraffic < ahead && G.nextTraffic < LEN - 120) { spawnTraffic(G.nextTraffic); G.nextTraffic += G.mode === 'chase' ? rnd(200, 320) : rnd(110, 200); }
+  while (G.nextCoffee < ahead && G.nextCoffee < LEN - 200) { const q = road.roadAt(G.nextCoffee); G.ents.push({ kind: 'coffee', s: G.nextCoffee, lat: rnd(-q.rw + 1, q.rw - 1) }); G.nextCoffee += rnd(380, 460); }
 }
 
 // ------------------------------------------------------------ effects
@@ -238,7 +238,7 @@ function bossStep(b, dt, rw) {
   if (b.hp <= 0) { b.s += b.vs * dt; b.vs *= 1 - dt * 1.5; b.lift = Math.max(0, b.lift + b.vz * dt); b.vz -= 18 * dt; b.rot += 5 * dt * (b.lift > 0 ? 1 : 0); return; }
   b.flee = Math.max(0, b.flee - dt); b.inv = Math.max(0, b.inv - dt);
   if (gap < 18 && b.turbo <= 0 && b.turboCool <= 0) { b.turbo = 1.6; b.turboCool = 4; } b.turbo -= dt; b.turboCool -= dt;   // a short burst when you get close, not always
-  const want = b.flee > 0 ? 30 : gap > 120 ? 15 : b.turbo > 0 ? 27 : gap > 60 ? 21 : 23.5; b.vs += clamp(want - b.vs, -14 * dt, 7 * dt);
+  const want = b.flee > 0 ? 26 : gap > 100 ? 13 : b.turbo > 0 ? 25 : gap > 50 ? 18 : 20.5; b.vs += clamp(want - b.vs, -14 * dt, 7 * dt);
   b.s += b.vs * dt;
   if ((b.tgtT -= dt) <= 0) { b.tgtT = rnd(1.4, 2.8); b.tgtLat = rnd(-rw + 1.1, rw - 1.1); }
   // a side-step when you are about to ram him (not always: he is Rox)
@@ -251,7 +251,7 @@ function bossStep(b, dt, rw) {
   if ((b.sayT -= dt) <= 0) { b.sayT = rnd(3, 5.5); if (gap < 100) say(b, SAY.chase, 1.8); }
   // rammed
   if (gap < 0.4 && gap > -2.5 && Math.abs(b.lat - G.lat) < 1.7 && G.invT <= 0 && b.inv <= 0) {
-    b.hp--; b.flee = 3; b.inv = 3; b.vs = Math.max(b.vs, G.speed) + 6; b.vz = 4; G.speed *= 0.55; G.invT = 0.9; G.shake = 0.3; G.hits++; G.score += 1000;
+    b.hp--; b.flee = 2.2; b.inv = 2.4; b.vs = Math.max(b.vs, G.speed) + 6; b.vz = 4; G.speed *= 0.55; G.invT = 0.9; G.shake = 0.3; G.hits++; G.score += 1000;
     sfx('hit'); const [x, y] = screenOf(b); burst(x, y, 22, ['#ec7022', '#344aa0', '#f0f4e2', '#9ad06a']); float(b.hp > 0 ? `COLPITO! ${b.hp} ANCORA` : 'ROX FERMATO!', x - 30, y - 20, '#ffffff', b.hp > 0 ? 1 : 2);
     say(b, SAY.chaseHit, 1.4);
     if (b.hp <= 0) { b.vz = 9; b.vs = G.speed + 8; endChase(true); }
@@ -313,14 +313,14 @@ function hud(now) {
   $('h-score').textContent = String(G.score).padStart(6, '0'); $('h-combo').textContent = G.combo > 1 ? `COMBO X${Math.min(8, G.combo)}` : '';
   $('h-speed').textContent = `${Math.round(G.speed * 3.6)} KM/H`;
   if (G.mode === 'investi') { const left = G.deadline - G.clock; $('h-mid').textContent = fmtClock(G.clock); $('h-mid').classList.toggle('late', left < 0); $('h-mid').classList.toggle('hurry', left >= 0 && left < 20); $('h-sub').textContent = `ROX INVESTITI: ${G.hits}`; }
-  else { $('h-mid').textContent = '❤'.repeat(Math.max(0, G.boss.hp)) + '♡'.repeat(5 - Math.max(0, G.boss.hp)); $('h-mid').classList.remove('late', 'hurry'); $('h-sub').textContent = `DISTANZA DA ROX: ${Math.max(0, Math.round(G.boss.s - carFront()))} M`; }
+  else { $('h-mid').textContent = '❤'.repeat(Math.max(0, G.boss.hp)) + '♡'.repeat(BOSS_HP - Math.max(0, G.boss.hp)); $('h-mid').classList.remove('late', 'hurry'); $('h-sub').textContent = `DISTANZA DA ROX: ${Math.max(0, Math.round(G.boss.s - carFront()))} M`; }
   $('p-car').style.left = `${clamp(G.pos / LEN, 0, 1) * 100}%`;
   $('p-rox').style.display = G.boss ? 'block' : 'none'; if (G.boss) $('p-rox').style.left = `${clamp(G.boss.s / LEN, 0, 1) * 100}%`;
   $('btn-pause').style.display = G.phase === 'play' ? 'block' : 'none';
 }
 
 // ------------------------------------------------------------ screens
-const BEST_KEY = 'rox-best'; let BEST = {}; try { BEST = JSON.parse(localStorage.getItem(BEST_KEY) || '{}'); } catch {}
+const BEST_KEY = 'rox-best-v2'; /* v2: the real 1.1 km route (v1 records were on a 2.2 km detour) */ let BEST = {}; try { BEST = JSON.parse(localStorage.getItem(BEST_KEY) || '{}'); } catch {}
 const saveBest = () => { try { localStorage.setItem(BEST_KEY, JSON.stringify(BEST)); } catch {} };
 function showScreen(id) { for (const s of document.querySelectorAll('.screen')) s.classList.toggle('show', s.id === id); }
 function menuRecords() {
@@ -330,7 +330,7 @@ function menuRecords() {
 function toMenu() { AU.engineOff(); AU.musicStop(); reset('attract'); G.phase = 'menu'; showScreen('menu'); menuRecords(); }
 async function start(mode) {
   AU.unlock(); reset(mode); G.phase = 'countdown'; showScreen(null); $('controls').classList.toggle('show', true);
-  $('story').innerHTML = mode === 'investi' ? 'Sono le 13:58. Alle 14:00 devi timbrare.<br>Rox è uscito dal Panorama... e si è moltiplicato.<br><b>Investine più che puoi!</b>' : 'Rox ha rubato il Grizzly e corre a timbrare prima di te.<br>Guida al contrario e lancia finocchi.<br><b>Speronalo 5 volte prima della ditta!</b>';
+  $('story').innerHTML = mode === 'investi' ? 'Sono le 13:59. Alle 14:00 devi timbrare: hai un minuto.<br>Rox è uscito dal Panorama... e si è moltiplicato.<br><b>Investine più che puoi!</b>' : 'Rox ha rubato il Grizzly e corre a timbrare prima di te.<br>Guida al contrario e lancia finocchi.<br><b>Speronalo 5 volte prima della ditta!</b>';
   $('story').classList.add('show'); AU.engineOn(); if (AU.audioState().music) AU.musicStart(mode === 'chase');
   for (const n of [3, 2, 1]) { $('count').textContent = n; $('count').classList.add('show'); AU.sfx.beep(false); await new Promise(r => setTimeout(r, 750)); if (G.mode !== mode) return; }
   $('count').textContent = 'VIA!'; AU.sfx.beep(true); G.phase = 'play'; $('story').classList.remove('show'); setTimeout(() => $('count').classList.remove('show'), 600);
@@ -360,7 +360,7 @@ function endScreen() {
     $('end-share').dataset.text = `Ho investito ${G.hits} Rox tornando dal Panorama (${G.score} punti, ${rank}). Prova tu!`;
   } else {
     title = G.result.won ? 'ROX FERMATO!' : 'ROX HA TIMBRATO!';
-    lines = G.result.won ? [`L'hai fermato in <b>${fmtTime(G.result.time)}</b>`, 'Il Grizzly è sotto sequestro.', 'Rox oggi pulisce i bagni.'] : ['Rox è arrivato in ditta prima di te.', `Gli hai tolto <b>${5 - G.boss.hp}</b> cuori su 5.`, 'Ora lo racconterà a tutti per una settimana.'];
+    lines = G.result.won ? [`L'hai fermato in <b>${fmtTime(G.result.time)}</b>`, 'Il Grizzly è sotto sequestro.', 'Rox oggi pulisce i bagni.'] : ['Rox è arrivato in ditta prima di te.', `Gli hai tolto <b>${BOSS_HP - G.boss.hp}</b> cuori su ${BOSS_HP}.`, 'Ora lo racconterà a tutti per una settimana.'];
     if (G.result.won && (!BEST.chase || G.result.time < BEST.chase.time)) { BEST.chase = { time: G.result.time }; saveBest(); rec = true; }
     $('end-share').dataset.text = G.result.won ? `Ho fermato Rox sul Grizzly in ${fmtTime(G.result.time)}! Prova tu!` : 'Rox mi ha battuto col Grizzly... vendicami!';
   }
