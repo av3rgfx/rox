@@ -333,7 +333,7 @@ function hud(now) {
 }
 
 // ------------------------------------------------------------ screens
-const BEST_KEY = 'rox-best-v3'; /* v3: the 2.2 km route through the Panorama car park, as the owner drives it (v2 was a 1.1 km shortcut) */ let BEST = {}; try { BEST = JSON.parse(localStorage.getItem(BEST_KEY) || '{}'); } catch {}
+const BEST_KEY = 'rox-best-v4'; /* v4: out along the Panorama's side and on past UFP, 2173 m (v3 looped through the car park, v2 was a 1.1 km shortcut) */ let BEST = {}; try { BEST = JSON.parse(localStorage.getItem(BEST_KEY) || '{}'); } catch {}
 const saveBest = () => { try { localStorage.setItem(BEST_KEY, JSON.stringify(BEST)); } catch {} };
 function showScreen(id) { for (const s of document.querySelectorAll('.screen')) s.classList.toggle('show', s.id === id); }
 function menuRecords() {

@@ -49,17 +49,27 @@ Italian. Read `NEXT_SESSION.md` first: it has the state, the decisions taken wit
   is merged into `data/landmarks.json` by `node tools/landmarks.mjs` (plan-art.sh runs it; run it after any rebake).
   A landmark with a real picture replaces the frontage at its real place (layout.js); placeholders are never shown.
   OSM/OSRM give where buildings are and their size and type, never their look: faithful pictures need photos.
+- The road itself: `node tools/realroad.mjs` (run after any rebake; `--cache` reuses `.cache/realroad.json`) reads OSM
+  along the route (traffic signals: none on this road; STOP and give-way on our road; marked crossings; roundabouts)
+  and merges `art/road-custom.json` (hand fixes from the owner's video: dropped signs, each roundabout island's look,
+  `stretches` with width, sidewalks, one-way carriageways with a median (`dual`), the car park bays (`lot`), hedges,
+  walls, reeds, kerb parking, tree rows, `open` streets, `roles` for generic pictures; `props` like the mast, the
+  rubbish heap, the bollards; `noTowers`) into `data/road.json`. road.js loads it as `env.road`; layout.js marks
+  segments (`q.ring`, `q.isl`, `q.dual`, `q.bays`, `q.mark`, `q.park`...) and road.js's `groundCol` paints them.
+  Without data/road.json the game falls back to Pixel Path's rule (a signal and a crosswalk at every town junction).
+  `buildings-custom.json` entries with `"hide": true` keep a mapped building from showing.
 - `assets/rox/face.png`: Rox's face, 53x70 RGBA cut-out from the owner's photo.
 - `tools/pixel-path/`: the Pixel Path skill (scripts + templates). `tools/codex-art.mjs`: free art via Codex/ChatGPT
   (`prompts`, `import`). `tools/plan-art.sh [moderate|detailed]`: the art plan with Pistoia subjects.
   `tools/test/`: headless tests (see its README).
 - `.github/workflows/pages.yml`: deploys index.html, game/, data/, assets/, art/*.png + kit.json on push to main.
 
-## Known gaps from the real road (see NEXT_SESSION.md, section B)
+## Known gaps from the real road (see NEXT_SESSION.md)
 
-- Traffic signals: layout.js puts one at every crossing in a built-up stretch (a Pixel Path rule, not map data).
-- The Panorama car park lane is drawn as a two-lane street with a centre line; OSRM's route wiggles through the aisles.
-- Roundabouts are driven through but their central island is not drawn.
+- Roundabouts: the road does not curve round the island as tightly as the real ring (headings are smoothed over
+  ±60 m); the island is an oval on the left.
+- Hedges, walls and reeds are code-drawn pieces facing the camera: blocky up close.
+- Most `b-*` buildings still wait for their Codex pictures (generic look until then).
 
 ## Conventions
 
@@ -77,7 +87,9 @@ Italian. Read `NEXT_SESSION.md` first: it has the state, the decisions taken wit
 
 1. `python3 -m http.server 8765 --bind 127.0.0.1` from the repo root.
 2. `node tools/test/ui.mjs /tmp/shots` and `node tools/test/drive.mjs investi|chase /tmp/shots ...`, then look at the
-   screenshots with Read. Also try a phone size (`390 844 ... mobile` and `844 390 ... mobile`).
+   screenshots with Read. Also try a phone size (`390 844 ... mobile` and `844 390 ... mobile`). For the scenery,
+   `node tools/test/at.mjs /tmp/at 0,500,1000` shoots the empty road at given metres. Outside the cloud image:
+   Playwright in a scratch folder (`PLAYWRIGHT=<dir>/node_modules/playwright/index.mjs`) and `CHROME=<installed chrome>`.
 3. Expected noise: the AudioContext warning in headless runs.
 4. After importing art, check `clean.mjs`'s output: `cut` / `boxed` pictures are dropped. `codex-art.mjs import` pads
    each picture to the plan size with a margin; pictures imported before that fix were re-padded with
