@@ -12,49 +12,53 @@
       "role": "shop",
       "theme": "pistoia",
       "kind": "facade",
-      "w": 160,
-      "h": 154,
+      "w": 148,
+      "h": 88,
       "hm": 10,
       "avg": [
-        168,
-        155,
-        129
+        139,
+        119,
+        96
       ],
-      "placeholder": true,
+      "placeholder": false,
       "drop": false,
-      "flags": []
+      "flags": [
+        "holes filled (636 px)"
+      ]
     },
     "pistoia-shop-2": {
       "file": "art/pistoia-shop-2.png",
       "role": "shop",
       "theme": "pistoia",
       "kind": "facade",
-      "w": 160,
-      "h": 154,
+      "w": 148,
+      "h": 142,
       "hm": 10,
       "avg": [
-        133,
-        139,
-        149
+        136,
+        96,
+        65
       ],
-      "placeholder": true,
+      "placeholder": false,
       "drop": false,
-      "flags": []
+      "flags": [
+        "holes filled (1140 px)"
+      ]
     },
     "pistoia-shop-3": {
       "file": "art/pistoia-shop-3.png",
       "role": "shop",
       "theme": "pistoia",
       "kind": "facade",
-      "w": 160,
-      "h": 154,
+      "w": 148,
+      "h": 47,
       "hm": 10,
       "avg": [
-        164,
-        172,
-        165
+        137,
+        132,
+        129
       ],
-      "placeholder": true,
+      "placeholder": false,
       "drop": false,
       "flags": []
     },
@@ -63,49 +67,53 @@
       "role": "house",
       "theme": "pistoia",
       "kind": "facade",
-      "w": 148,
-      "h": 114,
+      "w": 150,
+      "h": 107,
       "hm": 8,
       "avg": [
-        165,
-        106,
-        84
+        161,
+        114,
+        65
       ],
-      "placeholder": true,
+      "placeholder": false,
       "drop": false,
-      "flags": []
+      "flags": [
+        "holes filled (584 px)"
+      ]
     },
     "pistoia-house-2": {
       "file": "art/pistoia-house-2.png",
       "role": "house",
       "theme": "pistoia",
       "kind": "facade",
-      "w": 148,
-      "h": 114,
+      "w": 150,
+      "h": 100,
       "hm": 8,
       "avg": [
-        131,
-        84,
-        70
+        163,
+        130,
+        99
       ],
-      "placeholder": true,
+      "placeholder": false,
       "drop": false,
-      "flags": []
+      "flags": [
+        "holes filled (627 px)"
+      ]
     },
     "pistoia-industrial-1": {
       "file": "art/pistoia-industrial-1.png",
       "role": "industrial",
       "theme": "pistoia",
       "kind": "facade",
-      "w": 184,
-      "h": 110,
+      "w": 182,
+      "h": 54,
       "hm": 9,
       "avg": [
-        146,
-        148,
-        152
+        143,
+        145,
+        144
       ],
-      "placeholder": true,
+      "placeholder": false,
       "drop": false,
       "flags": []
     },
@@ -114,15 +122,15 @@
       "role": "industrial",
       "theme": "pistoia",
       "kind": "facade",
-      "w": 184,
-      "h": 110,
+      "w": 182,
+      "h": 64,
       "hm": 9,
       "avg": [
-        146,
-        148,
-        152
+        96,
+        134,
+        160
       ],
-      "placeholder": true,
+      "placeholder": false,
       "drop": false,
       "flags": []
     },
@@ -131,15 +139,15 @@
       "role": "tree",
       "theme": "pistoia",
       "kind": "sprite",
-      "w": 120,
-      "h": 160,
+      "w": 34,
+      "h": 150,
       "hm": 9,
       "avg": [
-        81,
-        115,
-        58
+        58,
+        94,
+        44
       ],
-      "placeholder": true,
+      "placeholder": false,
       "drop": false,
       "flags": []
     },
@@ -148,15 +156,15 @@
       "role": "tree",
       "theme": "pistoia",
       "kind": "sprite",
-      "w": 120,
-      "h": 160,
+      "w": 118,
+      "h": 112,
       "hm": 9,
       "avg": [
-        81,
-        115,
-        58
+        108,
+        110,
+        67
       ],
-      "placeholder": true,
+      "placeholder": false,
       "drop": false,
       "flags": []
     },
@@ -165,15 +173,15 @@
       "role": "bush",
       "theme": "pistoia",
       "kind": "sprite",
-      "w": 83,
-      "h": 61,
+      "w": 69,
+      "h": 88,
       "hm": 1.6,
       "avg": [
-        87,
-        136,
-        70
+        68,
+        99,
+        43
       ],
-      "placeholder": true,
+      "placeholder": false,
       "drop": false,
       "flags": []
     },
@@ -182,15 +190,15 @@
       "role": "street",
       "theme": "pistoia",
       "kind": "sprite",
-      "w": 76,
-      "h": 54,
+      "w": 61,
+      "h": 88,
       "hm": 1.4,
       "avg": [
-        95,
-        73,
-        56
+        55,
+        113,
+        62
       ],
-      "placeholder": true,
+      "placeholder": false,
       "drop": false,
       "flags": []
     },
@@ -244,8 +252,66 @@
       "placeholder": true,
       "drop": false,
       "flags": []
+    },
+    "lm-cappella": {
+      "file": "art/lm-cappella.png",
+      "role": "landmark",
+      "theme": "pistoia",
+      "kind": "landmark",
+      "w": 133,
+      "h": 173,
+      "hm": 6,
+      "avg": [
+        204,
+        195,
+        178
+      ],
+      "label": "Cappellina",
+      "placeholder": true,
+      "drop": false,
+      "flags": []
+    },
+    "lm-mensa": {
+      "file": "art/lm-mensa.png",
+      "role": "landmark",
+      "theme": "pistoia",
+      "kind": "landmark",
+      "w": 177,
+      "h": 144,
+      "hm": 9,
+      "avg": [
+        204,
+        195,
+        177
+      ],
+      "label": "Ex Mensa Sant'Agostino",
+      "placeholder": true,
+      "drop": false,
+      "flags": []
+    },
+    "lm-ufp": {
+      "file": "art/lm-ufp.png",
+      "role": "landmark",
+      "theme": "pistoia",
+      "kind": "landmark",
+      "w": 177,
+      "h": 144,
+      "hm": 10,
+      "avg": [
+        204,
+        195,
+        177
+      ],
+      "label": "Utensilferramenta",
+      "placeholder": true,
+      "drop": false,
+      "flags": []
     }
   },
-  "landmarks": {},
+  "landmarks": {
+    "cappella": "lm-cappella",
+    "mensa": "lm-mensa",
+    "ufp": "lm-ufp"
+  },
   "detail": "moderate"
 }

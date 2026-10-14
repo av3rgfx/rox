@@ -4,7 +4,8 @@
 set -e
 cd "$(dirname "$0")/.."
 DETAIL="${1:-moderate}"
-node tools/pixel-path/scripts/plan-art.mjs --trip . --detail "$DETAIL" \
+node tools/landmarks.mjs
+node tools/pixel-path/scripts/plan-art.mjs --trip . --detail "$DETAIL" --landmarks 3 \
  --theme "pistoia|0|the outskirts of Pistoia, Tuscany, Italy: ochre and cream plastered villas with terracotta tiled roofs and green wooden shutters, 1970s condominiums, industrial sheds and plant nurseries" \
  --subject "pistoia:house=a two-storey Tuscan villa with ochre plaster, a terracotta tiled hip roof, green wooden shutters and a small balcony|a two-storey cream plastered Italian family house from the 1970s with a terracotta roof, brown roller shutters and a front gate|a small pale pink Italian villa with a terracotta roof, white window frames, green shutters and a hedge-free front|a three-storey Italian semi-detached house with light yellow plaster, a terracotta roof and wooden balconies" \
  --subject "pistoia:shop=a single-storey Italian suburban shop building with a big glass shopfront, an awning and a sign with an invented name, beige plaster|a two-storey Italian building with a bar caffe at street level, a striped awning, invented name sign, flats above with shutters|a modern Italian retail park building with grey cladding, a big glass entrance and a large blank orange sign band|an Italian car dealer showroom with big windows and an invented name sign|a two-storey Italian commercial building with a pizzeria and a hairdresser at street level, red and white awnings, invented names, offices above|a low modern Italian commercial unit with dark grey metal cladding, a glass door and a big yellow blank sign band" \
@@ -16,6 +17,8 @@ node tools/pixel-path/scripts/plan-art.mjs --trip . --detail "$DETAIL" \
  --subject "pistoia:tree=a tall slender Italian cypress tree|an umbrella stone pine tree typical of Tuscany|a young olive tree with silver-green leaves" \
  --subject "pistoia:bush=a round potted shrub from a Pistoia plant nursery, in a black plastic pot|a row of small potted conifers from a plant nursery" \
  --subject "pistoia:street=an Italian green rubbish bin for recycling on wheels|an Italian bus stop sign on a pole with a small shelter|a red Italian post box" \
- --subject "lm-Q3673382=a Tuscan Romanesque country church with a plain stone facade, a terracotta roof and a square brick bell tower"
+ --subject "lm-cappella=a tiny old Italian roadside chapel (cappellina) by a country lane near Pistoia: a single small room with a gabled terracotta tile roof, plastered walls, an arched doorway with a small iron gate, a little cross on the gable" \
+ --subject "lm-mensa=the Ex Mensa Sant'Agostino in Pistoia, a 1980 building by the architect Leonardo Ricci: an expressive modernist building of exposed concrete with bold sloping and cantilevered volumes, strips of windows, low and wide" \
+ --subject "lm-ufp=the headquarters and warehouse of Utensilferramenta Pistoiese S.p.A., a hardware and tools wholesaler in the industrial zone of Pistoia: a large modern prefabricated industrial building, low and very wide, with loading doors and an office entrance"
 node tools/pixel-path/scripts/placeholder-art.mjs --trip .
 node tools/codex-art.mjs prompts

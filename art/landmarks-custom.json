@@ -1,0 +1,5 @@
+[
+  {"name": "Cappellina", "qid": "cappella", "kind": "chapel", "s": 84, "side": -13, "h": 6, "w": 6, "links": 2, "score": 3, "desc": "small roadside chapel on Via Bure Vecchia Nord (OSM: building=chapel, 1 level, 37 m2), left side"},
+  {"name": "Ex Mensa Sant'Agostino", "qid": "mensa", "kind": "station", "s": 897, "side": 46, "h": 9, "w": 30, "links": 2, "score": 3, "desc": "the former Sant'Agostino canteen, 1980, by architect Leonardo Ricci (it.wikipedia: Mensa Sant'Agostino), right side at the Via Enrico Fermi roundabout"},
+  {"name": "Utensilferramenta", "qid": "ufp", "kind": "station", "s": 1139, "side": 47, "h": 10, "w": 45, "links": 2, "score": 3, "desc": "Utensilferramenta Pistoiese S.p.A., Via Luigi Salvatorelli 161: the warehouse at the end of the road, right side (OSM building 1809 m2)"}
+]

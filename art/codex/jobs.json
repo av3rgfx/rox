@@ -1,6 +1,7 @@
 [
   {
     "name": "pistoia-shop-1",
+    "refs": [],
     "file": "art/codex/in/pistoia-shop-1.png",
     "size": "1024x1024",
     "shape": "square",
@@ -8,10 +9,11 @@
       160,
       160
     ],
-    "prompt": "The full front elevation of a single-storey Italian suburban shop building with a big glass shopfront, an awning and a sign with an invented name, beige plaster, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos. Orthographic, perfectly straight-on front view: no perspective, no side walls visible, the building's base is a straight horizontal line. True 16-bit pixel art game asset: big clearly visible square pixels, crisp hard edges, no anti-aliasing, no blur, no gradients, a limited palette of flat colours, soft afternoon light from the left. Isolated on a plain pure white (#FFFFFF) background, no ground, no shadow on the ground, no sky, no scenery, no frame, no text except what is asked. The whole subject is inside the picture with a white margin on every side, nothing cut off."
+    "prompt": "The full front elevation of a single-storey Italian suburban shop building with a big glass shopfront, an awning and a sign with an invented name, beige plaster, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos. Orthographic, perfectly straight-on front view: no perspective, no side walls visible, the building's base is a straight horizontal line. Setting: the modern outskirts of Pistoia today (suburban and industrial zone), not a historic town centre and not a postcard village. True 16-bit pixel art game asset: big clearly visible square pixels, crisp hard edges, no anti-aliasing, no blur, no gradients, a limited palette of flat colours, soft afternoon light from the left. Isolated on a plain pure white (#FFFFFF) background, no ground, no shadow on the ground, no sky, no scenery, no frame, no text except what is asked. The whole subject is inside the picture with a white margin on every side, nothing cut off."
   },
   {
     "name": "pistoia-shop-2",
+    "refs": [],
     "file": "art/codex/in/pistoia-shop-2.png",
     "size": "1024x1024",
     "shape": "square",
@@ -19,10 +21,11 @@
       160,
       160
     ],
-    "prompt": "The full front elevation of a two-storey Italian building with a bar caffe at street level, a striped awning, invented name sign, flats above with shutters, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos. Orthographic, perfectly straight-on front view: no perspective, no side walls visible, the building's base is a straight horizontal line. True 16-bit pixel art game asset: big clearly visible square pixels, crisp hard edges, no anti-aliasing, no blur, no gradients, a limited palette of flat colours, soft afternoon light from the left. Isolated on a plain pure white (#FFFFFF) background, no ground, no shadow on the ground, no sky, no scenery, no frame, no text except what is asked. The whole subject is inside the picture with a white margin on every side, nothing cut off."
+    "prompt": "The full front elevation of a two-storey Italian building with a bar caffe at street level, a striped awning, invented name sign, flats above with shutters, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos. Orthographic, perfectly straight-on front view: no perspective, no side walls visible, the building's base is a straight horizontal line. Setting: the modern outskirts of Pistoia today (suburban and industrial zone), not a historic town centre and not a postcard village. True 16-bit pixel art game asset: big clearly visible square pixels, crisp hard edges, no anti-aliasing, no blur, no gradients, a limited palette of flat colours, soft afternoon light from the left. Isolated on a plain pure white (#FFFFFF) background, no ground, no shadow on the ground, no sky, no scenery, no frame, no text except what is asked. The whole subject is inside the picture with a white margin on every side, nothing cut off."
   },
   {
     "name": "pistoia-shop-3",
+    "refs": [],
     "file": "art/codex/in/pistoia-shop-3.png",
     "size": "1024x1024",
     "shape": "square",
@@ -30,10 +33,11 @@
       160,
       160
     ],
-    "prompt": "The full front elevation of a modern Italian retail park building with grey cladding, a big glass entrance and a large blank orange sign band, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos. Orthographic, perfectly straight-on front view: no perspective, no side walls visible, the building's base is a straight horizontal line. True 16-bit pixel art game asset: big clearly visible square pixels, crisp hard edges, no anti-aliasing, no blur, no gradients, a limited palette of flat colours, soft afternoon light from the left. Isolated on a plain pure white (#FFFFFF) background, no ground, no shadow on the ground, no sky, no scenery, no frame, no text except what is asked. The whole subject is inside the picture with a white margin on every side, nothing cut off."
+    "prompt": "The full front elevation of a modern Italian retail park building with grey cladding, a big glass entrance and a large blank orange sign band, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos. Orthographic, perfectly straight-on front view: no perspective, no side walls visible, the building's base is a straight horizontal line. Setting: the modern outskirts of Pistoia today (suburban and industrial zone), not a historic town centre and not a postcard village. True 16-bit pixel art game asset: big clearly visible square pixels, crisp hard edges, no anti-aliasing, no blur, no gradients, a limited palette of flat colours, soft afternoon light from the left. Isolated on a plain pure white (#FFFFFF) background, no ground, no shadow on the ground, no sky, no scenery, no frame, no text except what is asked. The whole subject is inside the picture with a white margin on every side, nothing cut off."
   },
   {
     "name": "pistoia-shop-4",
+    "refs": [],
     "file": "art/codex/in/pistoia-shop-4.png",
     "size": "1024x1024",
     "shape": "square",
@@ -41,10 +45,11 @@
       160,
       160
     ],
-    "prompt": "The full front elevation of an Italian car dealer showroom with big windows and an invented name sign, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos. Orthographic, perfectly straight-on front view: no perspective, no side walls visible, the building's base is a straight horizontal line. True 16-bit pixel art game asset: big clearly visible square pixels, crisp hard edges, no anti-aliasing, no blur, no gradients, a limited palette of flat colours, soft afternoon light from the left. Isolated on a plain pure white (#FFFFFF) background, no ground, no shadow on the ground, no sky, no scenery, no frame, no text except what is asked. The whole subject is inside the picture with a white margin on every side, nothing cut off."
+    "prompt": "The full front elevation of an Italian car dealer showroom with big windows and an invented name sign, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos. Orthographic, perfectly straight-on front view: no perspective, no side walls visible, the building's base is a straight horizontal line. Setting: the modern outskirts of Pistoia today (suburban and industrial zone), not a historic town centre and not a postcard village. True 16-bit pixel art game asset: big clearly visible square pixels, crisp hard edges, no anti-aliasing, no blur, no gradients, a limited palette of flat colours, soft afternoon light from the left. Isolated on a plain pure white (#FFFFFF) background, no ground, no shadow on the ground, no sky, no scenery, no frame, no text except what is asked. The whole subject is inside the picture with a white margin on every side, nothing cut off."
   },
   {
     "name": "pistoia-shop-5",
+    "refs": [],
     "file": "art/codex/in/pistoia-shop-5.png",
     "size": "1024x1024",
     "shape": "square",
@@ -52,10 +57,11 @@
       160,
       160
     ],
-    "prompt": "The full front elevation of a two-storey Italian commercial building with a pizzeria and a hairdresser at street level, red and white awnings, invented names, offices above, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos. Orthographic, perfectly straight-on front view: no perspective, no side walls visible, the building's base is a straight horizontal line. True 16-bit pixel art game asset: big clearly visible square pixels, crisp hard edges, no anti-aliasing, no blur, no gradients, a limited palette of flat colours, soft afternoon light from the left. Isolated on a plain pure white (#FFFFFF) background, no ground, no shadow on the ground, no sky, no scenery, no frame, no text except what is asked. The whole subject is inside the picture with a white margin on every side, nothing cut off."
+    "prompt": "The full front elevation of a two-storey Italian commercial building with a pizzeria and a hairdresser at street level, red and white awnings, invented names, offices above, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos. Orthographic, perfectly straight-on front view: no perspective, no side walls visible, the building's base is a straight horizontal line. Setting: the modern outskirts of Pistoia today (suburban and industrial zone), not a historic town centre and not a postcard village. True 16-bit pixel art game asset: big clearly visible square pixels, crisp hard edges, no anti-aliasing, no blur, no gradients, a limited palette of flat colours, soft afternoon light from the left. Isolated on a plain pure white (#FFFFFF) background, no ground, no shadow on the ground, no sky, no scenery, no frame, no text except what is asked. The whole subject is inside the picture with a white margin on every side, nothing cut off."
   },
   {
     "name": "pistoia-shop-6",
+    "refs": [],
     "file": "art/codex/in/pistoia-shop-6.png",
     "size": "1024x1024",
     "shape": "square",
@@ -63,10 +69,11 @@
       160,
       160
     ],
-    "prompt": "The full front elevation of a low modern Italian commercial unit with dark grey metal cladding, a glass door and a big yellow blank sign band, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos. Orthographic, perfectly straight-on front view: no perspective, no side walls visible, the building's base is a straight horizontal line. True 16-bit pixel art game asset: big clearly visible square pixels, crisp hard edges, no anti-aliasing, no blur, no gradients, a limited palette of flat colours, soft afternoon light from the left. Isolated on a plain pure white (#FFFFFF) background, no ground, no shadow on the ground, no sky, no scenery, no frame, no text except what is asked. The whole subject is inside the picture with a white margin on every side, nothing cut off."
+    "prompt": "The full front elevation of a low modern Italian commercial unit with dark grey metal cladding, a glass door and a big yellow blank sign band, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos. Orthographic, perfectly straight-on front view: no perspective, no side walls visible, the building's base is a straight horizontal line. Setting: the modern outskirts of Pistoia today (suburban and industrial zone), not a historic town centre and not a postcard village. True 16-bit pixel art game asset: big clearly visible square pixels, crisp hard edges, no anti-aliasing, no blur, no gradients, a limited palette of flat colours, soft afternoon light from the left. Isolated on a plain pure white (#FFFFFF) background, no ground, no shadow on the ground, no sky, no scenery, no frame, no text except what is asked. The whole subject is inside the picture with a white margin on every side, nothing cut off."
   },
   {
     "name": "pistoia-industrial-1",
+    "refs": [],
     "file": "art/codex/in/pistoia-industrial-1.png",
     "size": "1536x1024",
     "shape": "landscape",
@@ -74,10 +81,11 @@
       192,
       128
     ],
-    "prompt": "The full front elevation of a big grey prefabricated concrete industrial warehouse of an Italian industrial zone, ribbed panels, a large roller door, small high windows, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos. Orthographic, perfectly straight-on front view: no perspective, no side walls visible, the building's base is a straight horizontal line. True 16-bit pixel art game asset: big clearly visible square pixels, crisp hard edges, no anti-aliasing, no blur, no gradients, a limited palette of flat colours, soft afternoon light from the left. Isolated on a plain pure white (#FFFFFF) background, no ground, no shadow on the ground, no sky, no scenery, no frame, no text except what is asked. The whole subject is inside the picture with a white margin on every side, nothing cut off."
+    "prompt": "The full front elevation of a big grey prefabricated concrete industrial warehouse of an Italian industrial zone, ribbed panels, a large roller door, small high windows, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos. Orthographic, perfectly straight-on front view: no perspective, no side walls visible, the building's base is a straight horizontal line. Setting: the modern outskirts of Pistoia today (suburban and industrial zone), not a historic town centre and not a postcard village. True 16-bit pixel art game asset: big clearly visible square pixels, crisp hard edges, no anti-aliasing, no blur, no gradients, a limited palette of flat colours, soft afternoon light from the left. Isolated on a plain pure white (#FFFFFF) background, no ground, no shadow on the ground, no sky, no scenery, no frame, no text except what is asked. The whole subject is inside the picture with a white margin on every side, nothing cut off."
   },
   {
     "name": "pistoia-industrial-2",
+    "refs": [],
     "file": "art/codex/in/pistoia-industrial-2.png",
     "size": "1536x1024",
     "shape": "landscape",
@@ -85,10 +93,11 @@
       192,
       128
     ],
-    "prompt": "The full front elevation of a long Italian workshop shed with corrugated metal walls painted light blue, a sliding door and an invented company name sign, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos. Orthographic, perfectly straight-on front view: no perspective, no side walls visible, the building's base is a straight horizontal line. True 16-bit pixel art game asset: big clearly visible square pixels, crisp hard edges, no anti-aliasing, no blur, no gradients, a limited palette of flat colours, soft afternoon light from the left. Isolated on a plain pure white (#FFFFFF) background, no ground, no shadow on the ground, no sky, no scenery, no frame, no text except what is asked. The whole subject is inside the picture with a white margin on every side, nothing cut off."
+    "prompt": "The full front elevation of a long Italian workshop shed with corrugated metal walls painted light blue, a sliding door and an invented company name sign, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos. Orthographic, perfectly straight-on front view: no perspective, no side walls visible, the building's base is a straight horizontal line. Setting: the modern outskirts of Pistoia today (suburban and industrial zone), not a historic town centre and not a postcard village. True 16-bit pixel art game asset: big clearly visible square pixels, crisp hard edges, no anti-aliasing, no blur, no gradients, a limited palette of flat colours, soft afternoon light from the left. Isolated on a plain pure white (#FFFFFF) background, no ground, no shadow on the ground, no sky, no scenery, no frame, no text except what is asked. The whole subject is inside the picture with a white margin on every side, nothing cut off."
   },
   {
     "name": "pistoia-house-1",
+    "refs": [],
     "file": "art/codex/in/pistoia-house-1.png",
     "size": "1536x1024",
     "shape": "landscape",
@@ -96,10 +105,11 @@
       160,
       128
     ],
-    "prompt": "The full front elevation of a two-storey Tuscan villa with ochre plaster, a terracotta tiled hip roof, green wooden shutters and a small balcony, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos. Orthographic, perfectly straight-on front view: no perspective, no side walls visible, the building's base is a straight horizontal line. True 16-bit pixel art game asset: big clearly visible square pixels, crisp hard edges, no anti-aliasing, no blur, no gradients, a limited palette of flat colours, soft afternoon light from the left. Isolated on a plain pure white (#FFFFFF) background, no ground, no shadow on the ground, no sky, no scenery, no frame, no text except what is asked. The whole subject is inside the picture with a white margin on every side, nothing cut off."
+    "prompt": "The full front elevation of a two-storey Tuscan villa with ochre plaster, a terracotta tiled hip roof, green wooden shutters and a small balcony, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos. Orthographic, perfectly straight-on front view: no perspective, no side walls visible, the building's base is a straight horizontal line. Setting: the modern outskirts of Pistoia today (suburban and industrial zone), not a historic town centre and not a postcard village. True 16-bit pixel art game asset: big clearly visible square pixels, crisp hard edges, no anti-aliasing, no blur, no gradients, a limited palette of flat colours, soft afternoon light from the left. Isolated on a plain pure white (#FFFFFF) background, no ground, no shadow on the ground, no sky, no scenery, no frame, no text except what is asked. The whole subject is inside the picture with a white margin on every side, nothing cut off."
   },
   {
     "name": "pistoia-house-2",
+    "refs": [],
     "file": "art/codex/in/pistoia-house-2.png",
     "size": "1536x1024",
     "shape": "landscape",
@@ -107,10 +117,11 @@
       160,
       128
     ],
-    "prompt": "The full front elevation of a two-storey cream plastered Italian family house from the 1970s with a terracotta roof, brown roller shutters and a front gate, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos. Orthographic, perfectly straight-on front view: no perspective, no side walls visible, the building's base is a straight horizontal line. True 16-bit pixel art game asset: big clearly visible square pixels, crisp hard edges, no anti-aliasing, no blur, no gradients, a limited palette of flat colours, soft afternoon light from the left. Isolated on a plain pure white (#FFFFFF) background, no ground, no shadow on the ground, no sky, no scenery, no frame, no text except what is asked. The whole subject is inside the picture with a white margin on every side, nothing cut off."
+    "prompt": "The full front elevation of a two-storey cream plastered Italian family house from the 1970s with a terracotta roof, brown roller shutters and a front gate, seen straight on, flat front elevation, all signs blank or with invented words only, no real brand logos. Orthographic, perfectly straight-on front view: no perspective, no side walls visible, the building's base is a straight horizontal line. Setting: the modern outskirts of Pistoia today (suburban and industrial zone), not a historic town centre and not a postcard village. True 16-bit pixel art game asset: big clearly visible square pixels, crisp hard edges, no anti-aliasing, no blur, no gradients, a limited palette of flat colours, soft afternoon light from the left. Isolated on a plain pure white (#FFFFFF) background, no ground, no shadow on the ground, no sky, no scenery, no frame, no text except what is asked. The whole subject is inside the picture with a white margin on every side, nothing cut off."
   },
   {
     "name": "pistoia-tree-1",
+    "refs": [],
     "file": "art/codex/in/pistoia-tree-1.png",
     "size": "1024x1536",
     "shape": "portrait",
@@ -118,10 +129,11 @@
       128,
       160
     ],
-    "prompt": "A tall slender Italian cypress tree. True 16-bit pixel art game asset: big clearly visible square pixels, crisp hard edges, no anti-aliasing, no blur, no gradients, a limited palette of flat colours, soft afternoon light from the left. Isolated on a plain pure white (#FFFFFF) background, no ground, no shadow on the ground, no sky, no scenery, no frame, no text except what is asked. The whole subject is inside the picture with a white margin on every side, nothing cut off."
+    "prompt": "A tall slender Italian cypress tree. Setting: the modern outskirts of Pistoia today (suburban and industrial zone), not a historic town centre and not a postcard village. True 16-bit pixel art game asset: big clearly visible square pixels, crisp hard edges, no anti-aliasing, no blur, no gradients, a limited palette of flat colours, soft afternoon light from the left. Isolated on a plain pure white (#FFFFFF) background, no ground, no shadow on the ground, no sky, no scenery, no frame, no text except what is asked. The whole subject is inside the picture with a white margin on every side, nothing cut off."
   },
   {
     "name": "pistoia-tree-2",
+    "refs": [],
     "file": "art/codex/in/pistoia-tree-2.png",
     "size": "1024x1536",
     "shape": "portrait",
@@ -129,10 +141,11 @@
       128,
       160
     ],
-    "prompt": "An umbrella stone pine tree typical of Tuscany. True 16-bit pixel art game asset: big clearly visible square pixels, crisp hard edges, no anti-aliasing, no blur, no gradients, a limited palette of flat colours, soft afternoon light from the left. Isolated on a plain pure white (#FFFFFF) background, no ground, no shadow on the ground, no sky, no scenery, no frame, no text except what is asked. The whole subject is inside the picture with a white margin on every side, nothing cut off."
+    "prompt": "An umbrella stone pine tree typical of Tuscany. Setting: the modern outskirts of Pistoia today (suburban and industrial zone), not a historic town centre and not a postcard village. True 16-bit pixel art game asset: big clearly visible square pixels, crisp hard edges, no anti-aliasing, no blur, no gradients, a limited palette of flat colours, soft afternoon light from the left. Isolated on a plain pure white (#FFFFFF) background, no ground, no shadow on the ground, no sky, no scenery, no frame, no text except what is asked. The whole subject is inside the picture with a white margin on every side, nothing cut off."
   },
   {
     "name": "pistoia-bush-1",
+    "refs": [],
     "file": "art/codex/in/pistoia-bush-1.png",
     "size": "1024x1024",
     "shape": "square",
@@ -140,10 +153,11 @@
       96,
       96
     ],
-    "prompt": "A round potted shrub from a Pistoia plant nursery, in a black plastic pot. True 16-bit pixel art game asset: big clearly visible square pixels, crisp hard edges, no anti-aliasing, no blur, no gradients, a limited palette of flat colours, soft afternoon light from the left. Isolated on a plain pure white (#FFFFFF) background, no ground, no shadow on the ground, no sky, no scenery, no frame, no text except what is asked. The whole subject is inside the picture with a white margin on every side, nothing cut off."
+    "prompt": "A round potted shrub from a Pistoia plant nursery, in a black plastic pot. Setting: the modern outskirts of Pistoia today (suburban and industrial zone), not a historic town centre and not a postcard village. True 16-bit pixel art game asset: big clearly visible square pixels, crisp hard edges, no anti-aliasing, no blur, no gradients, a limited palette of flat colours, soft afternoon light from the left. Isolated on a plain pure white (#FFFFFF) background, no ground, no shadow on the ground, no sky, no scenery, no frame, no text except what is asked. The whole subject is inside the picture with a white margin on every side, nothing cut off."
   },
   {
     "name": "pistoia-street-1",
+    "refs": [],
     "file": "art/codex/in/pistoia-street-1.png",
     "size": "1024x1024",
     "shape": "square",
@@ -151,17 +165,42 @@
       96,
       96
     ],
-    "prompt": "An Italian green rubbish bin for recycling on wheels. True 16-bit pixel art game asset: big clearly visible square pixels, crisp hard edges, no anti-aliasing, no blur, no gradients, a limited palette of flat colours, soft afternoon light from the left. Isolated on a plain pure white (#FFFFFF) background, no ground, no shadow on the ground, no sky, no scenery, no frame, no text except what is asked. The whole subject is inside the picture with a white margin on every side, nothing cut off."
+    "prompt": "An Italian green rubbish bin for recycling on wheels. Setting: the modern outskirts of Pistoia today (suburban and industrial zone), not a historic town centre and not a postcard village. True 16-bit pixel art game asset: big clearly visible square pixels, crisp hard edges, no anti-aliasing, no blur, no gradients, a limited palette of flat colours, soft afternoon light from the left. Isolated on a plain pure white (#FFFFFF) background, no ground, no shadow on the ground, no sky, no scenery, no frame, no text except what is asked. The whole subject is inside the picture with a white margin on every side, nothing cut off."
   },
   {
-    "name": "extra-ufp",
-    "file": "art/codex/in/extra-ufp.png",
+    "name": "lm-cappella",
+    "refs": [],
+    "file": "art/codex/in/lm-cappella.png",
+    "size": "1024x1024",
+    "shape": "square",
+    "target": [
+      192,
+      192
+    ],
+    "prompt": "A tiny old Italian roadside chapel (cappellina) by a country lane near Pistoia: a single small room with a gabled terracotta tile roof, plastered walls, an arched doorway with a small iron gate, a little cross on the gable, as seen from the street, its full recognisable shape, seen straight on. Orthographic, perfectly straight-on front view: no perspective, no side walls visible, the building's base is a straight horizontal line. True 16-bit pixel art game asset: big clearly visible square pixels, crisp hard edges, no anti-aliasing, no blur, no gradients, a limited palette of flat colours, soft afternoon light from the left. Isolated on a plain pure white (#FFFFFF) background, no ground, no shadow on the ground, no sky, no scenery, no frame, no text except what is asked. The whole subject is inside the picture with a white margin on every side, nothing cut off."
+  },
+  {
+    "name": "lm-mensa",
+    "refs": [],
+    "file": "art/codex/in/lm-mensa.png",
     "size": "1536x1024",
     "shape": "landscape",
     "target": [
       256,
-      112
+      160
     ],
-    "prompt": "The full front elevation of the warehouse of an Italian hardware and tools wholesaler in an industrial zone near Pistoia: light grey prefabricated concrete panels, a long blue sign band across the top with the word UTENSILFERRAMENTA in big white capital letters and a small yellow circle logo with the number 50, two yellow roller shutter doors, a glass office entrance, seen straight on, flat front elevation. Orthographic, perfectly straight-on front view: no perspective, no side walls visible, the building's base is a straight horizontal line. True 16-bit pixel art game asset: big clearly visible square pixels, crisp hard edges, no anti-aliasing, no blur, no gradients, a limited palette of flat colours, soft afternoon light from the left. Isolated on a plain pure white (#FFFFFF) background, no ground, no shadow on the ground, no sky, no scenery, no frame, no text except what is asked. The whole subject is inside the picture with a white margin on every side, nothing cut off."
+    "prompt": "The Ex Mensa Sant'Agostino in Pistoia, a 1980 building by the architect Leonardo Ricci: an expressive modernist building of exposed concrete with bold sloping and cantilevered volumes, strips of windows, low and wide, as seen from the street, its full recognisable shape, seen straight on. Orthographic, perfectly straight-on front view: no perspective, no side walls visible, the building's base is a straight horizontal line. True 16-bit pixel art game asset: big clearly visible square pixels, crisp hard edges, no anti-aliasing, no blur, no gradients, a limited palette of flat colours, soft afternoon light from the left. Isolated on a plain pure white (#FFFFFF) background, no ground, no shadow on the ground, no sky, no scenery, no frame, no text except what is asked. The whole subject is inside the picture with a white margin on every side, nothing cut off."
+  },
+  {
+    "name": "lm-ufp",
+    "refs": [],
+    "file": "art/codex/in/lm-ufp.png",
+    "size": "1536x1024",
+    "shape": "landscape",
+    "target": [
+      256,
+      160
+    ],
+    "prompt": "The headquarters and warehouse of Utensilferramenta Pistoiese S.p.A., a hardware and tools wholesaler in the industrial zone of Pistoia: a large modern prefabricated industrial building, low and very wide, with loading doors and an office entrance, as seen from the street, its full recognisable shape, seen straight on. Orthographic, perfectly straight-on front view: no perspective, no side walls visible, the building's base is a straight horizontal line. True 16-bit pixel art game asset: big clearly visible square pixels, crisp hard edges, no anti-aliasing, no blur, no gradients, a limited palette of flat colours, soft afternoon light from the left. Isolated on a plain pure white (#FFFFFF) background, no ground, no shadow on the ground, no sky, no scenery, no frame, no text except what is asked. The whole subject is inside the picture with a white margin on every side, nothing cut off."
   }
 ]

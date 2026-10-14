@@ -17,9 +17,9 @@ Ultimo aggiornamento: 14 ottobre 2026 (fine della prima sessione).
 - Faccia vera di Rox ritagliata dalla prima foto su corpo pixel art (maglietta nera col logo "50", bermuda).
 - Auto del giocatore: utilitaria rossa targata "UFP 50", vista da dietro.
 - Comandi tastiera e touch, layout verticale e orizzontale, audio sintetizzato, record locali, condivisione.
-- Palazzi: disegni provvisori. Kit di prompt per Codex pronto (`CODEX.md`, `art/codex/PROMPTS.md`) e script di
-  conversione in pixel art (`tools/codex-art.mjs`), testato solo con un'immagine finta.
-- Workflow GitHub Pages pronto (serve attivarlo e fare merge su `main`).
+- Palazzi: 11 immagini fatte con Codex, il resto provvisorio (vedi punto 6). Edifici veri come landmark al loro posto.
+  Prompt e strumenti: `CODEX.md`, `art/codex/`, `tools/codex-art.mjs`, `tools/landmarks.mjs`.
+- Sito pubblicato su GitHub Pages (`https://av3rgfx.github.io/rox/`), si aggiorna a ogni merge su `main`.
 
 ## Decisioni prese con il proprietario
 
@@ -48,12 +48,13 @@ Ultimo aggiornamento: 14 ottobre 2026 (fine della prima sessione).
    Rox sul Grizzly come boss. Da progettare insieme (scena a sé dopo il traguardo, o terza modalità).
 5. **Classifica condivisa** tra colleghi (ora solo record locale): proposta Supabase (connesso alla sessione) con una
    tabella punteggi e nome del giocatore; valutare anche anti-cheat minimo.
-6. **Grafica dei palazzi**: il proprietario ha generato con Codex le 16 immagini del primo piano, ma non sono ancora
-   nel repository. Col nuovo percorso il piano ha 14 immagini + il magazzino: ne servono 3 nuove (`pistoia-shop-4/5/6`,
-   prompt in `art/codex/PROMPTS-NUOVE.md`); `pistoia-house-3`, `pistoia-farm-1`, `pistoia-tower-1` e la chiesa
-   `lm-Q3673382` non servono più (la strada nuova non ha quei tipi di edificio). Quando arrivano le immagini da Codex/ChatGPT, `node tools/codex-art.mjs import`, poi
-   `node tools/pixel-path/scripts/clean.mjs --trip .`, guardare `art/contact.png`, provare il gioco e correggere.
-   Il magazzino UFP (`extra-ufp`) viene usato da solo se `art/extra-ufp.png` esiste.
+6. **Grafica dei palazzi**: 11 immagini del primo giro di Codex sono nel gioco (PR #3 di Codex integrata nella PR #2,
+   con un margine aggiunto: senza, la pulizia ne scartava 5 come "tagliate"). Mancano `pistoia-shop-4/5/6` e i 3
+   landmark (`lm-cappella`, `lm-mensa`, `lm-ufp`). Il proprietario ha trovato le immagini poco fedeli (Utensilferramenta
+   inventato): per i landmark servono **foto** in `art/codex/ref/` (vedi `art/codex/ref/README.md`), poi il messaggio
+   in `art/codex/MESSAGGIO-CODEX.md`. Quando arriva la PR di Codex: controllare `clean.mjs` (immagini scartate),
+   `art/contact.png`, provare il gioco e i landmark al loro posto (cappellina m 84 a sinistra, Mensa m 897 a destra,
+   UFP m 1139 a destra).
 7. **Playtest con persone vere**: regolare la difficoltà. Valori attuali (percorso da 1,1 km): Investi 60 s, un Rox
    ogni 24–46 m (il bot arriva in ~38 s senza incidenti, 28 Rox su 33); Chase: Rox parte 45 m avanti, velocità
    13–26 m/s contro 35 del giocatore, 5 cuori, colpo valido entro 1,7 m di lato (il bot vince in ~25 s, a metà strada).

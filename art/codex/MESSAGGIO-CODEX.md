@@ -1,0 +1,44 @@
+# Messaggio per Codex
+
+Da incollare in Codex, sul repository `av3rgfx/rox`, branch `main`, dopo aver caricato le foto in `art/codex/ref/`.
+
+```
+Nel repository c'è ROX, un gioco in pixel art su una strada vera di Pistoia, costruito con Pixel Path (il motore e i suoi script sono in tools/pixel-path/: leggi tools/pixel-path/README.md e SKILL.md per capire come la strada viene ricostruita da OpenStreetMap e OSRM e come si usano le immagini). Devi sistemare le immagini degli edifici.
+
+Leggi prima:
+- CODEX.md (come funziona la grafica)
+- art/codex/REFERENCE.md (com'è davvero la strada e il giudizio sulle immagini già fatte)
+- art/codex/ref/README.md (le foto di riferimento)
+
+Poi:
+
+1. Esegui:
+     node tools/codex-art.mjs prompts
+     node tools/codex-art.mjs prompts --only pistoia-shop-4,pistoia-shop-5,pistoia-shop-6,lm-cappella,lm-mensa,lm-ufp --out art/codex/PROMPTS-NUOVE.md
+   Così i prompt includono le foto che ho messo in art/codex/ref/.
+
+2. Genera le immagini di art/codex/PROMPTS-NUOVE.md con il tuo strumento di generazione immagini, usando ESATTAMENTE il prompt e il formato indicati, e salvale come PNG nel percorso indicato (art/codex/in/<nome>.png), senza ridimensionarle.
+   Quando per un'immagine sono indicate delle foto di riferimento, passale allo strumento come immagini di riferimento e aggiungi al prompt la frase indicata: l'edificio deve somigliare a quello della foto (forma, piani, colori, materiali, finestre, porte, insegne), raddrizzato in vista frontale. Questo vale soprattutto per lm-ufp (Utensilferramenta).
+   Se per lm-ufp, lm-mensa o lm-cappella non c'è nessuna foto, NON generare quell'immagine e dimmelo alla fine: senza foto verrebbe inventata.
+
+3. Controlla le immagini già fatte (art/pistoia-*.png) confrontandole con art/codex/REFERENCE.md e con le foto della strada in art/codex/ref/strada-*.jpg, se ci sono. Rigenera con il prompt di art/codex/PROMPTS.md quelle che REFERENCE.md segna "da rifare" e quelle che secondo te non sembrano la periferia di Pistoia (per esempio da centro storico o da cartolina). Le altre lasciale stare.
+
+4. Esegui:
+     node tools/codex-art.mjs import
+     node tools/pixel-path/scripts/clean.mjs --trip .
+   Apri art/contact.png e guarda ogni immagine. Se una è sbagliata, rigenerala e ripeti questo punto. Sono sbagliate le immagini:
+   - viste di lato o in prospettiva;
+   - con cielo, prato o un colore dietro invece del bianco;
+   - tagliate ai bordi;
+   - con due edifici in una;
+   - con loghi di marche vere (l'insegna di Utensilferramenta nella foto va bene).
+
+5. Crea un branch chiamato codex/palazzi-2. Fai commit di art/raw/, di tutti i file art/*.png, di art/kit.json e dei due file PROMPTS (NON di art/codex/in/). Apri una pull request verso main.
+
+6. Nella descrizione della pull request scrivi:
+   - quali immagini hai generato o rigenerato e perché;
+   - quali foto di riferimento hai usato;
+   - quali immagini sono ancora imperfette o mancano.
+
+Non modificare nessun altro file.
+```

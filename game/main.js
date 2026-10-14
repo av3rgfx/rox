@@ -62,7 +62,8 @@ const TXT = new Map(), txt = (t, c, k) => { const key = t + c + k; if (!TXT.has(
 $('title-face').src = 'assets/rox/face.png';
 
 await makeRoad();
-const LEN = road.LEN, FINISH = LEN - 55, BOSS_HP = 5;   // the clock-in banner; the warehouse stands just after it
+const LEN = road.LEN, FINISH = LEN - 55, BOSS_HP = 5;
+const UFP_LANDMARK = road.LMS.some(l => l.qid === 'ufp' && l.art);   // the real warehouse at its real place: then no stand-in   // the clock-in banner; the warehouse stands just after it
 
 // ------------------------------------------------------------ input
 const keys = { left: false, right: false, gas: false, brake: false };
@@ -284,7 +285,7 @@ function things() {
     else if (e.kind === 'wet') th = add(e, PROPS.wet, 0.8);
     else if (e.kind === 'coffee') th = add(e, PROPS.coffee, 0.5, 0.25 + Math.sin(G.t * 5) * 0.12);
     else if (e.kind === 'finish') { const rw = road.roadAt(e.s).rw; th = add(e, PROPS.finish, 4.4, 0, 0, 0, rw * 2 + 3); }
-    else if (e.kind === 'ufp') { const q = road.roadAt(e.s); th = add(e, PROPS.ufp, 9, 0, 0, q.rw + (q.sw || 2) + 9); }
+    else if (e.kind === 'ufp') { if (UFP_LANDMARK) continue; const q = road.roadAt(e.s); th = add(e, PROPS.ufp, 9, 0, 0, q.rw + (q.sw || 2) + 9); }
     e.th = th;
   }
   // your car, with a little roll when you steer, and its shadow
