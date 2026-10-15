@@ -41,6 +41,11 @@ export const sfx = {
   beep(hi) { tone('square', hi ? 1046 : 523, hi ? 1046 : 523, 0, hi ? 0.4 : 0.18, 0.15); },
   win() { [523, 659, 784, 1047, 784, 1047].forEach((f, i) => tone('square', f, f, i * 0.12, 0.2, 0.13)); },
   lose() { [392, 370, 349, 330].forEach((f, i) => tone('triangle', f, f * 0.98, i * 0.28, 0.32, 0.18)); tone('sawtooth', 110, 70, 1.15, 0.7, 0.12); },
+  // the boss fight: the battery dying, charging back up, a reversing forklift, a box landing
+  flat() { [880, 660, 494, 330, 220].forEach((f, i) => tone('square', f, f * 0.97, i * 0.09, 0.1, 0.1)); },
+  charge() { [262, 330, 392, 523, 659].forEach((f, i) => tone('square', f, f, i * 0.05, 0.07, 0.08)); },
+  backup() { tone('square', 1046, 1046, 0, 0.18, 0.035); },
+  thud() { noise(0, 0.22, 0.45, 260, 0.8); tone('sine', 120, 50, 0, 0.2, 0.2); },
   taunt() { tone('square', 660, 880, 0, 0.08, 0.06); tone('square', 880, 660, 0.09, 0.08, 0.06); },
 };
 

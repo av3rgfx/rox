@@ -71,10 +71,11 @@ function faceVar(face, kind) {
   x.putImageData(id, 0, 0); return c;
 }
 
-// the body, 40 x 92, head box at the top. pose: stand | wave | walk1 | walk2 | phone | eat | push | sit | fly (arms up)
+// the body, 40 x 92, head box at the top. pose: stand | wave | walk1 | walk2 | phone | eat | push | sit | fly (arms up) |
+// drive (sitting, hands on a steering wheel) | climb1 | climb2 (one arm up, then the other)
 function roxBody(face, pose) {
   const c = canv(40, 92), x = ctxOf(c), R = (a, b, w, h, col) => { x.fillStyle = rgb(col); x.fillRect(a, b, w, h); };
-  const sit = pose === 'sit';
+  const sit = pose === 'sit' || pose === 'drive';
   // legs and shoes (sitting: dangling, shorter)
   const legL = pose === 'walk1' ? -3 : 0, legR = pose === 'walk2' ? -3 : 0;
   if (!sit) {
@@ -100,7 +101,9 @@ function roxBody(face, pose) {
   else if (pose === 'fly') { armUpL(); armUpR(); }
   else if (pose === 'phone') { armDownR(); sleeveL(); R(3, 36, 4, 18, SKIN); R(2, 28, 6, 8, SKIN); R(4, 25, 4, 10, [40, 40, 48]); R(5, 26, 2, 3, [120, 180, 230]); }
   else if (pose === 'eat') { sleeveL(); sleeveR(); R(6, 52, 6, 5, SKIN); R(29, 52, 6, 5, SKIN); R(10, 50, 22, 6, SKIN); }
-  else if (pose === 'push') { sleeveL(); sleeveR(); R(4, 54, 5, 8, SKIN); R(32, 54, 5, 8, SKIN); R(6, 60, 6, 4, SKIN); R(29, 60, 6, 4, SKIN); }
+  else if (pose === 'climb1') { armUpL(); armDownR(); }
+  else if (pose === 'climb2') { armDownL(); armUpR(); }
+  else if (pose === 'push' || pose === 'drive') { sleeveL(); sleeveR(); R(4, 54, 5, 8, SKIN); R(32, 54, 5, 8, SKIN); R(6, 60, 6, 4, SKIN); R(29, 60, 6, 4, SKIN); }
   else if (sit) { armDownL(); armUpR(); }
   else { armDownL(); armDownR(); }
   // the head: his face, a bobblehead on purpose (faceVar's canvas, 2 px wider each side)
@@ -161,6 +164,9 @@ export function buildRox(faceImg) {
   S.gold = tinted(S.wave, (r, g, b) => { const l = (r + g + b) / 3; return [Math.min(255, 90 + l * 0.9), Math.min(255, 66 + l * 0.75), Math.max(0, l * 0.25)]; });
   S.goldWalk1 = tinted(S.walk1, (r, g, b) => { const l = (r + g + b) / 3; return [Math.min(255, 90 + l * 0.9), Math.min(255, 66 + l * 0.75), Math.max(0, l * 0.25)]; });
   S.goldWalk2 = tinted(S.walk2, (r, g, b) => { const l = (r + g + b) / 3; return [Math.min(255, 90 + l * 0.9), Math.min(255, 66 + l * 0.75), Math.max(0, l * 0.25)]; });
+  // the boss fight: at the wheel of a forklift (the forklift is drawn round him by buildLifts), climbing the racking
+  for (const f of ['calm', 'grin', 'ouch']) S['drive_' + f] = body('drive', f);
+  S.climb1 = outline(body('climb1', 'grin')); S.climb2 = outline(body('climb2', 'grin'));
   S.face = outline(face);
   return S;
 }
@@ -255,6 +261,67 @@ export function buildProps() {
     for (const xx of [W - 60, W - 44, W - 28]) R(xx, 92, 3, 8, [236, 120, 30]);
     P.ufp = outline(c); }
   return P;
+}
+
+// ============================================================ THE BOSS FIGHT: forklifts in the IS aisle
+const LY = [246, 196, 30], LY_D = [196, 148, 18], LY_L = [255, 226, 110], STEEL = [118, 122, 132], STEEL_D = [70, 72, 80], TYRE = [26, 26, 30];
+// yours, UFP's yellow forklift from behind: the round counterweight, an open guard over the seat (you see through it),
+// the mast and the driver (you, in the company T-shirt) beyond, an orange beacon. brake: the lights on
+function liftRear(brake) {
+  const c = canv(80, 92), x = ctxOf(c), R = (a, b, w, h, col) => { x.fillStyle = rgb(col); x.fillRect(a, b, w, h); };
+  R(28, 2, 4, 52, STEEL_D); R(48, 2, 4, 52, STEEL_D); R(28, 2, 24, 3, STEEL_D);   // the mast beyond
+  R(34, 26, 12, 10, [62, 44, 30]); R(33, 22, 14, 7, [70, 50, 34]); R(36, 35, 8, 3, SKIN_D);   // the driver's head from behind, short brown hair, neck
+  R(26, 37, 28, 18, SHIRT); R(27, 38, 4, 14, SHIRT_L); pixelText(x, '50', 35, 42, '#f4f0e6', 1);   // shoulders, the logo on the back too
+  R(24, 46, 32, 10, [30, 30, 32]); R(25, 47, 30, 2, [56, 56, 60]);   // the seat back
+  R(8, 8, 64, 4, [40, 40, 46]); for (let i = 12; i < 70; i += 8) R(i, 8, 2, 4, [70, 70, 78]); R(8, 8, 4, 50, [40, 40, 46]); R(68, 8, 4, 50, [40, 40, 46]);   // the guard: roof grid and rear posts
+  R(37, 2, 6, 6, [255, 120, 20]); R(38, 3, 2, 2, [255, 220, 150]);   // the beacon
+  R(4, 54, 72, 16, LY); R(4, 54, 72, 2, LY_L); R(4, 54, 3, 16, LY_D); R(73, 54, 3, 16, LY_D);   // the body
+  for (let yy = 68; yy < 82; yy++) { const hw = 36 - Math.round(((yy - 68) / 14) ** 2 * 8); R(40 - hw, yy, hw * 2, 1, yy < 70 ? LY_L : LY); }   // the counterweight, rounded
+  for (let i = 0; i < 9; i++) R(8 + i * 8, 80, 4, 2, [30, 30, 30]);   // hazard stripes
+  pixelText(x, 'UFP', 23, 66, '#2a2a30', 2);   // big: the picture is drawn smaller than it is
+  const lc = brake ? [255, 70, 60] : [170, 30, 30]; R(8, 58, 6, 5, lc); R(66, 58, 6, 5, lc); if (brake) { R(9, 59, 3, 2, [255, 200, 190]); R(67, 59, 3, 2, [255, 200, 190]); }
+  R(0, 74, 12, 18, TYRE); R(68, 74, 12, 18, TYRE); R(2, 76, 8, 2, [60, 60, 66]); R(70, 76, 8, 2, [60, 60, 66]);   // the rear wheels
+  return outline(c);
+}
+// Rox's forklift from the front, reversing away from you (so the forks face you): orange and blue like the Grizzly, forks
+// up with a pallet of fennel, wet-floor signs and boxes he throws at you; Rox at the wheel behind the load; on the guard
+// the battery light (green; red and blinking when it runs flat). rox: his picture at the wheel, or null (he jumped off)
+function liftFront(rox, light, props) {
+  const c = canv(88, 124), x = ctxOf(c), R = (a, b, w, h, col) => { x.fillStyle = rgb(col); x.fillRect(a, b, w, h); };
+  R(8, 12, 72, 4, [40, 40, 46]); R(8, 12, 4, 80, [40, 40, 46]); R(76, 12, 4, 80, [40, 40, 46]);   // the guard
+  R(14, 60, 60, 36, ORANGE); R(14, 60, 60, 3, [255, 150, 70]);   // the body behind the seat
+  if (rox) x.drawImage(rox, 24, 16);
+  R(40, 4, 8, 8, [40, 40, 46]); R(41, 5, 6, 6, light); if (light[0] > 200 && light[1] < 120) R(42, 6, 2, 2, [255, 210, 200]);   // the battery light
+  R(16, 8, 5, 104, STEEL); R(16, 8, 2, 104, [160, 164, 172]); R(67, 8, 5, 104, STEEL); R(67, 8, 2, 104, [160, 164, 172]); R(16, 8, 56, 3, STEEL_D);   // the mast
+  R(14, 78, 60, 6, STEEL_D); R(24, 84, 6, 4, STEEL); R(58, 84, 6, 4, STEEL);   // the fork carriage, the fork tips
+  x.drawImage(props.box, 10, 60); x.drawImage(props.wet, 31, 52); x.drawImage(props.fennel, 48, 56); x.drawImage(props.fennel, 58, 60); x.drawImage(props.box, 52, 66);   // the load
+  R(4, 76, 80, 8, [156, 114, 66]); for (let i = 0; i < 5; i++) R(6 + i * 18, 76, 4, 8, [108, 76, 40]); R(4, 76, 80, 1, [190, 150, 96]);   // the pallet
+  R(6, 94, 76, 14, ORANGE); R(6, 94, 76, 2, [255, 150, 70]); R(6, 104, 76, 4, BLUE); pixelText(x, '50', 38, 97, '#f4f0e6', 1);   // the lower front, a blue band
+  R(10, 96, 6, 4, [250, 246, 214]); R(72, 96, 6, 4, [250, 246, 214]);   // headlights
+  R(2, 104, 14, 20, TYRE); R(72, 104, 14, 20, TYRE); R(4, 106, 10, 2, [60, 60, 66]); R(74, 106, 10, 2, [60, 60, 66]);   // the front wheels
+  return outline(c);
+}
+// a cardboard box with tape and a label; a blue jerrycan that leaks; the aisle's sign hanging from the ceiling
+function box() {
+  const c = canv(26, 22), x = ctxOf(c), R = (a, b, w, h, col) => { x.fillStyle = rgb(col); x.fillRect(a, b, w, h); };
+  R(0, 0, 26, 22, [186, 140, 88]); R(0, 0, 26, 3, [206, 164, 110]); R(11, 0, 4, 22, [214, 190, 140]); R(0, 19, 26, 3, [150, 108, 64]); R(3, 8, 6, 5, [244, 244, 236]); R(4, 9, 4, 1, [40, 40, 40]); R(4, 11, 3, 1, [40, 40, 40]);
+  R(17, 8, 7, 3, [200, 40, 40]); return c;
+}
+function jerrycan() {
+  const c = canv(18, 24), x = ctxOf(c), R = (a, b, w, h, col) => { x.fillStyle = rgb(col); x.fillRect(a, b, w, h); };
+  R(2, 4, 14, 20, [40, 96, 190]); R(2, 4, 14, 2, [90, 140, 220]); R(4, 8, 2, 14, [70, 124, 210]); R(9, 0, 6, 4, [40, 96, 190]); R(11, 1, 3, 2, [26, 60, 130]); R(13, 0, 3, 3, [230, 230, 230]);
+  R(7, 12, 6, 6, [244, 244, 236]); R(8, 14, 4, 2, [40, 96, 190]); return c;
+}
+export function buildLifts(ROX) {
+  const P = { box: box(), wet: buildProps().wet, fennel: fennel() }, L = { you: liftRear(false), youBrake: liftRear(true) };
+  const GREEN = [70, 230, 90], RED = [255, 50, 40], OFF = [90, 20, 20];
+  for (const f of ['calm', 'grin', 'ouch']) { L[f] = liftFront(ROX['drive_' + f], GREEN, P); L[f + 'Flat'] = liftFront(ROX['drive_' + f], RED, P); L[f + 'Off'] = liftFront(ROX['drive_' + f], OFF, P); }
+  L.empty = liftFront(null, OFF, P);
+  L.box = outline(P.box); L.can = outline(jerrycan());
+  { const t = 'CORRIDOIO IS', c = canv(textW(t, 1) + 12, 26), x = ctxOf(c), R = (a, b, w, h, col) => { x.fillStyle = rgb(col); x.fillRect(a, b, w, h); };   // hanging on two chains
+    R(4, 0, 1, 8, [150, 150, 156]); R(c.width - 5, 0, 1, 8, [150, 150, 156]); R(0, 8, c.width, 18, [36, 70, 170]); R(1, 9, c.width - 2, 1, [90, 126, 210]); pixelText(x, t, 6, 13, '#fff8e8', 1);
+    L.sign = outline(c); }
+  return L;
 }
 
 // a speech bubble: white box, dark border, a tail pointing down, pixel text (wrapped to two lines)

@@ -1,6 +1,6 @@
 # Stato del progetto e prossima sessione
 
-Ultimo aggiornamento: 15 ottobre 2026, fine della terza sessione (branch `claude/rox-sessione-3`, PR da unire).
+Ultimo aggiornamento: 15 ottobre 2026, fine della quarta sessione (branch `claude/rox-sessione-4`, PR da unire).
 
 ## Cosa c'è già (funziona, testato in headless su PC e telefono)
 
@@ -9,10 +9,13 @@ Ultimo aggiornamento: 15 ottobre 2026, fine della terza sessione (branch `claude
   Via Ubaldo Fantacci, Via Bure Vecchia Nord, Via Enrico Fermi, Via Dino Buzzati e Via Luigi Salvatorelli fino a
   **oltre** Utensilferramenta, che sta a destra lungo la strada. Scartati: la scorciatoia di 1,1 km giù per Via Bure
   Vecchia Nord e il giro ad anello di OSRM tra le corsie del parcheggio.
-- Due modalità complete:
+- Tre modalità complete:
   - **INVESTI ROX**: partenza 14:28:00, timbratura entro le **14:30** (deciso dal proprietario); Rox in 9 varianti; combo fino a x8; traffico
     (−5 s), Ape, caffè turbo; muro di 4 Rox prima del traguardo "TIMBRA QUI" davanti alla serranda di UFP.
   - **ROX CHASE**: Rox sul Grizzly seduto al contrario, 5 cuori, finocchi e cartelli bagnati; perdi se arriva prima.
+  - **CORRIDOIO IS** (boss 1, quarta sessione): dopo "TIMBRA QUI" se timbri in tempo (schermata "TIMBRATO! Ma Rox non
+    ha finito...", con "AL CORRIDOIO IS!" o "FINE QUI"; il punteggio si somma) e come terza carta del menu
+    (`?mode=boss`). Vedi sotto, "Quarta sessione".
 - Grafica: tutte le `pistoia-*` e i due landmark (UFP, Ex Mensa) sono immagini vere di Codex (due giri; il secondo
   era la PR #4, integrata a mano e chiusa). Il Panorama è ritagliato dal `lm-panorama` di Codex (4 campate ripetibili
   e l'ingresso con l'insegna). Mancano ancora le 15 `b-*` e il secondo capannone di UFP: prompt in
@@ -43,6 +46,30 @@ Ultimo aggiornamento: 15 ottobre 2026, fine della terza sessione (branch `claude
   - playtest col bot: i Rox fermi e il Grizzly stanno lontani dalle auto parcheggiate al marciapiede, dopo un urto
     contro un'auto parcheggiata torni in strada (prima finivi dietro la fila e ci risbattevi), il Grizzly schiva meno
     e più piano, la scorciatoia dopo il sorpasso è più corta (35–55 m). Risultati in `tools/test/README.md`.
+- Quarta sessione, la boss fight coi muletti nel corridoio IS del magazzino UFP:
+  - un renderer a parte, `game/warehouse.js`: corridoio dritto e senza fine, scaffalature con montanti blu, correnti
+    gialli, bancali di scatole (marroni, avvolte nel film, scatole colorate di utensili con una fascia bianca),
+    pavimento grigio a lastre con le strisce gialle, neon al soffitto con la luce a terra, pozzanghere; cartello blu
+    "CORRIDOIO IS" appeso ogni 45 m;
+  - tu guidi il muletto giallo di UFP (da dietro, guardia aperta: ci vedi attraverso; "UFP" sul contrappeso, lampeggiante
+    arancione); Rox guida in retromarcia un muletto arancione e blu come il Grizzly (il "50" davanti), forche alzate e
+    un bancale con scatole, cartello bagnato e finocchi; sul tettuccio la spia della batteria;
+  - 3 fasi, 2 colpi ciascuna: **IL BANCALE** (scatole e cartelli che scivolano verso di te, una tanica blu che perde e
+    bagna una corsia: slitti), **PIOGGIA DI FINOCCHI** (lanciati ad arco, l'ombra a terra mostra dove cadono; quelli
+    caduti fanno scivolare), **TURBO** (faccia col ghigno, più veloce di lato, scatole che cadono dagli scaffali con
+    l'ombra prima);
+  - lo colpisci solo quando resta a secco: la spia lampeggia rossa per 1,2 s, poi "BATTERIA SCARICA!" e sta fermo
+    3,4 / 3,1 / 2,8 s secondo la fase. Se lo tocchi mentre va ti tiene a distanza (nel corridoio non si sorpassa);
+  - il tuo muletto regge 5 botte (HUD: MULETTO ■■■■■); a ogni colpo a Rox cade un caffè dal bancale: preso, ridà una
+    vita (o 500 punti se sei pieno). Scelta mia per stare sul gentile, si può togliere;
+  - fine: al sesto colpo Rox salta giù, si arrampica sullo scaffale ("NON MI PRENDI!", "CI VEDIAMO SUGLI SCAFFALI!") e
+    in cima saluta: gancio per il boss 2. Fine partita "MULETTO FERMATO!" ... "CONTINUA...". Se perdi: "ROX HA VINTO!";
+  - punteggio: 1500 a colpo, bonus tempo (6000 − 40 × secondi) + 800 per ogni vita rimasta; record locale `boss`
+    (solo i punti del corridoio) nella stessa chiave `rox-best-v4`;
+  - circa 50 battute nuove (fase per fase, batteria scarica, ricarica, colpito, clacson, risate quando ti colpisce);
+    suoni nuovi: batteria che muore, ricarica, il bip della retromarcia, la scatola che cade;
+  - menu a 3 carte (in colonna sul telefono verticale, compatto sul telefono orizzontale), sezione in "Come si gioca".
+  - Playtest col bot: vedi `tools/test/README.md` (nuovo `tools/test/boss.mjs`).
 - Strumenti nuovi: `tools/realroad.mjs` (segnaletica e rotonde da OSM + `art/road-custom.json` → `data/road.json`),
   `tools/rebase.mjs` (dopo un nuovo bake sposta edifici veri e landmark ai metri nuovi), `tools/test/at.mjs`
   (fotografa la strada vuota a metri precisi).
@@ -76,36 +103,30 @@ Ultimo aggiornamento: 15 ottobre 2026, fine della terza sessione (branch `claude
 
 ## Da fare nella prossima sessione
 
-A e B della terza sessione sono fatti (sopra). **Nella quarta sessione: costruire il boss 1 coi muletti (C.1).** Nessuna PR di Codex con le `b-*` è arrivata: se arriva, controllarla e
-integrarla come la #4 (`art/codex/MESSAGGIO-CODEX.md` si può mandare). Lavorare senza chiedere le informazioni mancanti,
-piano breve all'inizio, branch nuovo da `main`, PR alla fine.
+La quarta sessione ha costruito il boss 1 (C.1, sopra in "Cosa c'è già"). **Prossima sessione: far provare al
+proprietario la boss fight e correggere quello che dice; poi il boss 2 sugli scaffali (C.2), se lo approva.** Nessuna PR
+di Codex con le `b-*` è arrivata: se arriva, controllarla e integrarla come la #4 (`art/codex/MESSAGGIO-CODEX.md` si può
+mandare). Lavorare senza chiedere le informazioni mancanti, piano breve all'inizio, branch nuovo da `main`, PR alla fine.
 
 ### C. Boss fight e nuove modalità
 
-**Decisione del proprietario (fine della terza sessione): la boss fight va bene, "costruiscila con i muletti".** È il
-lavoro della quarta sessione. Interpretazione: **tu e Rox siete entrambi su un muletto** (nella boss fight successiva
-"Rossano scende dal muletto", quindi in questa ci sta sopra). Se il proprietario intendeva altro, lo correggerà: non
-chiedere prima.
+**Decisione del proprietario (fine della terza sessione): la boss fight va bene, "costruiscila con i muletti".**
+Interpretazione usata: **tu e Rox siete entrambi su un muletto** (nella boss fight successiva "Rossano scende dal
+muletto"). Se il proprietario intendeva altro, lo correggerà.
 
-1. **Boss 1, "CORRIDOIO IS" (da costruire ora)**:
-   - quando: dopo "TIMBRA QUI" in Investi se timbri in tempo, e anche come terza modalità dal menu;
-   - dove: il corridoio del magazzino UFP, dritto, scaffali gialli e blu ai lati con scatole, pavimento grigio con le
-     strisce gialle, neon; un renderer a parte e semplice (`game/warehouse.js`), senza i dati della strada;
-   - tu guidi il **muletto giallo di UFP** visto da dietro (in magazzino l'auto non entra); Rox guida **un altro
-     muletto** a marcia indietro verso il fondo del corridoio, con le forche alzate e sopra un bancale pieno di
-     finocchi, cartelli "pavimento bagnato" e scatole, che ti butta addosso;
-   - 3 fasi, 2 colpi ciascuna (6 in tutto, circa 90 s):
-     1. **bancale**: cartelli e scatole che scivolano verso di te, una tanica che perde e bagna una corsia (slitti);
-     2. **finocchi**: li lancia ad arco, l'ombra a terra mostra dove cadono;
-     3. **turbo**: faccia col ghigno, più veloce, scatole che cadono dagli scaffali (ombra prima).
-
-     Si colpisce speronandolo quando il suo muletto resta a secco ("BATTERIA SCARICA", spia che lampeggia, 2 s);
-   - fine: al sesto colpo Rox salta giù dal muletto e si arrampica sugli scaffali ("NON MI PRENDI!"): è il gancio per
-     il boss 2. Punteggio = tempo + colpi presi; record locale;
-   - sprite nuovi in `sprites.js`: due muletti (giallo UFP da dietro, quello di Rox di fronte col bancale), Rox seduto
-     al volante (posa `sit` con faccia `grin`/`ouch`), scatole, tanica, scaffale a codice.
-2. **Più avanti, idee del proprietario (non ora)**:
-   - **Boss 2, "Donkey Kong"**: Rossano scende dal muletto e scappa salendo sugli scaffali; tu lo segui piano per
+1. **Boss 1, "CORRIDOIO IS": fatto nella quarta sessione.** Scelte fatte senza chiedere, da far confermare:
+   - la vita del tuo muletto (5 botte) e il caffè che cade dal bancale di Rox a ogni colpo (ridà una vita);
+   - lo colpisci solo a batteria scarica (spia rossa); se lo tocchi mentre va ti tiene a distanza, niente danno;
+   - il muletto di Rox arancione e blu "50" (come il Grizzly), il tuo giallo "UFP"; il guidatore sei tu di spalle con
+     la maglietta "50";
+   - la carta del menu si chiama "CORRIDOIO IS"; dopo Investi in tempo si può scegliere "FINE QUI";
+   - la durata: col bot ~70 s se non sbagli mai un colpo; una persona ci mette di più (vedi `tools/test/README.md`).
+   Possibili ritocchi se il proprietario li chiede: più o meno difficile (`PHASES` in `main.js`: distanza, durata
+   dell'attacco, finestra della batteria, frequenza dei lanci), facce di Rox diverse, una sirena/lampeggiante quando
+   la batteria muore, musica diversa nel magazzino.
+2. **Più avanti, idee del proprietario**:
+   - **Boss 2, "Donkey Kong"** (il prossimo, già agganciato: alla fine del boss 1 Rox scappa sugli scaffali): Rossano
+     scende dal muletto e scappa salendo sugli scaffali; tu lo segui piano per
      piano (piattaforme e scale, vista di lato) mentre lui ti lancia finocchi e oggetti presi dagli scaffali. Gli
      oggetti devono essere **i prodotti veri che vende UFP**: prima di disegnarli analizzare il sito di
      Utensilferramenta Pistoiese (marchi e categorie: utensili, ferramenta, viteria, antinfortunistica...) e farne una
@@ -131,5 +152,6 @@ chiedere prima.
 
 ## Come provarlo
 
-- In locale: `python3 -m http.server 8000` e apri `http://localhost:8000/` (`?mode=investi` / `?mode=chase`).
+- In locale: `python3 -m http.server 8000` e apri `http://localhost:8000/` (`?mode=investi` / `?mode=chase` /
+  `?mode=boss`).
 - Test automatici: `tools/test/README.md`.

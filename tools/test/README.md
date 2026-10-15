@@ -12,7 +12,13 @@ Prima avvia un server statico dalla radice del repo: `python3 -m http.server 876
   Esempi: `node tools/test/drive.mjs chase /tmp/shots 1280 720 6000,20000,40000` ·
   telefono verticale: `node tools/test/drive.mjs investi /tmp/shots 390 844 6000 mobile`
 - `node tools/test/ui.mjs OUT_DIR`: clicca tutte le schermate come una persona (menu, istruzioni, partita, pausa, menu,
-  chase fino alla vittoria) e stampa gli errori della pagina.
+  chase fino alla vittoria, CORRIDOIO IS dal menu fino a Rox che scappa sugli scaffali, Investi timbrato in tempo e
+  passaggio al corridoio IS col punteggio che si somma) e stampa gli errori della pagina.
+- `node tools/test/boss.mjs [partite=6] [ritardo_ms=200] [OUT_DIR] [in_parallelo=3]`: la boss fight giocata da un bot
+  che vede il gioco in ritardo come una persona (schiva quello che arriva, va addosso a Rox quando ha la batteria
+  scarica, prende il caffè). Gioca a `?ts=3` (tre volte più veloce, nel tempo del gioco) e stampa per ogni partita:
+  vinta o no, tempo, colpi dati, colpi presi e da cosa. Con OUT_DIR fa screenshot della prima partita e delle
+  schermate finali; `VERBOSE=1` stampa lo stato ogni 3 s.
 - `node tools/test/at.mjs OUT_DIR 0,500,1000 [w h]`: la strada vuota (niente Rox, niente traffico) ai metri indicati,
   per confrontarla col video tratto per tratto.
 - `node tools/test/sprites.mjs OUT.png`: un foglio con tutti gli sprite (Rox in ogni posa, auto, oggetti, fumetti).
@@ -21,3 +27,9 @@ Il bot è più bravo di una persona (sterza senza ritardo): in Chase vince in ~3
 timbra con 10–30 s di margine. Non mira mai dietro un'auto parcheggiata al marciapiede (una persona la vede).
 Playtest della terza sessione con un bot "umano" (lo stesso con 150–300 ms di ritardo, script non salvato nel repo):
 con 150 ms vince Chase 2 volte su 3 (su `main` 0 su 3) e in Investi timbra in tempo 5 volte su 6.
+
+Playtest della quarta sessione, CORRIDOIO IS con `boss.mjs` (il bot non sbaglia mai la finestra della batteria: una
+persona ci mette di più): 0 ms 6/6 vinte, 200 ms 9/9, 300 ms 9/9, 450 ms 6/6; ~73 s a partita, 2,7–4,2 colpi presi
+in media (il caffè che cade a ogni colpo ridà vite: senza, a 200–300 ms si vinceva 4 volte su 6). Da cosa si prendono
+quasi tutti i colpi: scatole e cartelli che scivolano. Bachi trovati dal bot e corretti:
+il tuo muletto restava "agganciato" a Rox dopo un colpo, e a tutta velocità i finocchi ad arco non partivano mai.
