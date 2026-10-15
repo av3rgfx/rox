@@ -21,7 +21,13 @@ Prima avvia un server statico dalla radice del repo: `python3 -m http.server 876
   schermate finali; `VERBOSE=1` stampa lo stato ogni 3 s.
 - `node tools/test/at.mjs OUT_DIR 0,500,1000 [w h]`: la strada vuota (niente Rox, niente traffico) ai metri indicati,
   per confrontarla col video tratto per tratto.
-- `node tools/test/sprites.mjs OUT.png`: un foglio con tutti gli sprite (Rox in ogni posa, auto, oggetti, fumetti).
+- `node tools/test/kong.mjs [partite=6] [ritardo_ms=200] [OUT_DIR] [in_parallelo=3]`: ROX KONG (il boss sugli scaffali)
+  giocato da un bot che vede la merce in ritardo come una persona: va alla scala più vicina, salta quello che gli
+  rotola contro (prevede dove sarà, con un errore di ±60 ms sul momento del salto), non sale se qualcosa scende dalla
+  scala, si sposta dal punto esclamativo delle scatole che cadono, prende il casco (e il caffè se ha perso una vita).
+  Gioca a `?ts=3` e stampa per ogni partita: vinta o no, tempo, scaffale raggiunto, colpi presi e da cosa, salti.
+- `node tools/test/sprites.mjs OUT.png`: un foglio con tutti gli sprite (Rox in ogni posa, auto, oggetti, fumetti, e
+  quelli di ROX KONG: Rox a metà misura, il magazziniere di lato, la merce).
 
 Il bot è più bravo di una persona (sterza senza ritardo): in Chase vince in ~35 s, in Investi prende ~37 Rox su 42 e
 timbra con 10–30 s di margine. Non mira mai dietro un'auto parcheggiata al marciapiede (una persona la vede).
@@ -33,3 +39,12 @@ persona ci mette di più): 0 ms 6/6 vinte, 200 ms 9/9, 300 ms 9/9, 450 ms 6/6; ~
 in media (il caffè che cade a ogni colpo ridà vite: senza, a 200–300 ms si vinceva 4 volte su 6). Da cosa si prendono
 quasi tutti i colpi: scatole e cartelli che scivolano. Bachi trovati dal bot e corretti:
 il tuo muletto restava "agganciato" a Rox dopo un colpo, e a tutta velocità i finocchi ad arco non partivano mai.
+
+Playtest della quinta sessione, ROX KONG con `kong.mjs` (9 partite per ritardo, 5 vite):
+0 ms 8/9 vinte, 200 ms 7/9, 300 ms 8/9, 450 ms 7/9; ~75–90 s a partita, 3–4 colpi presi in media, quasi tutti da
+rotoli di nastro, ruote e finocchi (le scatole che cadono si schivano). Correzioni nate dal bot:
+- il salto era troppo preciso (stando fermi andava azzeccato entro 70 ms): ora salto più alto, piani più distanti
+  (46 px), merce e area di contatto più piccole; la finestra buona è di ~0,3 s;
+- le scale erano troppo vicine (si saliva in 50 s senza incontrare niente): ora, come in Donkey Kong, si parte vicino
+  ai RESI e la scala per salire è sempre all'altra estremità della trave, quindi la merce arriva di fronte;
+- un tocco veloce su SALTA (più breve di un fotogramma) non faceva saltare: ora resta "prenotato".

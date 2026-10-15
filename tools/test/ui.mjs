@@ -1,4 +1,5 @@
-// clicks through the screens like a person: node tools/test/ui.mjs OUT_DIR
+// clicks through the screens like a person: node tools/test/ui.mjs OUT_DIR (menu, how to play, pause, chase won, the
+// aisle won, on to the shelves and ROX KONG won, ROX KONG from the menu, INVESTI on time and on to the aisle)
 import { mkdirSync } from 'node:fs';
 import { chromium, BASE, watch } from './lib.mjs';
 const out = process.argv[2] || '/tmp/rox-shots'; mkdirSync(out, { recursive: true });
@@ -18,10 +19,22 @@ await p.click('#end-menu'); await p.waitForTimeout(300); await p.screenshot({ pa
 await p.click('#btn-boss'); await p.waitForTimeout(3600); await p.screenshot({ path: `${out}/ui-boss.png` }); console.log('boss:', await p.evaluate(() => __rox.G.phase + ' ' + __rox.G.mode));
 await p.evaluate(() => { const G = __rox.G, L = G.lift; L.hp = 1; L.state = 'flat'; L.stT = 9; L.vs = 0; L.s = G.pos + __rox.BZ + __rox.LIFT_LEN + 1.5; L.lat = G.lat; });
 await p.keyboard.down('ArrowUp'); await p.waitForTimeout(2000); await p.screenshot({ path: `${out}/ui-boss-climb.png` }); await p.keyboard.up('ArrowUp');
-await p.waitForTimeout(3500); await p.screenshot({ path: `${out}/ui-boss-end.png` });
-console.log('boss end:', await p.evaluate(() => __rox.G.phase + ' ' + document.getElementById('end-title').textContent));
+await p.waitForTimeout(3500); await p.screenshot({ path: `${out}/ui-kongintro.png` });
+console.log('after the aisle:', await p.evaluate(() => __rox.G.phase + ' ' + document.getElementById('bi-title').textContent + ' / ' + document.getElementById('bi-go').textContent));
+// on to the shelves, the score carried on; won by force (the third bay, you next to Rox)
+await p.click('#bi-go'); await p.waitForTimeout(4200); await p.screenshot({ path: `${out}/ui-kong.png` });
+console.log('kong:', await p.evaluate(() => __rox.G.mode + ' ' + __rox.G.phase + ' score ' + __rox.G.score + ' carry ' + JSON.stringify(__rox.G.carry)));
+await p.evaluate(() => { const K = __rox.G.K; K.n = 1; K.p.stun = 0; }); await p.evaluate(() => { const G = __rox.G, K = G.K; K.R.mode = 'climb'; K.stage = 'clear'; K.stT = 2.7; });
+await p.waitForTimeout(600); await p.evaluate(() => { const K = __rox.G.K; Object.assign(K.p, { f: K.L.top, lastF: K.L.top, y: K.F[K.L.top].y, x: 60, mode: 'walk' }); K.items = []; K.look = 0; });
+await p.keyboard.down('ArrowLeft'); await p.waitForTimeout(900); await p.keyboard.up('ArrowLeft'); await p.waitForTimeout(800); await p.screenshot({ path: `${out}/ui-kong-slip.png` });
+await p.waitForTimeout(1700); await p.screenshot({ path: `${out}/ui-kong-parcel.png` }); await p.waitForTimeout(2600); await p.screenshot({ path: `${out}/ui-kong-end.png` });
+console.log('kong end:', await p.evaluate(() => __rox.G.phase + ' ' + document.getElementById('end-title').textContent + ' | ' + document.getElementById('end-lines').textContent));
+await p.click('#end-again'); await p.waitForTimeout(3600); console.log('again starts:', await p.evaluate(() => __rox.G.mode)); await p.keyboard.press('p'); await p.click('#btn-quit');
+// ROX KONG from the menu
+await p.click('#btn-kong'); await p.waitForTimeout(5200); await p.screenshot({ path: `${out}/ui-kong-menu.png` }); console.log('kong from the menu:', await p.evaluate(() => __rox.G.mode + ' ' + __rox.G.phase + ' bay ' + (__rox.G.K.n + 1)));
+await p.keyboard.press('p'); await p.click('#btn-quit'); await p.waitForTimeout(300);
 // INVESTI on time, then on to the aisle with the score carried over
-await p.click('#end-menu'); await p.click('#btn-investi'); await p.waitForTimeout(3500);
+await p.click('#btn-investi'); await p.waitForTimeout(3500);
 await p.evaluate(() => { const G = __rox.G; G.pos = __rox.road.LEN - 70 - __rox.CARZ; G.ents = G.ents.filter(e => e.kind !== 'rox'); G.score = 4242; G.speed = 20; });
 await p.keyboard.down('ArrowUp'); await p.waitForTimeout(3500); await p.keyboard.up('ArrowUp'); await p.screenshot({ path: `${out}/ui-bossintro.png` });
 console.log('after investi:', await p.evaluate(() => __rox.G.phase));

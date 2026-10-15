@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#14121a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>ROX</title>
-<meta name="description" content="Rox: dal Panorama a Utensilferramenta, in pixel art. Investi Rox o inseguilo sul Grizzly.">
+<meta name="description" content="Rox: dal Panorama a Utensilferramenta, in pixel art. Investi Rox, inseguilo sul Grizzly, fermalo in magazzino.">
 <link rel="icon" href="assets/rox/face.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,8 +20,9 @@
     game/road.js     the renderer, from Pixel Path (MIT), with hooks for the game
     game/layout.js   what stands beside the road (Pixel Path)
     game/warehouse.js the IS aisle of UFP's warehouse, for the boss fight (its own little renderer)
+    game/kong.js     ROX KONG, the second boss: the racking from the side, like Donkey Kong
   Data: data/ (baked from OpenStreetMap), art/ (scenery pictures, art/kit.json). Serve the folder statically.
-  Debug: ?mode=investi, ?mode=chase or ?mode=boss starts a game straight away.
+  Debug: ?mode=investi, ?mode=chase, ?mode=boss or ?mode=kong starts a game straight away.
 -->
 <style>
   :root { --ink: #fff8e8; --bg: #14121a; --panel: rgba(20, 18, 26, .86); --red: #d8302c; --yellow: #ffd23a; --blue: #3a5cc0; --orange: #ec7022;
@@ -71,7 +72,7 @@
   @keyframes bob { 50% { transform: translateY(-6px) rotate(-6deg); } }
   h1 { margin: 0; font-size: clamp(46px, 13vw, 104px); color: var(--yellow); text-shadow: 5px 5px 0 var(--red), 9px 9px 0 #000; letter-spacing: 6px; font-weight: normal; }
   .tag { font-size: clamp(8px, 1.6vw, 12px); line-height: 1.8; margin: 8px 0 16px; color: #e8dcc0; }
-  .modes { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .modes { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   @media (max-height: 500px) and (min-width: 621px) { #menu h1 { font-size: 44px; letter-spacing: 4px; text-shadow: 3px 3px 0 var(--red), 5px 5px 0 #000; } #menu .logo img { width: 44px; } #menu .tag { margin: 4px 0 8px; }
     #menu .tag { font-size: 8px; line-height: 1.6; } #menu .mode { padding: 7px 8px; } #menu .mode .name { font-size: 11px; margin-bottom: 4px; } #menu .mode .desc { font-size: 7px; line-height: 1.5; } #menu .row { margin-top: 8px; } }
   @media (max-width: 620px) { .modes { grid-template-columns: 1fr; gap: 8px; } .mode { padding: 8px 10px; } .mode .name { margin-bottom: 4px; } }
@@ -80,6 +81,7 @@
   .mode .name { font-size: clamp(12px, 2.4vw, 18px); color: var(--yellow); margin-bottom: 8px; }
   .mode.chase .name { color: var(--orange); }
   .mode.boss .name { color: #7fe0ff; }
+  .mode.kong .name { color: #f6c41e; text-shadow: 2px 2px 0 #2e4aa8; }
   .mode .desc { font-size: clamp(7px, 1.3vw, 10px); line-height: 1.7; color: #d8d0bc; }
   .mode .best { font-size: 7px; margin-top: 8px; color: #8fd0ff; }
   .row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 14px; }
@@ -92,7 +94,7 @@
   #end-title, #bi-title { font-size: clamp(22px, 6vw, 44px); color: var(--yellow); text-shadow: 4px 4px 0 var(--red); margin: 4px 0 10px; }
   #end-score, #bi-score { font-size: clamp(11px, 2.4vw, 18px); color: #7fe0ff; margin-bottom: 10px; }
   #end-lines p { font-size: clamp(8px, 1.5vw, 11px); line-height: 1.8; margin: 6px 0; }
-  #end-lines b { color: var(--yellow); font-weight: normal; }
+  #end-lines b, #bi-tag b { color: var(--yellow); font-weight: normal; }
   #credits { position: fixed; left: 8px; right: 8px; bottom: 4px; font: 9px/1.3 ui-monospace, Menlo, Consolas, monospace; color: rgba(255, 255, 255, .6); text-shadow: 0 1px 1px rgba(0, 0, 0, .8); pointer-events: none; z-index: 6; text-align: center; }
   #credits a { color: inherit; pointer-events: auto; }
   body.playing #credits { opacity: .55; }
@@ -110,6 +112,13 @@
   body.portrait .tb { width: 26vw; height: 26vw; font-size: 18px; }
   body.portrait .tb.small { width: 20vw; height: 20vw; font-size: 9px; }
   body.portrait .pad.right { flex-direction: column-reverse; align-items: center; }
+  /* ROX KONG: up and down the ladders, a jump */
+  .kpad, .khint { display: none !important; }
+  body.kong .kpad { display: flex !important; align-items: center; } body.kong .pad.right { display: none; } body.kong .hint { display: none; }
+  .ud { display: flex; flex-direction: column; gap: 10px; }
+  .tb.jump { background: rgba(246, 196, 30, .35); }
+  body.portrait.kong .tb { width: 21vw; height: 21vw; font-size: 13px; } body.portrait.kong .tb.small { width: 16vw; height: 16vw; }
+  body.portrait.kong .khint { display: block !important; } body.portrait.kong .hint:not(.khint) { display: none; }
   .hint { display: none; }
   body.portrait .hint { display: block; position: fixed; left: 0; right: 0; bottom: max(30px, env(safe-area-inset-bottom)); text-align: center; font-size: 8px; color: #8a849a; pointer-events: none; }
 </style>
@@ -140,7 +149,12 @@
     <button class="tb small" data-k="horn" aria-label="Clacson">PA-PÀ</button>
     <button class="tb brake" data-k="brake" aria-label="Freno">FRENO</button>
   </div>
+  <div class="pad kpad">
+    <div class="ud"><button class="tb small" data-k="gas" aria-label="Su per la scala">▲</button><button class="tb small" data-k="brake" aria-label="Giù per la scala">▼</button></div>
+    <button class="tb jump" data-k="jump" aria-label="Salta">SALTA</button>
+  </div>
   <div class="hint">L'ACCELERATORE È SEMPRE GIÙ</div>
+  <div class="hint khint">▲ ▼ SU E GIÙ PER LE SCALE</div>
 </div>
 
 <section class="screen" id="menu">
@@ -151,6 +165,7 @@
       <button class="mode investi" id="btn-investi"><div class="name">INVESTI ROX</div><div class="desc">Devi timbrare alle 14:30 e Rox è ovunque. Prendine più che puoi.</div><div class="best" id="best-investi"></div></button>
       <button class="mode chase" id="btn-chase"><div class="name">ROX CHASE</div><div class="desc">Rox scappa sul Grizzly lanciando finocchi. Speronalo 5 volte.</div><div class="best" id="best-chase"></div></button>
       <button class="mode boss" id="btn-boss"><div class="name">CORRIDOIO IS</div><div class="desc">In magazzino Rox è su un muletto. Speronalo quando resta senza batteria.</div><div class="best" id="best-boss"></div></button>
+      <button class="mode kong" id="btn-kong"><div class="name">ROX KONG</div><div class="desc">Rox è salito sugli scaffali e ti tira la merce di UFP. Prendilo in cima.</div><div class="best" id="best-kong"></div></button>
     </div>
     <div class="row">
       <button class="btn" id="btn-howto">COME SI GIOCA</button>
@@ -165,12 +180,15 @@
     <h2>COMANDI</h2>
     <p>PC: <kbd>←</kbd> <kbd>→</kbd> sterzi, <kbd>↑</kbd> acceleri, <kbd>↓</kbd> freni, <kbd>SPAZIO</kbd> clacson, <kbd>P</kbd> pausa. Vanno bene anche <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd>.</p>
     <p>Telefono: ◀ ▶ per sterzare, l'acceleratore è sempre premuto, FRENO per frenare, PA-PÀ per suonare. Si gioca meglio in orizzontale.</p>
+    <p>In ROX KONG: <kbd>←</kbd> <kbd>→</kbd> cammini, <kbd>↑</kbd> <kbd>↓</kbd> sali e scendi le scale, <kbd>SPAZIO</kbd> salti. Sul telefono ◀ ▶, ▲ ▼ e SALTA.</p>
     <h2>INVESTI ROX</h2>
     <p>Ogni Rox vale 100 punti, il Grizzly 250, Rox che dorme 150, il Rox d'oro 1000. Prendine tanti di fila e il moltiplicatore sale fino a x8. Le auto ti fanno perdere 5 secondi. Il caffè dà il turbo. Arriva entro le 14:30 per il bonus puntualità.</p>
     <h2>ROX CHASE</h2>
     <p>Rox va al contrario sul Grizzly e corre a timbrare. Speronalo 5 volte prima della ditta. Evita finocchi e cartelli di pavimento bagnato. Se lo superi prende una scorciatoia.</p>
     <h2>CORRIDOIO IS</h2>
     <p>Si gioca dopo Investi Rox, se timbri in tempo, o dal menu. Guidi il muletto giallo di UFP: <kbd>←</kbd> <kbd>→</kbd> per spostarti nel corridoio. Rox va in retromarcia sul suo muletto e ti tira scatole, cartelli e finocchi (l'ombra a terra mostra dove cadono). Quando la spia diventa rossa ha la batteria scarica: speronalo! 6 colpi in 3 fasi. Il tuo muletto regge 5 botte; quando speroni Rox gli cade un caffè: prendilo e ne recuperi una.</p>
+    <h2>ROX KONG</h2>
+    <p>Si gioca dopo il corridoio IS, se fermi il muletto, o dal menu. Rox è in cima agli scaffali e ti fa rotolare addosso la merce di UFP: silicone, schiuma, nastro, ruote, scarpe antinfortunistiche, finocchi. Sali le scale piano per piano e salta quello che arriva (100 punti a salto). Dal secondo scaffale cadono anche scatole di viti: dove lampeggia il punto esclamativo, spostati. Il casco giallo per qualche secondo rompe tutto, il caffè ridà una vita. Tre scaffali; più fai in fretta, più bonus.</p>
     <div class="row"><button class="btn primary" id="btn-howto-back">HO CAPITO</button></div>
   </div>
 </section>
@@ -183,7 +201,7 @@
 <section class="screen" id="bossintro">
   <div class="panel">
     <div id="bi-title">TIMBRATO!</div><div id="bi-score"></div>
-    <p class="tag">Ma Rox non ha finito: è salito su un muletto<br>e ti aspetta nel <b style="color:var(--yellow);font-weight:normal">corridoio IS</b> del magazzino.</p>
+    <p class="tag" id="bi-tag"></p>
     <div class="row"><button class="btn primary" id="bi-go">AL CORRIDOIO IS!</button><button class="btn" id="bi-stop">FINE QUI</button></div>
   </div>
 </section>

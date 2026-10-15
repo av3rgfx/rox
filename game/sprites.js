@@ -9,7 +9,7 @@
 //   PROPS      fennel, the "wet floor" sign, an espresso cup, the finish banner, the Utensilferramenta warehouse
 //
 // Every picture gets a one-pixel dark outline so it stands out from the street at any size.
-import { pixelText, textW } from './font.js';
+import { pixelText, textW, miniText, miniW } from './font.js';
 
 const canv = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
 const ctxOf = c => { const x = c.getContext('2d'); x.imageSmoothingEnabled = false; return x; };
@@ -29,6 +29,12 @@ export function outline(src, col = [24, 18, 22]) {
 function tinted(src, f) {   // f(r,g,b) -> [r,g,b] on every opaque pixel
   const c = canv(src.width, src.height), x = ctxOf(c); x.drawImage(src, 0, 0); const id = x.getImageData(0, 0, c.width, c.height), d = id.data;
   for (let i = 0; i < d.length; i += 4) if (d[i + 3]) { const o = f(d[i], d[i + 1], d[i + 2]); d[i] = o[0]; d[i + 1] = o[1]; d[i + 2] = o[2]; }
+  x.putImageData(id, 0, 0); return c;
+}
+// half size, smoothed (a photo face survives it; nearest neighbour would drop every other pixel), then hard alpha again
+function half(src) {
+  const c = canv(Math.ceil(src.width / 2), Math.ceil(src.height / 2)), x = c.getContext('2d'); x.imageSmoothingEnabled = true; x.imageSmoothingQuality = 'high'; x.drawImage(src, 0, 0, c.width, c.height);
+  const id = x.getImageData(0, 0, c.width, c.height), d = id.data; for (let i = 3; i < d.length; i += 4) { if (d[i] > 90) { const k = 255 / d[i]; d[i - 3] = Math.min(255, d[i - 3] * k); d[i - 2] = Math.min(255, d[i - 2] * k); d[i - 1] = Math.min(255, d[i - 1] * k); d[i] = 255; } else d[i] = 0; }
   x.putImageData(id, 0, 0); return c;
 }
 function rotated(src, quarterTurns) {
@@ -168,6 +174,12 @@ export function buildRox(faceImg) {
   for (const f of ['calm', 'grin', 'ouch']) S['drive_' + f] = body('drive', f);
   S.climb1 = outline(body('climb1', 'grin')); S.climb2 = outline(body('climb2', 'grin'));
   S.face = outline(face);
+  // ROX KONG, the boss on the shelves (a side view, smaller): Rox at half size, still a bobblehead, facing you
+  S.k = {}; for (const [k, p, f] of [['stand', 'stand', 'calm'], ['grin', 'stand', 'grin'], ['wave', 'wave', 'grin'], ['throw', 'fly', 'grin'], ['climb1', 'climb1', 'grin'], ['climb2', 'climb2', 'grin'], ['hit', 'fly', 'ouch'], ['ouch', 'stand', 'ouch']]) S.k[k] = outline(half(body(p, f)));
+  { const c = canv(56, 104), x = ctxOf(c), R = (a, b, w, h, col) => { x.fillStyle = rgb(col); x.fillRect(a, b, w, h); };   // the end: wrapped in stretch film on a pallet, a parcel for the time clock
+    x.drawImage(body('fly', 'ouch'), 8, 0); x.fillStyle = 'rgba(214,232,246,0.3)'; x.fillRect(4, 44, 48, 60); x.fillStyle = 'rgba(255,255,255,0.6)'; for (let i = 0; i < 7; i++) x.fillRect(4, 48 + i * 8, 48, 2); x.fillStyle = 'rgba(255,255,255,0.35)'; x.fillRect(6, 4, 2, 40); x.fillRect(48, 4, 2, 40);   // the film: round the body, his face left free to complain
+    R(10, 50, 36, 12, [244, 242, 232]); pixelText(x, 'FRAGILE', 12, 52, '#c02a2a');
+    S.k.parcel = outline(half(c)); }
   return S;
 }
 
@@ -322,6 +334,54 @@ export function buildLifts(ROX) {
     R(4, 0, 1, 8, [150, 150, 156]); R(c.width - 5, 0, 1, 8, [150, 150, 156]); R(0, 8, c.width, 18, [36, 70, 170]); R(1, 9, c.width - 2, 1, [90, 126, 210]); pixelText(x, t, 6, 13, '#fff8e8', 1);
     L.sign = outline(c); }
   return L;
+}
+
+// ============================================================ ROX KONG: the boss on the shelves, a side view
+// you, UFP's warehouseman, small and seen from the side (facing right): brown hair, the black "50" T-shirt, dark blue
+// work trousers, safety shoes. pose: stand | walk1 | walk2 | jump | climb1 | climb2 (from behind) | ouch; hat: the
+// yellow hard hat from the safety department
+const HAIR = [70, 48, 30], TROUS = [44, 54, 92], TROUS_D = [30, 36, 64], BOOT = [34, 34, 38], TOE = [120, 122, 130], HAT = [252, 206, 30], HAT_D = [206, 156, 14];
+function worker(pose, hat) {
+  const c = canv(14, 24), x = ctxOf(c), R = (a, b, w, h, col) => { x.fillStyle = rgb(col); x.fillRect(a, b, w, h); }, back = pose === 'climb1' || pose === 'climb2';
+  const leg = (lx, ly, len, fx) => { R(lx, ly, 2, len, TROUS); R(lx + fx, ly + len, 4, 2, BOOT); R(lx + fx + (fx > 0 ? 2 : 0), ly + len, 2, 1, TOE); };
+  if (pose === 'walk1') { leg(6, 16, 4, 1); leg(3, 16, 4, -1); } else if (pose === 'walk2') { leg(5, 16, 4, 0); leg(4, 16, 3, 0); }
+  else if (pose === 'jump') { leg(7, 16, 2, 1); leg(3, 15, 3, -1); } else if (back) { const u = pose === 'climb1' ? 1 : 0; leg(4, 16 - u, 4, -1); leg(7, 16 - (1 - u), 4, 0); }
+  else { leg(4, 16, 4, -1); leg(7, 16, 4, 0); }
+  R(4, 15, 6, 3, TROUS); R(4, 17, 6, 1, TROUS_D);   // the trousers' seat
+  R(3, 9, 8, 7, SHIRT); R(3, 9, 1, 6, SHIRT_L); R(4, 15, 6, 1, [70, 60, 40]);   // the T-shirt, the belt
+  if (back) { miniText(x, '50', 4, 10, '#f4f0e6'); const up = pose === 'climb1'; R(up ? 1 : 11, 3, 2, 7, SKIN); R(up ? 1 : 11, 9, 2, 2, SHIRT); R(up ? 11 : 1, 10, 2, 5, SKIN); }   // arms: one up on a rung, the other down
+  else if (pose === 'jump' || pose === 'ouch') { R(8, 3, 2, 7, SKIN); R(2, 4, 2, 6, SKIN); R(8, 9, 2, 2, SHIRT); R(2, 9, 2, 2, SHIRT); }   // arms up
+  else { const sw = pose === 'walk1' ? 2 : pose === 'walk2' ? -1 : 0; R(6 + sw, 10, 2, 4, SHIRT); R(6 + sw, 14, 2, 2, SKIN); }   // an arm swinging
+  R(5, 8, 3, 2, SKIN_D);   // the neck
+  if (back) { R(4, 2, 6, 7, HAIR); R(4, 7, 6, 1, [56, 38, 24]); R(3, 4, 1, 2, SKIN_D); R(10, 4, 1, 2, SKIN_D); }
+  else { R(4, 2, 6, 7, SKIN); R(9, 5, 2, 2, SKIN); R(4, 2, 5, 2, HAIR); R(4, 2, 2, 5, HAIR); R(6, 4, 1, 2, SKIN_D);   // the face in profile: nose, ear, hair over the back
+    if (pose === 'ouch') { R(8, 3, 2, 1, [30, 20, 20]); R(7, 7, 2, 1, [120, 40, 36]); } else { R(8, 4, 1, 1, [30, 20, 20]); R(8, 7, 2, 1, [150, 80, 70]); } }
+  if (hat) { R(3, 0, 8, 3, HAT); R(4, 0, 4, 1, [255, 240, 150]); R(2, 3, 11, 1, HAT_D); R(10, 3, 3, 1, HAT); } else R(4, 1, 6, 2, HAIR);
+  return outline(c);
+}
+// UFP's goods, small: a silicone cartridge, a can of expanding foam, a roll of packing tape, a castor wheel, a safety
+// shoe; boxes with a word on them; the hard hat; a coffee; the returns box at the bottom
+function goods() {
+  const G = {}, mk = (w, h, f) => { const c = canv(w, h), x = ctxOf(c); f((a, b, ww, hh, col) => { x.fillStyle = rgb(col); x.fillRect(a, b, ww, hh); }, x); return outline(c); };
+  const disc = (R, cx, cy, r, col) => { for (let yy = -r; yy <= r; yy++) for (let xx = -r; xx <= r; xx++) if (xx * xx + yy * yy <= r * r + r * 0.6) R(cx + xx, cy + yy, 1, 1, col); };
+  G.cart = mk(14, 5, R => { R(0, 0, 10, 5, [238, 238, 230]); R(0, 4, 10, 1, [196, 196, 190]); R(0, 0, 1, 5, [150, 150, 156]); R(3, 0, 4, 5, [70, 120, 190]); R(4, 2, 2, 1, [238, 238, 230]); R(10, 1, 2, 3, [214, 214, 206]); R(12, 2, 2, 1, [214, 214, 206]); });
+  G.foam = mk(7, 14, R => { R(0, 3, 7, 11, [56, 132, 84]); R(1, 3, 1, 11, [96, 176, 120]); R(0, 7, 7, 3, [236, 236, 228]); R(1, 1, 5, 2, [40, 40, 44]); R(3, 0, 2, 1, [220, 60, 40]); R(0, 13, 7, 1, [36, 90, 56]); });
+  G.tape = mk(9, 9, R => { disc(R, 4, 4, 4, [196, 150, 86]); disc(R, 4, 4, 2, [150, 118, 74]); disc(R, 4, 4, 1, [36, 30, 30]); R(2, 1, 2, 1, [226, 190, 130]); });
+  G.wheel = mk(9, 9, R => { disc(R, 4, 4, 4, [30, 30, 34]); disc(R, 4, 4, 2, [150, 154, 164]); R(4, 4, 1, 1, [70, 72, 80]); R(2, 2, 1, 1, [210, 214, 220]); });
+  G.shoe = mk(14, 9, R => { R(1, 2, 6, 5, BOOT); R(1, 2, 6, 1, [70, 70, 76]); R(3, 0, 4, 3, BOOT); R(7, 4, 6, 3, BOOT); R(10, 4, 4, 3, TOE); R(0, 7, 14, 2, [96, 96, 100]); R(1, 2, 1, 2, [210, 50, 40]); for (const xx of [4, 6, 8]) R(xx, 3, 1, 1, [230, 230, 230]); });
+  const label = (t, col) => { const w = miniW(t) + 6; return mk(w, 12, (R, x) => { R(0, 0, w, 12, col); R(0, 0, w, 2, shade(col, 1.15)); R(0, 10, w, 2, shade(col, 0.78)); R(w / 2 - 1, 0, 2, 3, [214, 190, 140]); R(2, 4, w - 4, 6, [244, 242, 232]); miniText(x, t, 3, 5, '#2a2a30'); }); };
+  G.boxViti = label('VITI', [186, 140, 88]); G.boxChiodi = label('CHIODI', [176, 132, 84]);
+  G.hat = mk(13, 9, R => { R(2, 1, 9, 6, HAT); R(4, 0, 5, 1, HAT); R(3, 2, 3, 1, [255, 240, 150]); R(6, 1, 1, 6, HAT_D); R(0, 7, 13, 2, HAT_D); R(0, 7, 13, 1, HAT); });
+  G.coffee = mk(12, 10, R => { R(4, 0, 1, 1, [200, 200, 200]); R(5, 1, 1, 1, [200, 200, 200]); R(4, 2, 1, 1, [200, 200, 200]); R(2, 3, 7, 5, [250, 250, 246]); R(2, 3, 7, 1, [110, 64, 34]); R(3, 7, 5, 1, [214, 214, 208]); R(9, 4, 2, 1, [250, 250, 246]); R(10, 5, 1, 1, [250, 250, 246]); R(9, 6, 2, 1, [250, 250, 246]); R(0, 8, 12, 2, [226, 226, 220]); R(0, 9, 12, 1, [190, 190, 184]); });   // un caffè, on its saucer
+  G.fennel = (() => { const c = half(fennel()); return outline(c); })();
+  G.resi = mk(30, 22, (R, x) => { R(2, 5, 26, 17, [186, 140, 88]); R(2, 5, 26, 2, [150, 108, 64]); R(0, 1, 6, 5, [206, 164, 110]); R(24, 1, 6, 5, [206, 164, 110]); R(2, 20, 26, 2, [150, 108, 64]); R(5, 9, 20, 9, [244, 242, 232]); pixelText(x, 'RESI', 6, 10, '#c02a2a'); });
+  return G;
+}
+export function buildKong() {
+  const K = { me: {}, hat: {}, goods: goods() };
+  for (const p of ['stand', 'walk1', 'walk2', 'jump', 'climb1', 'climb2', 'ouch']) { K.me[p] = worker(p, false); K.hat[p] = worker(p, true); }
+  for (const set of [K.me, K.hat]) for (const p of ['stand', 'walk1', 'walk2', 'jump', 'ouch']) set[p + 'L'] = flipped(set[p]);   // facing left
+  return K;
 }
 
 // a speech bubble: white box, dark border, a tail pointing down, pixel text (wrapped to two lines)

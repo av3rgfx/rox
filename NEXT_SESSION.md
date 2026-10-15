@@ -1,6 +1,6 @@
 # Stato del progetto e prossima sessione
 
-Ultimo aggiornamento: 15 ottobre 2026, fine della quarta sessione (branch `claude/rox-sessione-4`, PR da unire).
+Ultimo aggiornamento: 15 ottobre 2026, fine della quinta sessione (branch `claude/rox-sessione-5`, PR da unire).
 
 ## Cosa c'è già (funziona, testato in headless su PC e telefono)
 
@@ -9,13 +9,16 @@ Ultimo aggiornamento: 15 ottobre 2026, fine della quarta sessione (branch `claud
   Via Ubaldo Fantacci, Via Bure Vecchia Nord, Via Enrico Fermi, Via Dino Buzzati e Via Luigi Salvatorelli fino a
   **oltre** Utensilferramenta, che sta a destra lungo la strada. Scartati: la scorciatoia di 1,1 km giù per Via Bure
   Vecchia Nord e il giro ad anello di OSRM tra le corsie del parcheggio.
-- Tre modalità complete:
+- Quattro modalità complete:
   - **INVESTI ROX**: partenza 14:28:00, timbratura entro le **14:30** (deciso dal proprietario); Rox in 9 varianti; combo fino a x8; traffico
     (−5 s), Ape, caffè turbo; muro di 4 Rox prima del traguardo "TIMBRA QUI" davanti alla serranda di UFP.
   - **ROX CHASE**: Rox sul Grizzly seduto al contrario, 5 cuori, finocchi e cartelli bagnati; perdi se arriva prima.
   - **CORRIDOIO IS** (boss 1, quarta sessione): dopo "TIMBRA QUI" se timbri in tempo (schermata "TIMBRATO! Ma Rox non
     ha finito...", con "AL CORRIDOIO IS!" o "FINE QUI"; il punteggio si somma) e come terza carta del menu
     (`?mode=boss`). Vedi sotto, "Quarta sessione".
+  - **ROX KONG** (boss 2, quinta sessione): dopo il corridoio IS vinto ("MULETTO FERMATO! Ma Rox è saltato giù...",
+    con "SUGLI SCAFFALI!" o "FINE QUI"; il punteggio si somma) e come quarta carta del menu (`?mode=kong`). Vedi sotto,
+    "Quinta sessione".
 - Grafica: tutte le `pistoia-*` e i due landmark (UFP, Ex Mensa) sono immagini vere di Codex (due giri; il secondo
   era la PR #4, integrata a mano e chiusa). Il Panorama è ritagliato dal `lm-panorama` di Codex (4 campate ripetibili
   e l'ingresso con l'insegna). Mancano ancora le 15 `b-*` e il secondo capannone di UFP: prompt in
@@ -63,13 +66,44 @@ Ultimo aggiornamento: 15 ottobre 2026, fine della quarta sessione (branch `claud
   - il tuo muletto regge 5 botte (HUD: MULETTO ■■■■■); a ogni colpo a Rox cade un caffè dal bancale: preso, ridà una
     vita (o 500 punti se sei pieno). Scelta mia per stare sul gentile, si può togliere;
   - fine: al sesto colpo Rox salta giù, si arrampica sullo scaffale ("NON MI PRENDI!", "CI VEDIAMO SUGLI SCAFFALI!") e
-    in cima saluta: gancio per il boss 2. Fine partita "MULETTO FERMATO!" ... "CONTINUA...". Se perdi: "ROX HA VINTO!";
+    in cima saluta; poi (quinta sessione) "MULETTO FERMATO!" con "SUGLI SCAFFALI!" (ROX KONG) o "FINE QUI". Se perdi:
+    "ROX HA VINTO!";
   - punteggio: 1500 a colpo, bonus tempo (6000 − 40 × secondi) + 800 per ogni vita rimasta; record locale `boss`
     (solo i punti del corridoio) nella stessa chiave `rox-best-v4`;
   - circa 50 battute nuove (fase per fase, batteria scarica, ricarica, colpito, clacson, risate quando ti colpisce);
     suoni nuovi: batteria che muore, ricarica, il bip della retromarcia, la scatola che cade;
   - menu a 3 carte (in colonna sul telefono verticale, compatto sul telefono orizzontale), sezione in "Come si gioca".
   - Playtest col bot: vedi `tools/test/README.md` (nuovo `tools/test/boss.mjs`).
+- Quinta sessione, il boss 2 "Donkey Kong" sugli scaffali, **ROX KONG** (`game/kong.js`):
+  - vista di lato della scaffalatura del magazzino (montanti blu, travi gialle, bancali e scatole dietro con le parole
+    dei prodotti, scale di alluminio, neon); ai lati, in orizzontale, gli scaffali vicini scuriti;
+  - Rox (metà misura, sempre con la sua faccia) sta sulla trave in cima vicino alla sua pila di merce, alza le cose
+    sopra la testa e le fa rotolare giù; le travi sono aperte a un'estremità a turno, così la merce cade sulla trave
+    sotto e torna indietro, a volte scende per le scale; al pianterreno finisce nella scatola dei **RESI**;
+  - tu sei il magazziniere di UFP (maglietta "50", pantaloni da lavoro, scarpe antinfortunistiche) visto di lato:
+    cammini, sali e scendi le scale, salti (100 punti a salto). Parti vicino ai RESI e la scala per salire è sempre
+    all'altra estremità, come in Donkey Kong; alcune travi hanno una seconda scala in mezzo (scorciatoia);
+  - **tre scaffali, uno per reparto del catalogo vero di UFP** (`art/codex/UFP-PRODOTTI.md`, dal sito ufptrade.it):
+    1 "SIGILLANTI E SCHIUME" (cartucce di silicone, bombolette di schiuma, finocchi), 2 "VITERIA E NASTRI" (rotoli di
+    nastro, ruote pivottanti, cartucce, finocchi, e scatole di VITI che cadono dall'alto: prima lampeggia un punto
+    esclamativo sulla trave), 3 "ANTINFORTUNISTICA" (scarpe antinfortunistiche che saltellano, nastro, ruote, schiuma,
+    finocchi, scatole di CHIODI che cadono). I marchi veri (Soudal, Fischer, SPAX, U-Power, Diadora, Beta, Stanley,
+    DeWalt...) sono solo parole a pixel sulle scatole dietro, niente loghi;
+  - il **casco giallo** (uno per scaffale) per 8 s rompe la merce che ti tocca (300 punti); il **caffè** ridà una vita
+    (o 500 punti); **5 vite**; bonus che scende da 5000 (100 ogni 2 s), preso quando arrivi da Rox, più 2000;
+  - arrivato da Rox nei primi due scaffali lui sale ancora più su per la sua scala ("PIÙ SU! PIÙ SU!"); nel terzo
+    indietreggia sul suo finocchio, scivola, vola come un birillo e atterra nella scatola dei RESI, **avvolto nel film
+    estensibile con l'etichetta FRAGILE** ("MI AVETE IMBALLATO!"). Fine partita "ROX IMBALLATO! Spedito alla
+    timbratrice. FRAGILE."; se perdi "ROX HA VINTO!";
+  - sullo sfondo lo striscione "AL SERVIZIO DEL PROFESSIONISTA DAL 1974" (la frase del loro sito, solo testo) e il
+    cartello "CORRIDOIO IS"; all'inizio di ogni scaffale la camera guarda Rox in cima e poi scende da te;
+  - comandi: PC ← → cammini, ↑ ↓ scale, SPAZIO salti; telefono ◀ ▶, ▲ ▼ e SALTA (al posto di PA-PÀ e FRENO);
+  - circa 50 battute nuove (lancio, "NON SALIRE!", casco, risate, scatole che cadono, imballato), suoni nuovi (salto,
+    piolo della scala, scarpa che saltella, merce che cade sulla trave, casco che rompe, film);
+  - menu a 4 carte (2 x 2 sul PC, in colonna sul telefono verticale); record locale `kong`; "RIGIOCA" dopo una serie
+    (Investi → corridoio → scaffali) riparte dal primo;
+  - playtest col bot (`tools/test/kong.mjs`): vince 7–8 partite su 9 anche vedendo con 450 ms di ritardo, ~80 s a
+    partita. Dettagli in `tools/test/README.md`.
 - Strumenti nuovi: `tools/realroad.mjs` (segnaletica e rotonde da OSM + `art/road-custom.json` → `data/road.json`),
   `tools/rebase.mjs` (dopo un nuovo bake sposta edifici veri e landmark ai metri nuovi), `tools/test/at.mjs`
   (fotografa la strada vuota a metri precisi).
@@ -103,10 +137,12 @@ Ultimo aggiornamento: 15 ottobre 2026, fine della quarta sessione (branch `claud
 
 ## Da fare nella prossima sessione
 
-La quarta sessione ha costruito il boss 1 (C.1, sopra in "Cosa c'è già"). **Prossima sessione: far provare al
-proprietario la boss fight e correggere quello che dice; poi il boss 2 sugli scaffali (C.2), se lo approva.** Nessuna PR
-di Codex con le `b-*` è arrivata: se arriva, controllarla e integrarla come la #4 (`art/codex/MESSAGGIO-CODEX.md` si può
-mandare). Lavorare senza chiedere le informazioni mancanti, piano breve all'inizio, branch nuovo da `main`, PR alla fine.
+La quinta sessione ha costruito il boss 2, ROX KONG (sopra in "Cosa c'è già"); il proprietario non aveva correzioni al
+boss 1. **Prossima sessione: far provare al proprietario ROX KONG e correggere quello che dice; poi la prossima cosa
+che sceglie** tra il picchiaduro coi dipendenti (servono le sue informazioni, vedi C.3), le modalità proposte (C.4) e la
+classifica (C.5). Nessuna PR di Codex con le `b-*` è arrivata: se arriva, controllarla e integrarla come la #4
+(`art/codex/MESSAGGIO-CODEX.md` si può mandare). Lavorare senza chiedere le informazioni mancanti, piano breve
+all'inizio, branch nuovo da `main`, PR alla fine.
 
 ### C. Boss fight e nuove modalità
 
@@ -124,34 +160,41 @@ muletto"). Se il proprietario intendeva altro, lo correggerà.
    Possibili ritocchi se il proprietario li chiede: più o meno difficile (`PHASES` in `main.js`: distanza, durata
    dell'attacco, finestra della batteria, frequenza dei lanci), facce di Rox diverse, una sirena/lampeggiante quando
    la batteria muore, musica diversa nel magazzino.
-2. **Più avanti, idee del proprietario**:
-   - **Boss 2, "Donkey Kong"** (il prossimo, già agganciato: alla fine del boss 1 Rox scappa sugli scaffali): Rossano
-     scende dal muletto e scappa salendo sugli scaffali; tu lo segui piano per
-     piano (piattaforme e scale, vista di lato) mentre lui ti lancia finocchi e oggetti presi dagli scaffali. Gli
-     oggetti devono essere **i prodotti veri che vende UFP**: prima di disegnarli analizzare il sito di
-     Utensilferramenta Pistoiese (marchi e categorie: utensili, ferramenta, viteria, antinfortunistica...) e farne una
-     lista in `art/codex/UFP-PRODOTTI.md`; nei disegni i marchi come scritte a pixel sulle scatole, niente loghi copiati
-     a pixel.
+2. **Boss 2, "ROX KONG": fatto nella quinta sessione.** Scelte fatte senza chiedere, da far confermare:
+   - il nome "ROX KONG" (gioco di parole con Donkey Kong) e il finale con Rox imballato nei RESI;
+   - tre scaffali a tema (sigillanti, viteria, antinfortunistica) e quali prodotti rotolano; i marchi scritti sulle
+     scatole (si tolgono da `LEVELS[i].labels` in `game/kong.js`); lo striscione con la loro frase "AL SERVIZIO DEL
+     PROFESSIONISTA DAL 1974";
+   - il casco giallo al posto del martello, il caffè, 5 vite, nessuna caduta mortale (se cadi da una trave dici
+     "OPS!" e basta), il bonus a tempo;
+   - il tuo personaggio: un magazziniere senza faccia vera (capelli castani, maglietta "50").
+   Possibili ritocchi: più o meno difficile (`LEVELS` in `kong.js`: `every` = secondi tra un lancio e l'altro, `v` =
+   velocità, `down` = quanto spesso la merce scende dalle scale, `falls`, `KONG_HP`), altri prodotti, un quarto
+   scaffale (per esempio "UTENSILERIA": trapani e valigette), la faccia di un collega vero per il magazziniere (solo
+   da una sua foto).
+3. **Più avanti, idee del proprietario**:
    - **Picchiaduro "stile Mortal Kombat"**: tutti i dipendenti dell'azienda come personaggi, ognuno con la sua mossa
      speciale. Servono dal proprietario: l'elenco dei dipendenti (nomi o soprannomi), una foto del viso di ciascuno
      (come per Rox, ritagliata dalle foto, mai generata) e un'idea di mossa speciale per ognuno; dove manca, proporre
      mosse affettuose. Chiedere queste cose quando si arriva a questa modalità.
-3. **Modalità proposte da Claude** (salvate, da scegliere col proprietario), in ordine di consiglio:
+4. **Modalità proposte da Claude** (salvate, da scegliere col proprietario), in ordine di consiglio:
    1. "Ape Car": guidi l'Ape del finocchio, lenta e ballerina, si ribalta nelle rotonde (costa poco, fa ridere);
    2. "Sfida del giorno": stessi Rox nelle stesse posizioni per tutti quel giorno (generatore casuale con seme dalla
       data), da abbinare alla classifica;
    3. "Notturna": la stessa strada di sera, fari e lampioni (costo medio);
    4. "Pausa pranzo" al contrario: costa di più (la strada va percorsa all'indietro).
-4. **Classifica condivisa** (Supabase, nome + punteggio, anti-cheat minimo): chiedere prima di creare il progetto.
+5. **Classifica condivisa** (Supabase, nome + punteggio, anti-cheat minimo): chiedere prima di creare il progetto.
 
 ### Piccole cose rimaste
 
 - Il muro di Via Fantacci e di Bure Vecchia Nord è fatto di lastre piatte: da vicino si vede.
+- ROX KONG sul telefono verticale: lo scaffale non ci sta tutto, quindi finché sei in basso Rox in cima resta sotto
+  l'HUD (lo vedi all'inizio, quando la camera lo inquadra, e man mano che sali).
 - L'aiuola delle rotonde è un ovale a sinistra, non un cerchio intorno a cui gira la strada.
 - Le 15 `b-*` e il secondo capannone di UFP aspettano le immagini di Codex.
 
 ## Come provarlo
 
 - In locale: `python3 -m http.server 8000` e apri `http://localhost:8000/` (`?mode=investi` / `?mode=chase` /
-  `?mode=boss`).
+  `?mode=boss` / `?mode=kong`).
 - Test automatici: `tools/test/README.md`.

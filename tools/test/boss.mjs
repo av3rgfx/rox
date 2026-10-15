@@ -28,7 +28,7 @@ async function worker(w) {
   while (next < +games) { const n = next++;
     await p.evaluate(() => window.__rox.start('boss'));
     for (let i = 0; ; i++) { await p.waitForTimeout(1000); const st = await p.evaluate(() => { const G = window.__rox.G, L = G.lift; return { ph: G.phase, t: +G.t.toFixed(1), lat: +G.lat.toFixed(2), v: +G.speed.toFixed(1), gap: +(L.s - G.pos - window.__rox.BZ - window.__rox.LIFT_LEN).toFixed(1), L: [L.state, L.hp, +L.lat.toFixed(2)], hp: G.hp }; });
-      if (process.env.VERBOSE && i % 3 === 0) console.log(w, JSON.stringify(st)); if (out && n === 0 && i % 3 === 1) await p.screenshot({ path: `${out}/boss-play-${String(i).padStart(3, '0')}.png` }); if (st.ph === 'end') break; if (st.t > 400) { console.log('stuck', JSON.stringify(st)); break; } }
+      if (process.env.VERBOSE && i % 3 === 0) console.log(w, JSON.stringify(st)); if (out && n === 0 && i % 3 === 1) await p.screenshot({ path: `${out}/boss-play-${String(i).padStart(3, '0')}.png` }); if (st.ph === 'end' || st.ph === 'intro') break; /* won: the offer to go on to the shelves */ if (st.t > 400) { console.log('stuck', JSON.stringify(st)); break; } }
     const r = await p.evaluate(() => { const G = window.__rox.G; return { won: !!G.result?.won, time: +(G.result?.time ?? G.t).toFixed(1), rams: 6 - G.lift.hp, taken: G.taken, score: G.score, by: G.hurtBy.join(',') }; });
     results.push(r); console.log(`game ${n + 1}:`, JSON.stringify(r));
     if (out) await p.screenshot({ path: `${out}/boss-end-${n + 1}.png` }); }

@@ -9,12 +9,15 @@
 //   CORRIDOIO IS the boss fight (after clocking in on time, or from the menu): in UFP's warehouse, in a forklift, against
 //                Rox reversing his own forklift down the IS aisle and throwing his pallet at you. Ram him when his
 //                battery runs flat, six times in three phases. Drawn by warehouse.js, not by the road.
+//   ROX KONG     the second boss (after CORRIDOIO IS, or from the menu): Rox climbs the racking and rolls UFP's goods
+//                down at you, a side view like Donkey Kong. Three bays; all of it in kong.js.
 //
 // World units are metres: s is the distance along the route, lat the offset from the road centre (+ right).
 // The camera sits CARZ metres behind your car's rear bumper; the car is drawn as one of the road's "things".
 import { createRoad } from './road.js';
 import { createWarehouse } from './warehouse.js';
-import { buildRox, buildCars, buildProps, buildLifts, bubble, scoreText } from './sprites.js';
+import { createKong, KONG_HP } from './kong.js';
+import { buildRox, buildCars, buildProps, buildLifts, buildKong, bubble, scoreText } from './sprites.js';
 import * as AU from './audio.js';
 
 const $ = id => document.getElementById(id), clamp = (v, a, b) => Math.max(a, Math.min(b, v)), rnd = (a, b) => a + Math.random() * (b - a), pick = a => a[Math.floor(Math.random() * a.length)];
@@ -48,6 +51,17 @@ const SAY = {
   liftHorn: ['ANCHE IO HO IL CLACSON! BEEP!', 'SUONA PURE!', 'IN MAGAZZINO NON SI SUONA!'],
   liftLaugh: ['PRESO!', 'AH AH AH!', 'CONSEGNATO!', 'BOLLA FIRMATA!', 'STRIKE!', 'RESO NON ACCETTATO!'],
   liftWin: ['CIAO CIAO!', 'TORNA QUANDO SAI GUIDARE!', 'TI ASPETTO ALLA TIMBRATRICE!', 'IL CORRIDOIO IS È MIO!'],
+  // ROX KONG, on the racking
+  kongThrow: ['SILICONE IN ARRIVO!', 'SCHIUMA PER TE!', 'TE LO SPEDISCO!', 'MERCE IN USCITA!', 'RESO NON ACCETTATO!', 'CONSEGNA RAPIDA!', 'C\'È LA BOLLA?', 'OFFERTA DEL GIORNO!', 'TUTTO SCONTATO!', 'PRENDI AL VOLO!'],
+  kongIdle: ['IO DI QUI NON SCENDO!', 'QUASSÙ SI STA BENE!', 'FACCIO L\'INVENTARIO!', 'DA QUI VEDO TUTTO IL MAGAZZINO!', 'TIMBRA TU PER ME!', 'NON CI ARRIVI!', 'LO SCAFFALE È MIO!', 'OGGI LAVORO IN ALTEZZA!', 'HO PORTATO I FINOCCHI QUASSÙ!'],
+  kongNear: ['NON SALIRE!', 'ALT! ZONA ROX!', 'CHI TI HA DATO IL PERMESSO?', 'SCENDI SUBITO!', 'NO NO NO!'],
+  kongUp: ['PIÙ SU! PIÙ SU!', 'TANTO NON MI PRENDI!', 'VADO ALLO SCAFFALE DOPO!', 'CI VEDIAMO PIÙ IN ALTO!', 'SALGO, SALGO!'],
+  kongLaugh: ['PRESO!', 'AH AH AH!', 'CONSEGNATO!', 'STRIKE!', 'FIRMA QUI!', 'MERCE CONSEGNATA!', 'ATTENTO ALLA TESTA!'],
+  kongWin: ['LO SCAFFALE È MIO!', 'TORNA COL MULETTO!', 'INVENTARIO FINITO!', 'IL 50 VINCE SEMPRE!'],
+  kongJumped: ['SALTI COME UN CANGURO!', 'OH! CHE SALTO!', 'MA COME FAI?', 'PURE IL SALTO IN ALTO!'],
+  kongHat: ['IL CASCO NON VALE!', 'TOGLITI QUEL CASCO!', 'CHI TI HA DATO IL CASCO?', 'ANTINFORTUNISTICA? NON VALE!'],
+  kongShake: ['SCAFFALE, MOLLA TUTTO!', 'GUARDA IN ALTO!', 'PIOVONO VITI!', 'OCCHIO ALLA TESTA!'],
+  kongWrapped: ['MI AVETE IMBALLATO!', 'FRAGILE! MANEGGIARE CON CURA!', 'SPEDITEMI ALLA TIMBRATRICE...', 'ALMENO UN FINOCCHIO PER IL VIAGGIO?'],
 };
 const RANKS = [[0, 'Collega modello (che noia)'], [1, 'Pedone distratto'], [5, 'Apprendista cacciatore di Rox'], [10, 'Cacciatore di Rox'], [20, 'Terrore di Via Salvatorelli'], [30, 'Leggenda della Ferramenta']];
 
@@ -69,7 +83,7 @@ async function makeRoad() {
 
 // ------------------------------------------------------------ pictures
 const faceImg = await new Promise(res => { const i = new Image(); i.onload = () => res(i); i.onerror = () => res(null); i.src = 'assets/rox/face.png'; });
-const ROX = buildRox(faceImg), CARS = buildCars(), PROPS = buildProps(), LIFTS = buildLifts(ROX);
+const ROX = buildRox(faceImg), CARS = buildCars(), PROPS = buildProps(), LIFTS = buildLifts(ROX), KS = buildKong();
 const PPM = 40;   // pixels per metre of Rox's pictures (he is 2.35 m tall: a bobblehead you can see from afar)
 const hmOf = im => im.height / PPM;
 const BUB = new Map(), bub = t => { if (!BUB.has(t)) BUB.set(t, bubble(t)); return BUB.get(t); };
@@ -81,19 +95,20 @@ const LEN = road.LEN, FINISH = LEN - 55, BOSS_HP = 5;
 const UFP_LANDMARK = road.LMS.some(l => l.qid === 'ufp' && l.art);   // the real warehouse at its real place: then no stand-in   // the clock-in banner; the warehouse stands just after it
 
 // ------------------------------------------------------------ input
-const keys = { left: false, right: false, gas: false, brake: false };
+const keys = { left: false, right: false, gas: false, brake: false, jump: false };   // ROX KONG: gas and brake are up and down the ladders
 let touchMode = matchMedia('(pointer: coarse)').matches;
 const KEYMAP = { ArrowLeft: 'left', a: 'left', A: 'left', ArrowRight: 'right', d: 'right', D: 'right', ArrowUp: 'gas', w: 'gas', W: 'gas', ArrowDown: 'brake', s: 'brake', S: 'brake' };
 addEventListener('keydown', e => {
   if (KEYMAP[e.key]) { keys[KEYMAP[e.key]] = true; touchMode = false; e.preventDefault(); }
+  else if (e.key === ' ' && G.mode === 'kong') { if (!e.repeat) keys.jumpTap = true; keys.jump = true; e.preventDefault(); }
   else if (e.key === ' ' || e.key === 'h' || e.key === 'H') { horn(); e.preventDefault(); }
   else if (e.key === 'Escape' || e.key === 'p' || e.key === 'P') togglePause();
   else if (e.key === 'Enter' && G.phase === 'end') again();
-  else if (e.key === 'Enter' && G.phase === 'intro') goBoss();
+  else if (e.key === 'Enter' && G.phase === 'intro') goNext();
 });
-addEventListener('keyup', e => { if (KEYMAP[e.key]) keys[KEYMAP[e.key]] = false; });
+addEventListener('keyup', e => { if (KEYMAP[e.key]) keys[KEYMAP[e.key]] = false; if (e.key === ' ') keys.jump = false; });
 for (const b of document.querySelectorAll('[data-k]')) {
-  const k = b.dataset.k, on = e => { e.preventDefault(); touchMode = true; AU.unlock(); if (k === 'horn') horn(); else keys[k] = true; b.classList.add('on'); try { b.setPointerCapture(e.pointerId); } catch {} };
+  const k = b.dataset.k, on = e => { e.preventDefault(); touchMode = true; AU.unlock(); if (k === 'horn') horn(); else keys[k] = true; if (k === 'jump') keys.jumpTap = true; b.classList.add('on'); try { b.setPointerCapture(e.pointerId); } catch {} };
   const off = () => { if (k !== 'horn') keys[k] = false; b.classList.remove('on'); };
   b.addEventListener('pointerdown', on); b.addEventListener('pointerup', off); b.addEventListener('pointercancel', off); b.addEventListener('lostpointercapture', off);
 }
@@ -110,13 +125,15 @@ function reset(mode) {
   G.ents.push({ kind: 'finish', s: FINISH, lat: 0 }, { kind: 'ufp', s: LEN - 8, lat: 0 });
   if (mode === 'chase') G.ents.push(G.boss = { kind: 'boss', s: 75, lat: q.rw / 2, vs: 0, hp: BOSS_HP, flee: 0, inv: 0, dodgeCool: 0, turbo: 0, turboCool: 0, tgtLat: q.rw / 2, tgtT: 2, dropT: 3, sayT: 1.5, said: null, saidT: 0, lift: 0, vz: 0, rot: 0 });
   else G.boss = null;
-  G.lift = null; G.carry = null; G.investiRec = null;
+  G.lift = null; G.carry = null; G.investiRec = null; G.bossRec = null;
   if (mode === 'boss') { Object.assign(G, { lat: 0, camX: 0, hp: MY_HP, taken: 0, hurtBy: [], decals: [], ents: [], nextSign: 22, slipCool: 0, wallT: 0 });
     G.ents.push(G.lift = { kind: 'lift', s: BZ + LIFT_LEN + 11, lat: 0, vs: 0, hp: ROX_HP, phase: 1, state: 'attack', stT: 6.5, throwT: 1.8, dropT: 2, tgtLat: 0, tgtT: 1.5, sayT: 0.8, beepT: 0, inv: 0, said: null, saidT: 0, lift: 0, vz: 0, rot: 0 }); }
+  if (mode === 'kong') { Object.assign(G, { hp: KONG_HP, taken: 0, hurtBy: [] }); KG.reset(); }
 }
 const carFront = () => G.mode === 'boss' ? G.pos + BZ + LIFT_LEN : G.pos + CARZ + 3.4;
 const toast = (t, ms = 1600) => { const el = $('toast'); el.textContent = t; el.classList.add('show'); clearTimeout(toast.h); toast.h = setTimeout(() => el.classList.remove('show'), ms); };
 const sfx = (k, ...a) => { if (G.live) AU.sfx[k](...a); };
+const KG = createKong({ canvas, G, keys, ROXK: ROX.k, KS, sfx, say, SAY, float, burst, toast, end: () => endScreen() });
 
 // ------------------------------------------------------------ spawning
 function spawnRox(s, forced) {
@@ -418,7 +435,7 @@ function bossWon(L) {
   L.state = 'done'; L.vs = 0; G.finished = true; G.phase = 'ending'; G.result = { won: true, time: G.t };
   const bonus = Math.max(0, Math.round(6000 - G.t * 40)) + G.hp * 800; G.score += bonus; G.result.bonus = bonus;
   const side = L.lat >= 0 ? 1 : -1; G.ents.push({ kind: 'climber', s: L.s - 0.4, lat: L.lat, lat0: L.lat, side, t: 0, lift: 1.1, said: null, saidT: 0 });
-  AU.sfx.win(); toast('ROX SCAPPA SUGLI SCAFFALI!', 2200); setTimeout(() => endScreen(), 4600);
+  AU.sfx.win(); toast('ROX SCAPPA SUGLI SCAFFALI!', 2200); setTimeout(() => kongIntro(), 4600);
 }
 function climb(e, dt) {
   e.t += dt; if (e.saidT > 0) e.saidT -= dt;
@@ -508,8 +525,12 @@ function hud(now) {
   if (!G.live) return;
   $('h-score').textContent = String(G.score).padStart(6, '0'); $('h-combo').textContent = G.combo > 1 ? `COMBO X${Math.min(8, G.combo)}` : '';
   $('h-speed').textContent = `${Math.round(G.speed * 3.6)} KM/H`;
-  $('progress').style.display = G.mode === 'boss' ? 'none' : '';
-  if (G.mode === 'boss') { const L = G.lift, flat = L.state === 'flat';
+  $('progress').style.display = G.mode === 'boss' || G.mode === 'kong' ? 'none' : '';
+  if (G.mode === 'kong') { const K = G.K;
+    $('h-combo').textContent = `VITE ${'■'.repeat(Math.max(0, G.hp))}${'□'.repeat(KONG_HP - Math.max(0, G.hp))}`; $('h-speed').textContent = K.hat > 0 ? `CASCO ${Math.ceil(K.hat)}` : '';
+    $('h-mid').textContent = `BONUS ${K.bonus}`; $('h-mid').classList.remove('late'); $('h-mid').classList.toggle('hurry', K.bonus < 1000);
+    $('h-sub').textContent = `SCAFFALE ${K.n + 1}/${KG.LEVELS.length}: ${K.L.name}`; $('h-sub').classList.remove('hurry'); }
+  else if (G.mode === 'boss') { const L = G.lift, flat = L.state === 'flat';
     $('h-combo').textContent = `MULETTO ${'■'.repeat(Math.max(0, G.hp))}${'□'.repeat(MY_HP - Math.max(0, G.hp))}`;
     $('h-mid').textContent = 'ROX ' + '❤'.repeat(Math.max(0, L.hp)) + '♡'.repeat(ROX_HP - Math.max(0, L.hp)); $('h-mid').classList.remove('late', 'hurry');
     $('h-sub').textContent = flat ? 'BATTERIA SCARICA! SPERONALO!' : `FASE ${L.phase}: ${PHASES[L.phase - 1].name}`; $('h-sub').classList.toggle('hurry', flat); }
@@ -528,15 +549,17 @@ function menuRecords() {
   $('best-investi').textContent = BEST.investi ? `RECORD: ${BEST.investi.score} PUNTI · ${BEST.investi.hits} ROX` : 'NESSUN RECORD ANCORA';
   $('best-chase').textContent = BEST.chase ? `RECORD: ROX FERMATO IN ${fmtTime(BEST.chase.time)}` : 'NESSUN RECORD ANCORA';
   $('best-boss').textContent = BEST.boss ? `RECORD: ${BEST.boss.score} PUNTI · ${fmtTime(BEST.boss.time)}` : 'NESSUN RECORD ANCORA';
+  $('best-kong').textContent = BEST.kong ? `RECORD: ${BEST.kong.score} PUNTI · ${fmtTime(BEST.kong.time)}` : 'NESSUN RECORD ANCORA';
 }
-function toMenu() { AU.engineOff(); AU.musicStop(); reset('attract'); G.phase = 'menu'; showScreen('menu'); menuRecords(); }
+function toMenu() { AU.engineOff(); AU.musicStop(); document.body.classList.remove('kong'); reset('attract'); G.phase = 'menu'; showScreen('menu'); menuRecords(); }
 async function start(mode, carry = null) {
-  AU.unlock(); reset(mode); G.phase = 'countdown'; showScreen(null); $('controls').classList.toggle('show', true);
-  if (carry) { G.carry = carry; G.score = carry.score; }   // straight on from INVESTI ROX: the score carries on
+  AU.unlock(); reset(mode); G.phase = 'countdown'; showScreen(null); $('controls').classList.toggle('show', true); document.body.classList.toggle('kong', mode === 'kong');
+  if (carry) { G.carry = carry; G.score = carry.score; }   // straight on from the road or the aisle: the score carries on
   $('story').innerHTML = mode === 'investi' ? 'Sono le 14:28. Alle 14:30 devi timbrare.<br>Rox è uscito dal Panorama... e si è moltiplicato.<br><b>Investine più che puoi!</b>'
     : mode === 'boss' ? 'Magazzino UFP, corridoio IS. Rox è salito su un muletto<br>e ti tira addosso il bancale.<br><b>Quando gli si scarica la batteria, speronalo! 6 colpi.</b>'
+    : mode === 'kong' ? 'Rox è scappato su per gli scaffali<br>e ti tira addosso la merce di UFP.<br><b>Sali le scale, salta la merce, prendilo in cima!</b>'
     : 'Rox ha rubato il Grizzly e corre a timbrare prima di te.<br>Guida al contrario e lancia finocchi.<br><b>Speronalo 5 volte prima della ditta!</b>';
-  $('story').classList.add('show'); AU.engineOn(); if (AU.audioState().music) AU.musicStart(mode !== 'investi');
+  $('story').classList.add('show'); if (mode !== 'kong') AU.engineOn(); if (AU.audioState().music) AU.musicStart(mode !== 'investi');
   for (const n of [3, 2, 1]) { $('count').textContent = n; $('count').classList.add('show'); AU.sfx.beep(false); await new Promise(r => setTimeout(r, 750)); if (G.mode !== mode) return; }
   $('count').textContent = 'VIA!'; AU.sfx.beep(true); G.phase = 'play'; $('story').classList.remove('show'); setTimeout(() => $('count').classList.remove('show'), 600);
 }
@@ -547,13 +570,26 @@ function finish() {
   setTimeout(() => onTime ? bossIntro() : endScreen(), 1700); if (onTime) AU.sfx.win(); else AU.sfx.lose();
   toast(onTime ? 'TIMBRATO IN ORARIO!' : 'TIMBRATO IN RITARDO...', 1600);
 }
-// on time: Rox is not finished with you yet. On to the boss fight (or stop here)
-function bossIntro() {
-  if (G.mode !== 'investi' || G.phase !== 'ending') return;
-  AU.engineOff(); AU.musicStop(); G.phase = 'intro'; $('controls').classList.remove('show'); investiRecord(); showScreen('bossintro');
-  $('bi-score').textContent = `${G.score} PUNTI · ${G.hits} ROX · ${fmtClock(G.clock)}`;
+// on time: Rox is not finished with you yet. On to the boss fight (or stop here); after it, on to the shelves
+function intro(title, score, tag, go) {
+  AU.engineOff(); AU.musicStop(); G.phase = 'intro'; $('controls').classList.remove('show'); showScreen('bossintro');
+  $('bi-title').textContent = title; $('bi-score').textContent = score; $('bi-tag').innerHTML = tag; $('bi-go').textContent = go;
 }
-const goBoss = () => start('boss', { score: G.score, hits: G.hits, roxes: G.roxes, clock: G.clock, rec: G.investiRec });
+function bossIntro() {
+  if (G.mode !== 'investi' || G.phase !== 'ending') return; investiRecord();
+  intro('TIMBRATO!', `${G.score} PUNTI · ${G.hits} ROX · ${fmtClock(G.clock)}`, 'Ma Rox non ha finito: è salito su un muletto<br>e ti aspetta nel <b>corridoio IS</b> del magazzino.', 'AL CORRIDOIO IS!');
+}
+function kongIntro() {
+  if (G.mode !== 'boss' || G.phase !== 'ending') return; bossRecord();
+  intro('MULETTO FERMATO!', `${G.score} PUNTI · ${fmtTime(G.result.time)}`, 'Ma Rox è saltato giù ed è scappato<br>su per gli <b>scaffali</b>. Da lassù ti tira la merce.', 'SUGLI SCAFFALI!');
+}
+const goBoss = () => start('boss', { score: G.score, first: 'investi', investi: { clock: G.clock, hits: G.hits, roxes: G.roxes } });
+const goKong = () => start('kong', { score: G.score, first: G.carry ? G.carry.first : 'boss', investi: G.carry?.investi, boss: { time: G.result.time, taken: G.taken } });
+const goNext = () => G.mode === 'investi' ? goBoss() : goKong();
+function bossRecord() {
+  if (G.bossRec != null) return G.bossRec; const own = G.score - (G.carry ? G.carry.score : 0);
+  G.bossRec = G.result.won && (!BEST.boss || own > BEST.boss.score); if (G.bossRec) { BEST.boss = { score: own, time: G.result.time, taken: G.taken }; saveBest(); } return G.bossRec;
+}
 function investiRecord() {
   if (G.investiRec != null) return G.investiRec;
   G.investiRec = !BEST.investi || G.score > BEST.investi.score; if (G.investiRec) { BEST.investi = { score: G.score, hits: G.hits }; saveBest(); } return G.investiRec;
@@ -575,13 +611,22 @@ function endScreen() {
     rec = investiRecord();
     $('end-share').dataset.text = `Ho investito ${G.hits} Rox tornando dal Panorama (${G.score} punti, ${rank}). Prova tu!`;
   } else if (G.mode === 'boss') {
-    const c = G.carry, won = G.result.won, own = G.score - (c ? c.score : 0);
+    const c = G.carry, won = G.result.won;
     title = won ? 'MULETTO FERMATO!' : 'ROX HA VINTO!';
-    lines = won ? [`Il muletto di Rox fermato in <b>${fmtTime(G.result.time)}</b> · bonus +${G.result.bonus}`, `Colpi presi: <b>${G.taken}</b> · il tuo muletto: ${G.hp}/${MY_HP}`, 'Rox è saltato giù ed è scappato su per gli scaffali...', '<b>CONTINUA...</b>']
+    lines = won ? [`Il muletto di Rox fermato in <b>${fmtTime(G.result.time)}</b> · bonus +${G.result.bonus}`, `Colpi presi: <b>${G.taken}</b> · il tuo muletto: ${G.hp}/${MY_HP}`, 'Rox è saltato giù ed è scappato su per gli scaffali...', 'Lo trovi in <b>ROX KONG</b>, dal menu.']
       : ['Il tuo muletto è da portare in officina.', `Hai speronato Rox <b>${ROX_HP - G.lift.hp}</b> volte su ${ROX_HP}.`, 'Ora si vanta in mensa. Col finocchio in mano.'];
-    if (c) lines.unshift(`Timbrato alle <b>${fmtClock(c.clock)}</b> · Rox investiti: <b>${c.hits}</b> su ${c.roxes}`);
-    if (won && (!BEST.boss || own > BEST.boss.score)) { BEST.boss = { score: own, time: G.result.time, taken: G.taken }; saveBest(); rec = true; }
+    if (c?.investi) lines.unshift(`Timbrato alle <b>${fmtClock(c.investi.clock)}</b> · Rox investiti: <b>${c.investi.hits}</b> su ${c.investi.roxes}`);
+    rec = bossRecord();
     $('end-share').dataset.text = won ? `Ho fermato il muletto di Rox nel corridoio IS in ${fmtTime(G.result.time)} (${G.score} punti)! Prova tu!` : 'Rox mi ha battuto col muletto nel corridoio IS... vendicami!';
+  } else if (G.mode === 'kong') {
+    const c = G.carry, won = G.result.won, own = G.score - (c ? c.score : 0), K = G.K;
+    title = won ? 'ROX IMBALLATO!' : 'ROX HA VINTO!';
+    lines = won ? [`Preso in cima agli scaffali in <b>${fmtTime(G.result.time)}</b> · bonus +${G.result.bonus}`, `Colpi presi: <b>${G.taken}</b> · salti: ${K.jumps} · merce rotta col casco: ${K.smashed}`, 'È finito nella scatola dei resi, avvolto nel film.', 'Spedito alla timbratrice. <b>FRAGILE.</b>']
+      : ['Sei finito sotto la merce di UFP.', `Sei arrivato allo scaffale <b>${G.result.lv}</b> di ${KG.LEVELS.length}.`, 'Rox fa l\'inventario dall\'alto. Col finocchio in mano.'];
+    if (c?.boss) lines.unshift(`Muletto di Rox fermato in <b>${fmtTime(c.boss.time)}</b> · colpi presi: ${c.boss.taken}`);
+    if (c?.investi) lines.unshift(`Timbrato alle <b>${fmtClock(c.investi.clock)}</b> · Rox investiti: <b>${c.investi.hits}</b> su ${c.investi.roxes}`);
+    if (won && (!BEST.kong || own > BEST.kong.score)) { BEST.kong = { score: own, time: G.result.time, taken: G.taken }; saveBest(); rec = true; }
+    $('end-share').dataset.text = won ? `Ho imballato Rox in cima agli scaffali di UFP in ${fmtTime(G.result.time)} (${G.score} punti)! Prova tu!` : 'Rox mi ha sommerso di silicone dagli scaffali... vendicami!';
   } else {
     title = G.result.won ? 'ROX FERMATO!' : 'ROX HA TIMBRATO!';
     lines = G.result.won ? [`L'hai fermato in <b>${fmtTime(G.result.time)}</b>`, 'Il Grizzly è sotto sequestro.', 'Rox oggi pulisce i bagni.'] : ['Rox è arrivato in ditta prima di te.', `Gli hai tolto <b>${BOSS_HP - G.boss.hp}</b> cuori su ${BOSS_HP}.`, 'Ora lo racconterà a tutti per una settimana.'];
@@ -592,13 +637,13 @@ function endScreen() {
 }
 function togglePause(force) {
   if (G.phase === 'play' && (force === true || force === undefined)) { G.phase = 'paused'; showScreen('pause'); AU.engineOff(); }
-  else if (G.phase === 'paused' && force !== true) { G.phase = 'play'; showScreen(null); AU.engineOn(); }
+  else if (G.phase === 'paused' && force !== true) { G.phase = 'play'; showScreen(null); if (G.mode !== 'kong') AU.engineOn(); }
 }
-$('btn-investi').onclick = () => start('investi'); $('btn-chase').onclick = () => start('chase'); $('btn-boss').onclick = () => start('boss');
-$('bi-go').onclick = goBoss; $('bi-stop').onclick = () => endScreen();
+$('btn-investi').onclick = () => start('investi'); $('btn-chase').onclick = () => start('chase'); $('btn-boss').onclick = () => start('boss'); $('btn-kong').onclick = () => start('kong');
+$('bi-go').onclick = () => goNext(); $('bi-stop').onclick = () => endScreen();
 $('btn-howto').onclick = () => showScreen('howto'); $('btn-howto-back').onclick = () => showScreen('menu');
 $('btn-resume').onclick = () => togglePause(); $('btn-quit').onclick = toMenu; $('btn-pause').onclick = () => togglePause();
-const again = () => start(G.carry ? 'investi' : G.mode);   // after the whole run (road and aisle): the whole run again
+const again = () => start(G.carry ? G.carry.first : G.mode);   // after a run of several (road, aisle, shelves): the whole run again
 $('end-again').onclick = again; $('end-menu').onclick = toMenu;
 $('end-share').onclick = async () => { const text = $('end-share').dataset.text + ' ' + location.href.split('?')[0]; try { if (navigator.share) await navigator.share({ text }); else { await navigator.clipboard.writeText(text); toast('COPIATO! INCOLLALO NEL GRUPPO', 1500); } } catch {} };
 const syncAudioBtns = () => { const s = AU.audioState(); $('btn-sound').textContent = `SUONI: ${s.sound ? 'SI' : 'NO'}`; $('btn-music').textContent = `MUSICA: ${s.music ? 'SI' : 'NO'}`; };
@@ -615,7 +660,11 @@ addEventListener('resize', () => { clearTimeout(resizeT); resizeT = setTimeout(a
 function frame(now) {
   const dt = Math.min(0.05, (now - last) / 1000 * TS); last = now;
   if (window.__rox?.bot) window.__rox.bot(dt);   // the tests' bot plays in game time
-  if (!building && G.mode === 'boss') {   // the warehouse: no road
+  if (!building && G.mode === 'kong') {   // the racking, from the side
+    if (G.phase !== 'paused' && G.phase !== 'end') KG.step(G.phase === 'countdown' ? 0 : dt); else if (G.phase === 'end') G.t += dt;
+    KG.render(g); overlays();
+    canvas.style.transform = G.shake > 0 ? `translate(${rnd(-1, 1) * G.shake * 14}px, ${rnd(-1, 1) * G.shake * 10}px)` : '';
+  } else if (!building && G.mode === 'boss') {   // the warehouse: no road
     if (G.phase !== 'paused' && G.phase !== 'end') bossFight(G.phase === 'countdown' ? 0 : dt); else if (G.phase === 'end') G.t += dt;
     wh.render(G.pos, bossThings(), G.decals); overlays();
     if (G.live && G.phase === 'play') AU.engineSet(G.speed * 2.2, G.gas);
@@ -639,4 +688,4 @@ requestAnimationFrame(frame);
 if (params.get('mode')) start(params.get('mode'));
 
 // for tests and recordings
-window.__rox = { G, get road() { return road; }, start, keys, ROX, CARS, PROPS, LIFTS, step, get CARZ() { return CARZ; }, get BZ() { return BZ; }, LIFT_LEN, LAT_MAX };
+window.__rox = { G, get road() { return road; }, start, keys, ROX, CARS, PROPS, LIFTS, KS, KG, KONG_HP, step, get CARZ() { return CARZ; }, get BZ() { return BZ; }, LIFT_LEN, LAT_MAX };
