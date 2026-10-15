@@ -278,10 +278,14 @@ export async function createRoad(canvas, opts = {}) {
       if (b.code === 'hedge' || b.code === 'wall' || b.code === 'reeds') { const reeds = b.code === 'reeds', hm = reeds ? 2.6 : b.code === 'wall' ? 1.9 : 1.8, h = hm * sc, w = 3.8 * sc; if (h > H * 1.6) return; const X = Math.round(x - w / 2), seed = Math.round(b.side * 7 + y);
         if (b.code === 'wall') { const Y = Math.round(y - h); g.fillStyle = '#d8d4c8'; g.fillRect(X, Y, Math.round(w), Math.round(h)); g.fillStyle = '#a8a498'; g.fillRect(X, Y, Math.round(w), px(0.15)); g.fillRect(X, Math.round(y - px(0.25)), Math.round(w), px(0.25)); return; }
         // a hedge: a dark mass with a bumpy top and lit leaves; reeds: stalks of all heights, pale at the tips
-        const st = Math.max(1, px(reeds ? 0.18 : 0.5)); if (!reeds) { g.fillStyle = '#24481f'; g.fillRect(X, Math.round(y - h * 0.75), Math.round(w), Math.round(h * 0.75)); }
-        for (let i = 0, xx = X; xx < X + w; i++, xx += st) { const k = hash(seed, i) & 15, top = h * (reeds ? 0.45 + k / 28 : 0.72 + k / 60);
+        // up close a strip is at most 4 px wide and the top follows a smooth line between the bumps (it was 0.5 m blocks: Lego)
+        const cell = reeds ? 0.18 : 0.5, st = Math.max(1, Math.min(reeds ? 3 : 4, px(cell))); g.fillStyle = reeds ? '#5c6a2c' : '#24481f'; g.fillRect(X, Math.round(y - h * (reeds ? 0.4 : 0.75)), Math.round(w), Math.round(h * (reeds ? 0.4 : 0.75)));
+        const bump = c => hash(seed, c) & 15, at = u => { const c = Math.floor(u), f = u - c, e = f * f * (3 - 2 * f); return bump(c) + (bump(c + 1) - bump(c)) * e; };
+        for (let i = 0, xx = X; xx < X + w; i++, xx += st) { const u = (xx - X) / sc / cell, k = reeds ? bump(i) : bump(Math.floor(u)), top = h * (reeds ? 0.45 + k / 28 : 0.72 + at(u) / 60);   // reeds: each strip a stalk
           g.fillStyle = reeds ? (k & 1 ? '#7e8e3e' : '#94a24a') : (k < 5 ? '#3f7236' : '#2f5a2a'); g.fillRect(xx, Math.round(y - top), Math.max(1, reeds ? st - 1 : st), Math.round(top * (reeds ? 1 : 0.4)));
-          if (reeds) { g.fillStyle = '#c8c482'; g.fillRect(xx, Math.round(y - top), Math.max(1, st - 1), Math.max(1, px(0.2))); } else if (k > 11) { g.fillStyle = '#5a8a46'; g.fillRect(xx, Math.round(y - top), st, Math.max(1, px(0.15))); } }
+          if (reeds) { g.fillStyle = '#c8c482'; g.fillRect(xx, Math.round(y - top), Math.max(1, st - 1), Math.max(1, px(0.2))); } else if (k > 11) { g.fillStyle = '#5a8a46'; g.fillRect(xx, Math.round(y - top), st, Math.max(1, px(0.15))); }
+          if (!reeds && st < px(cell)) for (let j = 0, nl = Math.min(14, Math.round(top / st / 3)); j < nl; j++) { const r = hash(seed + i, j);   // up close: leaves, light and dark specks
+            g.fillStyle = r & 1 ? '#4a7e3c' : '#1c3a19'; g.fillRect(xx, Math.round(y - top + ((r >> 4) & 1023) / 1023 * top * 0.95), st, st); } }
         return; }
       if (b.code === 'mast') { const h = 32 * sc; if (h > H * 12) return; g.strokeStyle = '#8a9098'; g.lineWidth = Math.max(1, px(0.12)); const wb = 2.6 * sc, wt = 0.8 * sc, n = 10; g.beginPath();
         for (let i = 0; i <= n; i++) { const yy = y - h * i / n, hw = (wb + (wt - wb) * i / n) / 2; g.moveTo(x - hw, yy); g.lineTo(x + hw, yy); if (i < n) { const y2 = y - h * (i + 1) / n, hw2 = (wb + (wt - wb) * (i + 1) / n) / 2; g.moveTo(x - hw, yy); g.lineTo(x + hw2, y2); g.moveTo(x + hw, yy); g.lineTo(x - hw2, y2); } }
@@ -296,7 +300,7 @@ export async function createRoad(canvas, opts = {}) {
         return; }
       if (b.code === 'signal') { const h = 4.6 * sc; if (h > H * 1.8) return; g.fillStyle = '#2e3034'; g.fillRect(Math.round(x), Math.round(y - h), px(0.14), Math.round(h)); const bw = px(0.35), bh = px(1), bx = Math.round(x - bw / 2 + px(0.07)), by = Math.round(y - h); g.fillRect(bx, by, bw, bh);
         const ph = Math.floor(T.now / 6) % 3; ['#e8402c', '#f0b030', '#40c060'].forEach((c, i) => { g.fillStyle = i === ph ? c : '#1a1a1c'; g.fillRect(bx + Math.max(0, Math.round(bw / 2 - px(0.1))), by + Math.round(bh * (0.12 + i * 0.3)), px(0.2), px(0.2)); }); return; }
-      if (b.code === 'sign') { const im = signImage(b.sign); if (!im) return; const hm = b.hm || 2.4, h = hm * sc, w = h * im.width / im.height; if (h > H * 1.4 || h < 1) return; g.drawImage(im, Math.round(x - w / 2), Math.round(y - h), Math.round(w), Math.round(h)); }
+      if (b.code === 'sign' || b.code === 'billboard') { const im = signImage(b.sign || { type: 'billboard', text: b.text, col: b.col }); if (!im) return; const hm = b.hm || (b.code === 'billboard' ? 6.5 : 2.4), h = hm * sc, w = h * im.width / im.height; if (h > H * 1.4 || h < 1) return; g.drawImage(im, Math.round(x - w / 2), Math.round(y - h), Math.round(w), Math.round(h)); }
     });
   }
   // A building is a block. Its front is laid along its real line in thin vertical strips (each projected from its own
@@ -349,7 +353,8 @@ export async function createRoad(canvas, opts = {}) {
     0: r('.###. #...# #..## #.#.# ##..# #...# .###.'), 1: r('.#. ##. .#. .#. .#. .#. ###'), 2: r('.###. #...# ....# ...#. ..#.. .#... #####'), 3: r('####. ....# ....# .###. ....# ....# ####.'),
     4: r('...#. ..##. .#.#. #..#. ##### ...#. ...#.'), 5: r('##### #.... ####. ....# ....# #...# .###.'), 6: r('.###. #.... #.... ####. #...# #...# .###.'), 7: r('##### ....# ...#. ..#.. .#... .#... .#...'),
     8: r('.###. #...# #...# .###. #...# #...# .###.'), 9: r('.###. #...# #...# .#### ....# ....# .###.'),
-    ' ': r('... ... ... ... ... ... ...'), '.': r('. . . . . . #'), ',': r('.. .. .. .. .. .# #.'), '-': r('... ... ... ### ... ... ...'), "'": r('# # . . . . .'), '&': r('.##.. #..#. .##.. .#... #.#.# #..#. .##.#'), '/': r('....# ...#. ...#. ..#.. .#... .#... #....'), '<': r('...#. ..#.. .#... #.... .#... ..#.. ...#.'), '>': r('.#... ..#.. ...#. ....# ...#. ..#.. .#...') }; })();
+    ' ': r('... ... ... ... ... ... ...'), '.': r('. . . . . . #'), ',': r('.. .. .. .. .. .# #.'), '-': r('... ... ... ### ... ... ...'), "'": r('# # . . . . .'), '&': r('.##.. #..#. .##.. .#... #.#.# #..#. .##.#'), '/': r('....# ...#. ...#. ..#.. .#... .#... #....'), '<': r('...#. ..#.. .#... #.... .#... ..#.. ...#.'), '>': r('.#... ..#.. ...#. ....# ...#. ..#.. .#...'),
+    '?': r('.###. #...# ....# ...#. ..#.. ..... ..#..'), '!': r('# # # # # . #'), ':': r('. # # . # # .') }; })();   // ROX: for the billboards
   const plain = t => t.normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase();
   const fits = t => [...plain(t)].every(ch => FONT[ch]);
   const textW = (t, k = 1) => fits(t) ? [...plain(t)].reduce((w, ch) => w + (FONT[ch][0].length + 1) * k, -k) : Math.ceil(t.length * 8 * k);
@@ -387,6 +392,12 @@ export async function createRoad(canvas, opts = {}) {
       else if (sg.type === 'yield') { poly([[0, 2], [32, 2], [16, 30]], '#2b241b'); poly([[2, 3], [30, 3], [16, 28]], '#c8202a'); poly([[8, 7], [24, 7], [16, 21]], '#f6f2e8'); }
       else { x.fillStyle = '#2b241b'; x.beginPath(); x.arc(16, 16, 16, 0, Math.PI * 2); x.fill(); x.fillStyle = '#22448a'; x.beginPath(); x.arc(16, 16, 15, 0, Math.PI * 2); x.fill();
         x.strokeStyle = '#f6f2e8'; x.lineWidth = 3; for (let i = 0; i < 3; i++) { const a0 = i * Math.PI * 2 / 3; x.beginPath(); x.arc(16, 16, 8, a0, a0 + 1.5); x.stroke(); const a1 = a0 + 1.5, hx = 16 + Math.cos(a1) * 8, hy = 16 + Math.sin(a1) * 8; poly([[hx + Math.cos(a1) * 5, hy + Math.sin(a1) * 5], [hx - Math.cos(a1) * 5, hy - Math.sin(a1) * 5], [hx - Math.sin(a1) * 5, hy + Math.cos(a1) * 5]], '#f6f2e8'); } }
+    }
+    // ROX: a billboard on two legs (data/road.json props, code billboard): big lines, then small ones, split by |
+    else if (sg.type === 'billboard') {
+      const ls = sg.text.split('|'), big = ls.slice(0, 2), small = ls.slice(2), [fill, ink, band] = sg.col || ['#f6f2e8', '#1c1c1c', '#c8202a'], pw = Math.max(...big.map(t => textW(t, 3)), ...small.map(t => textW(t, 2))) + 24, ph = 12 + big.length * 24 + (small.length ? 6 + small.length * 18 : 0) + 10, lg = Math.round(ph * 0.9);   // fat pixels: the board is drawn small
+      c = canv(pw, ph + lg); const x = c.getContext('2d'); post(x, Math.round(pw * 0.22), ph - 1, ph + lg); post(x, Math.round(pw * 0.78) - 2, ph - 1, ph + lg); panel(x, pw, ph, fill, null);
+      x.fillStyle = band; x.fillRect(1, ph - 10, pw - 2, 9); big.forEach((t, i) => text(x, t, Math.round((pw - textW(t, 3)) / 2), 10 + i * 24, ink, 3)); small.forEach((t, i) => text(x, t, Math.round((pw - textW(t, 2)) / 2), 16 + big.length * 24 + i * 18, band, 2));
     }
     if (!c) return null; const x = c.getContext('2d'), id = x.getImageData(0, 0, c.width, c.height); for (let i = 3; i < id.data.length; i += 4) id.data[i] = id.data[i] > 127 ? 255 : 0; x.putImageData(id, 0, 0);   // hard edges, like every other picture
     SIGNS.set(key, c); return c;

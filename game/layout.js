@@ -90,8 +90,11 @@ export function buildChunk(d, env) {
   // runs take the class of what surrounds them, so the street doesn't come and go
   for (const maxLen of [30, 60]) { let k = 0; while (k < n) { let j = k; while (j + 1 < n && segs[j + 1].cls === segs[k].cls) j++; const before = segs[k - 1], after = segs[j + 1];
     if ((j - k + 1) * SEG < maxLen && before && after && before.cls === after.cls) for (let m = k; m <= j; m++) Object.assign(segs[m], { cls: before.cls, road: before.road }); k = j + 1; } }
-  // heading smoothed over ±60 m; slopes at most 12%; heights eased over ±30 m
-  for (let k = 0; k < n; k++) { let sx = 0, sy = 0; for (let j = -30; j <= 30; j++) { const v = segs[clamp(k + j, 0, n - 1)].hd0; sx += Math.cos(v); sy += Math.sin(v); } segs[k].hd = Math.atan2(sy, sx); }
+  // heading smoothed over ±60 m; slopes at most 12%; heights eased over ±30 m. ROX: in a roundabout only over ±12 m (the
+  // ring is a clean arc on the map, and ±60 m spread its turn so wide the road never went round the island), widening
+  // again over the 50 m either side
+  const ringK = new Int16Array(n).fill(999); for (const rb of env.road?.roundabouts || []) for (let k = 0; k < n; k++) { const s = segs[k].s, dm = s < rb.s0 ? rb.s0 - s : s > rb.s1 ? s - rb.s1 : 0; ringK[k] = Math.min(ringK[k], Math.round(dm / SEG)); }
+  for (let k = 0; k < n; k++) { const W = Math.min(30, 6 + ringK[k]); let sx = 0, sy = 0; for (let j = -W; j <= W; j++) { const v = segs[clamp(k + j, 0, n - 1)].hd0; sx += Math.cos(v); sy += Math.sin(v); } segs[k].hd = Math.atan2(sy, sx); }
   for (let k = 1; k < n; k++) segs[k].h = Math.min(segs[k].h, segs[k - 1].h + 0.24); for (let k = n - 2; k >= 0; k--) segs[k].h = Math.min(segs[k].h, segs[k + 1].h + 0.24);
   for (let k = 0; k < n; k++) { let sum = 0; for (let j = -15; j <= 15; j++) sum += segs[clamp(k + j, 0, n - 1)].h; segs[k].hs = sum / 31; }
   // built-up: buildings within 40 m on either side, or paved/lawn land. Towns get sidewalks; open road a verge.
@@ -101,7 +104,7 @@ export function buildChunk(d, env) {
   // with the other one beyond a median (dual), the car park's bays (lot), hedges and walls, parked cars, trees
   const RD = env.road;
   for (const st of RD?.stretches || []) for (const q of segs) if (q.s >= st.from && q.s < st.to) { if (st.rw) q.rw0 = st.rw; if (st.sw != null) q.sw0 = st.sw; if (st.town != null) q.town = st.town;
-    if (st.dual) q.dual = { med: st.dual }; if (st.lot) q.bays = { from: st.from, ...st.lot }; if (st.lines === false) q.noLines = true; if (st.edge) q.edge = st.edge; if (st.park) q.park = st.park; if (st.trucks) q.trucks = true; if (st.trees) q.trees = st.trees; if (st.open) q.open = true; if (st.roles) q.roles = st.roles; }
+    if (st.dual) q.dual = { med: st.dual }; if (st.lot) q.bays = { from: st.from, ...st.lot }; if (st.lines === false) q.noLines = true; if (st.edge) q.edge = st.edge; if (st.park) q.park = st.park; if (st.trucks) q.trucks = true; if (st.trees) q.trees = st.trees; if (st.open) q.open = true; if (st.roles) q.roles = st.roles; if (st.noTrees) q.noTrees = true; }
   for (const rb of RD?.roundabouts || []) for (const q of segs) if (q.s > rb.s0 - 8 && q.s < rb.s1 + 8) q.rw0 = Math.min(q.rw0, rb.rw || 4.2);   // a ring is two lanes one way
   for (let k = 0; k < n; k++) { let a = 0, b = 0, t = 0; for (let j = -8; j <= 8; j++) { const q = segs[clamp(k + j, 0, n - 1)]; a += q.rw0; b += q.sw0; t += q.town ? 1 : 0; } segs[k].rw = a / 17; segs[k].sw = b / 17; segs[k].walk = t > 8; }
   if (idx.dry) for (const q of segs) for (const sd of ['L', 'R']) if (q[sd] === 'farm' || q[sd] === 'grass') q[sd] = 'desert';
@@ -206,7 +209,7 @@ export function buildChunk(d, env) {
     const wallAt = side => planes.some(p => Math.sign(p.side) === Math.sign(side) && p.at < s + 2 && p.at + p.len > s - 2 && Math.abs(p.side) < Math.abs(side) + 0.6);
     if (q.town && k % 15 === 0) for (const s2 of [-1, 1]) q.bill.push(pic(F, 'lamp', s, s2) || { code: 'lamp', side: s2 * curb });
     if (!q.town && k % 20 === 0 && q.cls !== 'mw' && q[DRIVE > 0 ? 'R' : 'L'] !== 'water') q.bill.push(pic(F, 'pole', s, 1, -DRIVE * 0) || { code: 'pole', side: DRIVE * (curb + q.sw + 1.2) });
-    if (q.town && k % 12 === 5 && r < 0.55) { const s2 = sg, land = s2 > 0 ? q.R : q.L; if (land !== 'water' && !wallAt(s2 * (curb + 0.6))) { const t = treePick(kit, s, s2); if (t) q.bill.push({ pic: t, side: s2 * (q.rw + q.sw - 0.6), scale: 0.65 + hrnd(s, 7) * 0.25 }); } }   // street trees are smaller than country ones
+    if (q.town && k % 12 === 5 && r < 0.55 && !q.noTrees) { const s2 = sg, land = s2 > 0 ? q.R : q.L; if (land !== 'water' && !wallAt(s2 * (curb + 0.6))) { const t = treePick(kit, s, s2); if (t) q.bill.push({ pic: t, side: s2 * (q.rw + q.sw - 0.6), scale: 0.65 + hrnd(s, 7) * 0.25 }); } }   // street trees are smaller than country ones
     if (q.town && r > 0.985) { const p2 = kit.pool(['street'], s), ex = pickFrom(p2, hash(s, 5)); if (ex) q.bill.push({ pic: ex, side: sg * (curb + 0.5) }); }
     for (const s2 of [-1, 1]) { const g = s2 > 0 ? q.R : q.L, off = q.rw + q.sw + 2.5;
       if (g === 'forest' && k % 3 === 0) { const t = treePick(kit, s + s2, s2); if (t) q.bill.push({ pic: t, side: s2 * (off + hrnd(s, s2 * 5) * 22), scale: 0.75 + hrnd(s, 9) * 0.6 }); }
@@ -227,7 +230,7 @@ export function buildChunk(d, env) {
   for (let k = 0; k < n; k++) { const q = segs[k]; if (q.cross || q.isl) continue; const edge = q.rw + q.sw + 0.9;
     if (q.edge && k % 2 === 0) for (const sd of ['L', 'R']) { const e = q.edge[sd], sg = sd === 'L' ? -1 : 1; if (e && hrnd(q.s, sg * 31) < (e === 'hedge' ? 0.85 : 1)) q.bill.push({ code: e, side: sg * edge }); }   // a hedge has gaps
     if (q.trees && k % 6 === 0) for (const sd of q.trees) { const sg = sd === 'L' ? -1 : 1, pic = pickFrom(kit.pool(['tree'], q.s), hash(Math.round(q.s), 77)); if (pic) q.bill.push({ pic, side: sg * (edge + 0.6), scale: 1.1 + hrnd(q.s, 79) * 0.3 }); } }
-  for (const pr of RD?.props || []) for (let at = pr.at ?? pr.from; at <= (pr.to ?? pr.at); at += pr.every || 1e9) { const q = segs[Math.round((at - d.s0) / SEG)]; if (q) q.bill.push({ code: pr.code, side: pr.side, far: true }); }
+  for (const pr of RD?.props || []) for (let at = pr.at ?? pr.from; at <= (pr.to ?? pr.at); at += pr.every || 1e9) { const q = segs[Math.round((at - d.s0) / SEG)]; if (q) q.bill.push({ code: pr.code, side: pr.side, far: true, text: pr.text, col: pr.col }); }
   // landmarks with a picture stand at their real place; close to the road a building landmark replaces the frontage
   for (const lm of env.landmarks || []) { if (!lm.art || lm.s < d.s0 || lm.s >= d.s0 + d.len) continue; const info = kit.info(lm.art); if (!info) continue;
     const k = clamp(Math.round((lm.s - d.s0) / SEG), 0, n - 1), q = segs[k], sg = Math.sign(lm.side) || 1, hm = lm.h, wm = Math.max(4, hm * info.w / info.h);
