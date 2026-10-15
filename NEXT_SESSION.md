@@ -76,36 +76,52 @@ Ultimo aggiornamento: 15 ottobre 2026, fine della terza sessione (branch `claude
 
 ## Da fare nella prossima sessione
 
-A e B della terza sessione sono fatti (sopra). Nessuna PR di Codex con le `b-*` è arrivata: se arriva, controllarla e
+A e B della terza sessione sono fatti (sopra). **Nella quarta sessione: costruire il boss 1 coi muletti (C.1).** Nessuna PR di Codex con le `b-*` è arrivata: se arriva, controllarla e
 integrarla come la #4 (`art/codex/MESSAGGIO-CODEX.md` si può mandare). Lavorare senza chiedere le informazioni mancanti,
 piano breve all'inizio, branch nuovo da `main`, PR alla fine.
 
 ### C. Boss fight e nuove modalità
 
-Proposta fatta al proprietario alla fine della terza sessione (vedi sotto); **costruire solo quello che ha approvato**
-(se non ha risposto, chiedere prima di iniziare).
+**Decisione del proprietario (fine della terza sessione): la boss fight va bene, "costruiscila con i muletti".** È il
+lavoro della quarta sessione. Interpretazione: **tu e Rox siete entrambi su un muletto** (nella boss fight successiva
+"Rossano scende dal muletto", quindi in questa ci sta sopra). Se il proprietario intendeva altro, lo correggerà: non
+chiedere prima.
 
-1. **Boss "CORRIDOIO IS"** (proposta):
+1. **Boss 1, "CORRIDOIO IS" (da costruire ora)**:
    - quando: dopo "TIMBRA QUI" in Investi se timbri in tempo, e anche come terza modalità dal menu;
    - dove: il corridoio del magazzino UFP, dritto, scaffali gialli e blu ai lati con scatole, pavimento grigio con le
      strisce gialle, neon; un renderer a parte e semplice (`game/warehouse.js`), senza i dati della strada;
-   - tu guidi il **muletto giallo di UFP** visto da dietro (in magazzino l'auto non entra); Rox sul Grizzly arancione
-     e blu ti viene incontro a marcia indietro, come nella foto;
+   - tu guidi il **muletto giallo di UFP** visto da dietro (in magazzino l'auto non entra); Rox guida **un altro
+     muletto** a marcia indietro verso il fondo del corridoio, con le forche alzate e sopra un bancale pieno di
+     finocchi, cartelli "pavimento bagnato" e scatole, che ti butta addosso;
    - 3 fasi, 2 colpi ciascuna (6 in tutto, circa 90 s):
-     1. **lavaggio**: corsie bagnate che fanno slittare, cartelli "pavimento bagnato" che scivolano verso di te;
+     1. **bancale**: cartelli e scatole che scivolano verso di te, una tanica che perde e bagna una corsia (slitti);
      2. **finocchi**: li lancia ad arco, l'ombra a terra mostra dove cadono;
      3. **turbo**: faccia col ghigno, più veloce, scatole che cadono dagli scaffali (ombra prima).
 
-     Si colpisce speronandolo quando si ferma a riempire il serbatoio (spia che lampeggia, 2 s);
-   - fine: Rox vola come un birillo sullo scaffale più alto e si addormenta su un bancale ("ZZZ... TIMBRO DOMANI");
-     punteggio = tempo + colpi presi; record locale.
-2. **Modalità consigliate**, in ordine:
+     Si colpisce speronandolo quando il suo muletto resta a secco ("BATTERIA SCARICA", spia che lampeggia, 2 s);
+   - fine: al sesto colpo Rox salta giù dal muletto e si arrampica sugli scaffali ("NON MI PRENDI!"): è il gancio per
+     il boss 2. Punteggio = tempo + colpi presi; record locale;
+   - sprite nuovi in `sprites.js`: due muletti (giallo UFP da dietro, quello di Rox di fronte col bancale), Rox seduto
+     al volante (posa `sit` con faccia `grin`/`ouch`), scatole, tanica, scaffale a codice.
+2. **Più avanti, idee del proprietario (non ora)**:
+   - **Boss 2, "Donkey Kong"**: Rossano scende dal muletto e scappa salendo sugli scaffali; tu lo segui piano per
+     piano (piattaforme e scale, vista di lato) mentre lui ti lancia finocchi e oggetti presi dagli scaffali. Gli
+     oggetti devono essere **i prodotti veri che vende UFP**: prima di disegnarli analizzare il sito di
+     Utensilferramenta Pistoiese (marchi e categorie: utensili, ferramenta, viteria, antinfortunistica...) e farne una
+     lista in `art/codex/UFP-PRODOTTI.md`; nei disegni i marchi come scritte a pixel sulle scatole, niente loghi copiati
+     a pixel.
+   - **Picchiaduro "stile Mortal Kombat"**: tutti i dipendenti dell'azienda come personaggi, ognuno con la sua mossa
+     speciale. Servono dal proprietario: l'elenco dei dipendenti (nomi o soprannomi), una foto del viso di ciascuno
+     (come per Rox, ritagliata dalle foto, mai generata) e un'idea di mossa speciale per ognuno; dove manca, proporre
+     mosse affettuose. Chiedere queste cose quando si arriva a questa modalità.
+3. **Modalità proposte da Claude** (salvate, da scegliere col proprietario), in ordine di consiglio:
    1. "Ape Car": guidi l'Ape del finocchio, lenta e ballerina, si ribalta nelle rotonde (costa poco, fa ridere);
    2. "Sfida del giorno": stessi Rox nelle stesse posizioni per tutti quel giorno (generatore casuale con seme dalla
       data), da abbinare alla classifica;
    3. "Notturna": la stessa strada di sera, fari e lampioni (costo medio);
    4. "Pausa pranzo" al contrario: costa di più (la strada va percorsa all'indietro).
-3. **Classifica condivisa** (Supabase, nome + punteggio, anti-cheat minimo): chiedere prima di creare il progetto.
+4. **Classifica condivisa** (Supabase, nome + punteggio, anti-cheat minimo): chiedere prima di creare il progetto.
 
 ### Piccole cose rimaste
 
