@@ -14,8 +14,11 @@ Italian. Read `NEXT_SESSION.md` first: it has the state, the decisions taken wit
   background, autopilot, silent), `investi`, `chase`. Phases: menu, countdown, play, paused, ending, end.
   `window.__rox` exposes `G`, `keys`, `CARZ`, `start` for the tests.
 - `game/sprites.js`: everything not scenery is drawn by code at load: Rox (face photo on a pixel body; poses stand,
-  wave, walk1/2, phone, eat, push, cart, grizzly, chase/chase2, sleep, gold*), cars, Ape, fennel, wet-floor sign,
-  coffee, shadow, finish banner, UFP warehouse, speech bubbles, score text. All get a 1 px outline.
+  wave, walk1/2, phone, eat, push, cart, grizzly, chase/chase2/chaseOuch, sleep, hit (flying, arms up), gold*), cars
+  (Rox's own: `CARS.rox`, a dented red Renault Captur, plate ROX 50, parked in the first bay across from the
+  Panorama's door), Ape, fennel, wet-floor sign, coffee, shadow, finish banner, UFP warehouse, speech bubbles, score
+  text. All get a 1 px outline. Rox's expressions (`faceVar`: calm, sleep, ouch, chew, grin) are pixels of the one
+  photo moved and painted over; the face canvas is 4 px wider than the face so the cheeks can puff out.
 - `game/font.js`: the 5x7 pixel font extracted from road.js, plus ! ? : + *.
 - `game/audio.js`: Web Audio synth (engine, sfx, tarantella loop). Settings in localStorage `rox-audio`.
 - `game/road.js`, `game/layout.js`: Pixel Path's renderer (MIT, Jon Wheatley), minimally patched: `opts.camH`,
@@ -54,8 +57,9 @@ Italian. Read `NEXT_SESSION.md` first: it has the state, the decisions taken wit
   along the route (traffic signals: none on this road; STOP and give-way on our road; marked crossings; roundabouts)
   and merges `art/road-custom.json` (hand fixes from the owner's video: dropped signs, each roundabout island's look,
   `stretches` with width, sidewalks, one-way carriageways with a median (`dual`), the car park bays (`lot`), hedges,
-  walls, reeds, kerb parking, tree rows, `open` streets, `roles` for generic pictures; `props` like the mast, the
-  rubbish heap, the bollards; `noTowers`) into `data/road.json`. road.js loads it as `env.road`; layout.js marks
+  walls, reeds, kerb parking, tree rows, `open` streets, `roles` for generic pictures, `noTrees`; `props` like the
+  mast, the rubbish heap, the bollards, the invented billboards of Via Fantacci (`billboard` with `text` and `col`);
+  `noTowers`) into `data/road.json`. road.js loads it as `env.road`; layout.js marks
   segments (`q.ring`, `q.isl`, `q.dual`, `q.bays`, `q.mark`, `q.park`...) and road.js's `groundCol` paints them.
   Without data/road.json the game falls back to Pixel Path's rule (a signal and a crosswalk at every town junction).
   `buildings-custom.json` entries with `"hide": true` keep a mapped building from showing.
@@ -67,9 +71,10 @@ Italian. Read `NEXT_SESSION.md` first: it has the state, the decisions taken wit
 
 ## Known gaps from the real road (see NEXT_SESSION.md)
 
-- Roundabouts: the road does not curve round the island as tightly as the real ring (headings are smoothed over
-  ±60 m); the island is an oval on the left.
-- Hedges, walls and reeds are code-drawn pieces facing the camera: blocky up close.
+- Roundabouts: inside a ring headings are smoothed over ±12 m only (±60 m elsewhere, widening over 50 m), so the road
+  goes round the island; the island is still an oval on the left, not a circle.
+- Hedges, walls and reeds are code-drawn 4 m pieces facing the camera (hedges and reeds get fine strips and leaves up
+  close; the wall is still plain slabs).
 - Most `b-*` buildings still wait for their Codex pictures (generic look until then).
 
 ## Conventions
