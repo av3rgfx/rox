@@ -44,7 +44,8 @@ Italian. Read `NEXT_SESSION.md` first: it has the state, the decisions taken wit
   plan-art.sh) writes `data/buildings.json` (road.js loads it as `env.buildings`, layout.js applies it) and adds role
   `custom` jobs to plan.json, never used by the generic kit. Placeholders are ignored, so a building keeps its generic
   look until its picture is real. `node tools/standins.mjs` draws code stand-ins for the Panorama and UFP's second
-  warehouse into art/raw. main.js adds parked cars along the car park lane (solid).
+  warehouse into art/raw. main.js's `spawnParked` lays out parked cars (solid) as the road ahead is built: in the car park bays (`q.bays`)
+  and at the kerb where a stretch has `park` (vans where it has `trucks`).
 - Landmarks: `art/landmarks-custom.json` (Ex Mensa Sant'Agostino, UFP, placed from their OSM footprints)
   is merged into `data/landmarks.json` by `node tools/landmarks.mjs` (plan-art.sh runs it; run it after any rebake).
   A landmark with a real picture replaces the frontage at its real place (layout.js); placeholders are never shown.
@@ -97,8 +98,12 @@ Italian. Read `NEXT_SESSION.md` first: it has the state, the decisions taken wit
 
 ## Network notes (cloud sessions)
 
-- Overpass: `overpass-api.de` and its lz4/z mirrors returned 503, kumi/private.coffee timed out; the mail.ru mirror
-  worked: `bake.mjs --trip . --overpass https://maps.mail.ru/osm/tools/overpass/api/interpreter`.
+- Overpass: in the cloud `overpass-api.de` and its lz4/z mirrors returned 503 and kumi/private.coffee timed out, the
+  mail.ru mirror worked (`bake.mjs --trip . --overpass https://maps.mail.ru/osm/tools/overpass/api/interpreter`). On the
+  owner's PC `overpass-api.de` works but answers 406 without a User-Agent: set `PIXEL_PATH_USER_AGENT` (realroad.mjs
+  sends one by default) and expect an occasional 504 (it retries mirrors).
 - Rebaking is only needed if the route changes. After a rebake run `sh tools/plan-art.sh` (the kit's roles follow the
   frontage) and diff the job names with the old plan: new names need new pictures
   (`node tools/codex-art.mjs prompts --only a,b --out art/codex/PROMPTS-NUOVE.md`).
+- Git on the owner's PC has no identity configured: commit with `git -c user.name=av3rgfx -c user.email=av3rgfx@gmail.com
+  commit ...` (do not change the global config). Playwright is not installed there either: see "Checking a change".
