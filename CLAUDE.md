@@ -13,22 +13,37 @@ Italian. Read `NEXT_SESSION.md` first: it has the state, the decisions taken wit
   `overlays()` (bubbles, particles, floating scores on the canvas), `hud()`, screens. Modes: `attract` (menu
   background, autopilot, silent), `investi`, `chase`, `boss` (CORRIDOIO IS, the forklift boss fight: `bossFight(dt)`,
   `bossThings()`, `PHASES`, drawn by warehouse.js instead of the road; after Investi on time `bossIntro()` offers it and
-  `start('boss', carry)` carries the score on, `G.carry`). Phases: menu, countdown, play, paused, ending, intro, end.
-  `window.__rox` exposes `G`, `keys`, `CARZ`, `BZ`, `start` for the tests; `__rox.bot(dt)`, if set, runs every frame
+  `start('boss', carry)` carries the score on, `G.carry` = `{score, first, investi?, boss?}`), `kong` (ROX KONG, the
+  second boss, all in kong.js; after the aisle is won `kongIntro()` offers it, both intros share the `#bossintro`
+  screen via `intro()`; `again()` restarts from `carry.first`). Phases: menu, countdown, play, paused, ending, intro, end.
+  `window.__rox` exposes `G`, `keys`, `CARZ`, `BZ`, `start`, `KG` (the kong module) for the tests; `__rox.bot(dt)`, if set, runs every frame
   in game time, and `?ts=3` runs the game 3x faster (tests only).
 - `game/warehouse.js`: the IS aisle of UFP's warehouse, its own small renderer (no road data): the floor, racking and
   ceiling ray-cast pixel by pixel into an ImageData (puddles as `decals`), then the same things as road.js's
   `render()`. Endless: the racking repeats. Camera higher than on the road (`BOSS_CAM`) to see over your forklift.
+- `game/kong.js`: ROX KONG, a side view like Donkey Kong, its own logic and drawing (`createKong({...})`: `reset()`,
+  `step(dt)`, `render(g)`; state in `G.K`). Units are canvas pixels: x along the racking (0..`LW` = 240, centred, the
+  sides dimmed), y up from the floor, beam i at `i * FH`. `LEVELS`: three bays, one department of UFP's catalogue each
+  (`art/codex/UFP-PRODOTTI.md`), with the ladders, what Rox rolls, how often, how fast, the falling boxes, the hard hat
+  and the coffee, the words on the boxes. Beams alternate the way goods roll and are open at that end; you start by
+  the RESI box, the way up is at the other end. The still part of a bay is drawn once (`drawBg`). Keys: ←→ walk, ↑↓
+  (`keys.gas`/`brake`) ladders, Space or SALTA (`keys.jump`, plus `keys.jumpTap` for taps shorter than a frame).
+  Rox's speech bubble comes from main's `overlays()` (`G.ents = [K.R]`).
 - `game/sprites.js`: everything not scenery is drawn by code at load: Rox (face photo on a pixel body; poses stand,
   wave, walk1/2, phone, eat, push, cart, grizzly, chase/chase2/chaseOuch, sleep, hit (flying, arms up), gold*), cars
   (Rox's own: `CARS.rox`, a dented red Renault Captur, plate ROX 50, parked in the first bay across from the
   Panorama's door), Ape, fennel, wet-floor sign, coffee, shadow, finish banner, UFP warehouse, speech bubbles, score
   text; for the boss fight `buildLifts(ROX)`: your yellow UFP forklift from behind, Rox's orange-and-blue one from the
   front (light green / red flat / off, his face calm / grin / ouch, `empty` when he has jumped off), box, jerrycan, the
-  hanging CORRIDOIO IS sign; Rox's poses `drive_*` (unoutlined, drawn into the forklift) and `climb1/2`. All get a 1 px
+  hanging CORRIDOIO IS sign; Rox's poses `drive_*` (unoutlined, drawn into the forklift) and `climb1/2`; for ROX KONG
+  `ROX.k` (Rox at half size, `half()` smooths then hardens the alpha so the photo face survives: stand, grin, wave,
+  throw, climb1/2, hit, ouch, `parcel` wrapped in film) and `buildKong()`: you from the side (`me`/`hat` sets, `L` =
+  facing left) and UFP's goods (cartridge, foam can, tape, castor wheel, safety shoe, boxes VITI/CHIODI, hard hat,
+  coffee, RESI box). All get a 1 px
   outline. Rox's expressions (`faceVar`: calm, sleep, ouch, chew, grin) are pixels of the one
   photo moved and painted over; the face canvas is 4 px wider than the face so the cheeks can puff out.
-- `game/font.js`: the 5x7 pixel font extracted from road.js, plus ! ? : + *.
+- `game/font.js`: the 5x7 pixel font extracted from road.js, plus ! ? : + *; `MINI`/`miniText`, a 3x5 font for the
+  words on the boxes.
 - `game/audio.js`: Web Audio synth (engine, sfx, tarantella loop). Settings in localStorage `rox-audio`.
 - `game/road.js`, `game/layout.js`: Pixel Path's renderer (MIT, Jon Wheatley), minimally patched: `opts.camH`,
   `opts.horizon`, `opts.steer` + `setCamX()`, and `render(s, speed, things)` where a thing is
@@ -104,7 +119,8 @@ Italian. Read `NEXT_SESSION.md` first: it has the state, the decisions taken wit
 2. `node tools/test/ui.mjs /tmp/shots` and `node tools/test/drive.mjs investi|chase|boss /tmp/shots ...`, then look at the
    screenshots with Read. Also try a phone size (`390 844 ... mobile` and `844 390 ... mobile`). For the scenery,
    `node tools/test/at.mjs /tmp/at 0,500,1000` shoots the empty road at given metres. The boss fight's balance:
-   `node tools/test/boss.mjs 9 200` (a bot that sees 200 ms late plays 9 games, prints wins, time, hits taken). Outside the cloud image:
+   `node tools/test/boss.mjs 9 200` (a bot that sees 200 ms late plays 9 games, prints wins, time, hits taken), and
+   ROX KONG's: `node tools/test/kong.mjs 9 200`. Outside the cloud image:
    Playwright in a scratch folder (`PLAYWRIGHT=<dir>/node_modules/playwright/index.mjs`) and `CHROME=<installed chrome>`.
 3. Expected noise: the AudioContext warning in headless runs.
 4. After importing art, check `clean.mjs`'s output: `cut` / `boxed` pictures are dropped. `codex-art.mjs import` pads

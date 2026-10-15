@@ -46,6 +46,13 @@ export const sfx = {
   charge() { [262, 330, 392, 523, 659].forEach((f, i) => tone('square', f, f, i * 0.05, 0.07, 0.08)); },
   backup() { tone('square', 1046, 1046, 0, 0.18, 0.035); },
   thud() { noise(0, 0.22, 0.45, 260, 0.8); tone('sine', 120, 50, 0, 0.2, 0.2); },
+  // ROX KONG: a jump, a ladder's rung, a shoe hopping, goods landing on a beam, a box smashed by the hard hat, stretch film
+  jump() { tone('square', 300, 700, 0, 0.12, 0.07); },
+  rung() { tone('triangle', 900, 900, 0, 0.03, 0.03); },
+  hop() { tone('square', 200, 380, 0, 0.05, 0.03); },
+  bonk() { tone('triangle', 260, 120, 0, 0.1, 0.09); noise(0, 0.06, 0.12, 500); },
+  smash() { noise(0, 0.25, 0.5, 1500, 0.6); tone('square', 800, 200, 0, 0.2, 0.1); },
+  wrap() { noise(0, 0.9, 0.18, 3000, 2); tone('sine', 400, 1600, 0.1, 0.6, 0.05); },
   taunt() { tone('square', 660, 880, 0, 0.08, 0.06); tone('square', 880, 660, 0.09, 0.08, 0.06); },
 };
 
