@@ -87,7 +87,7 @@ const G = { mode: 'attract', phase: 'menu', live: false };
 function reset(mode) {
   const q = road.roadAt(0);
   Object.assign(G, { mode, live: mode !== 'attract', pos: 0, speed: 0, lat: q.rw / 2, camX: q.rw / 2, t: 0, score: 0, combo: 0, comboT: 0, maxCombo: 0, hits: 0, roxes: 0, missed: 0,
-    clock: 14 * 3600 + 28 * 60 + 15, deadline: 14 * 3600 + 30 * 60, crashes: 0, ents: [], parts: [], floats: [], shake: 0, invT: 0, slipT: 0, boostT: 0, hornT: 0, finished: false, endT: 0, result: null,
+    clock: 14 * 3600 + 28 * 60, deadline: 14 * 3600 + 30 * 60, crashes: 0, ents: [], parts: [], floats: [], shake: 0, invT: 0, slipT: 0, boostT: 0, hornT: 0, finished: false, endT: 0, result: null,
     nextRox: 70, nextTraffic: 160, nextCoffee: 380, nextPark: 0, roxCar: false, wall: false, braking: false, sayT: 0 });
   G.ents.push({ kind: 'finish', s: FINISH, lat: 0 }, { kind: 'ufp', s: LEN - 8, lat: 0 });
   if (mode === 'chase') G.ents.push(G.boss = { kind: 'boss', s: 75, lat: q.rw / 2, vs: 0, hp: BOSS_HP, flee: 0, inv: 0, dodgeCool: 0, turbo: 0, turboCool: 0, tgtLat: q.rw / 2, tgtT: 2, dropT: 3, sayT: 1.5, said: null, saidT: 0, lift: 0, vz: 0, rot: 0 });
@@ -104,6 +104,7 @@ function spawnRox(s, forced) {
   const e = { kind: 'rox', type, s, lat: rnd(-rw + 0.8, rw - 0.8), vs: 0, vlat: 0, state: 'idle', t: Math.random() * 3, lift: 0, vz: 0, rot: 0, said: null, saidT: 0, talked: false };
   if (type === 'walk' || type === 'gold' || type === 'phone') { e.lat = side * (rw + 1.6); e.cross = -side * (type === 'gold' ? 3.4 : type === 'phone' ? 1.1 : rnd(1.6, 2.4)); e.trigger = type === 'gold' ? 80 : 50; }
   if (type === 'cart') e.vs = -1.3; if (type === 'grizzly') e.vs = -2.2;
+  if (!e.cross && q.park) for (const sd of q.park) { const sg = sd === 'L' ? -1 : 1; if (e.lat * sg > rw - 1.7) e.lat = sg * (rw - 1.7); }   // not right beside a car parked at the kerb: you could not get him without hitting it
   G.ents.push(e); G.roxes++;
   return e;
 }
@@ -123,7 +124,7 @@ function spawnParked(a, b) {
       if (!front && j === 0 && !G.roxCar && s + ds > 45) { G.roxCar = true; G.ents.push({ kind: 'parked', s: s + ds, lat, img: CARS.rox, hm: 1.7, roxCar: true }); continue; }   // his red Captur, in the first bay across from the Panorama's door
       if (Math.random() < 0.7) G.ents.push({ kind: 'parked', s: s + ds, lat, img: front ? pick(CARS.front) : pick(CARS.rear) }); } }
   for (let s = a; s < b; s += rnd(6, 9)) { const q2 = road.roadAt(s); if (!q2.park || Math.random() < 0.3) continue;   // cars and vans at the kerb, half on the sidewalk, where the real street has them
-    for (const sd of q2.park) { const sg = sd === 'L' ? -1 : 1, truck = q2.trucks && Math.random() < 0.35; G.ents.push({ kind: 'parked', s, lat: sg * (q2.rw + (truck ? 0.3 : 0.1)), img: truck ? CARS.truck : sg > 0 ? pick(CARS.rear) : pick(CARS.front), hm: truck ? 3.1 : 1.45 }); } }
+    for (const sd of q2.park) { const sg = sd === 'L' ? -1 : 1, truck = q2.trucks && Math.random() < 0.35; G.ents.push({ kind: 'parked', kerb: true, s, lat: sg * (q2.rw + (truck ? 0.3 : 0.1)), img: truck ? CARS.truck : sg > 0 ? pick(CARS.rear) : pick(CARS.front), hm: truck ? 3.1 : 1.45 }); } }
 }
 function spawns() {
   const ahead = G.pos + 190;
@@ -155,7 +156,7 @@ function hitRox(e) {
 function crash(e) {
   G.invT = 1.6; G.shake = 0.5; G.crashes++; sfx('crash');
   if (e.oncoming || e.kind === 'parked') { G.speed = 0; } else { G.speed = Math.min(G.speed, e.vs) * 0.4; e.vs += 5; }
-  G.lat += (G.lat < e.lat ? -1 : 1) * 1.2;
+  if (e.kerb) G.lat = e.lat - Math.sign(e.lat) * 1.9; else G.lat += (G.lat < e.lat ? -1 : 1) * 1.2;   // off a car at the kerb: back onto the road, never behind the row (one crash after another)
   if (G.mode !== 'chase') { G.clock += 5; float('+5 SEC', W / 2 - 20, H * 0.45, '#ff5a4a', 2); }
   if (G.live) toast(e.roxCar ? 'LA CAPTUR DI ROX! UN\'ALTRA AMMACCATURA...' : pick(['CHE BOTTA!', 'ASSICURAZIONE!', 'MA CHI TI HA DATO LA PATENTE?']), 1100);
 }
@@ -257,21 +258,22 @@ function bossStep(b, dt, rw) {
   b.s += b.vs * dt;
   if ((b.tgtT -= dt) <= 0) { b.tgtT = rnd(1.4, 2.8); b.tgtLat = rnd(-rw + 1.1, rw - 1.1); }
   // a side-step when you are about to ram him (not always: he is Rox)
-  b.dodgeCool -= dt; if (gap < 11 && gap > 1 && b.dodgeCool <= 0) { b.dodgeCool = 1.6; if (Math.random() < 0.5) { b.tgtLat = clamp(G.lat + (b.lat > G.lat ? 2.8 : -2.8), -rw + 0.9, rw - 0.9); b.tgtT = 1.2; b.dodge = 0.8; } }
-  b.dodge = Math.max(0, (b.dodge || 0) - dt); const ls = b.dodge > 0 ? 4.8 : 2.6;
-  b.lat += clamp(b.tgtLat - b.lat, -ls * dt, ls * dt); b.lat = clamp(b.lat, -rw + 0.8, rw - 0.8);
+  b.dodgeCool -= dt; if (gap < 11 && gap > 1 && b.dodgeCool <= 0) { b.dodgeCool = 1.6; if (Math.random() < 0.35) { b.tgtLat = clamp(G.lat + (b.lat > G.lat ? 2.8 : -2.8), -rw + 0.9, rw - 0.9); b.tgtT = 1.2; b.dodge = 0.8; } }
+  b.dodge = Math.max(0, (b.dodge || 0) - dt); const ls = b.dodge > 0 ? 3.8 : 2.6;   /* playtest: at 4.8 nobody but a bot could follow him */
+  const pk = road.roadAt(b.s).park || [], lo = pk.includes('L') ? -rw + 1.7 : -rw + 0.8, hi = pk.includes('R') ? rw - 1.7 : rw - 0.8;   // off the cars parked at the kerb
+  b.lat += clamp(b.tgtLat - b.lat, -ls * dt, ls * dt); b.lat = clamp(b.lat, lo, hi);
   if (b.lift > 0 || b.vz) { b.lift += b.vz * dt; b.vz -= 18 * dt; if (b.lift <= 0) { b.lift = 0; b.vz = 0; } }
   // throwing things behind him
   if ((b.dropT -= dt) <= 0 && gap < 130 && gap > 8) { b.dropT = rnd(1.5, 3) + b.hp * 0.3; /* angrier with every hit */ G.ents.push({ kind: Math.random() < 0.7 ? 'fennel' : 'wet', s: b.s - 1.5, lat: b.lat + rnd(-0.6, 0.6) }); if (Math.random() < 0.4) sfx('taunt'); }
   if ((b.sayT -= dt) <= 0) { b.sayT = rnd(3, 5.5); if (gap < 100) say(b, SAY.chase, 1.8); }
   // rammed
-  if (gap < 0.4 && gap > -2.5 && Math.abs(b.lat - G.lat) < 1.7 && G.invT <= 0 && b.inv <= 0) {
+  if (gap < 0.4 && gap > -2.5 && Math.abs(b.lat - G.lat) < 1.9 && G.invT <= 0 && b.inv <= 0) {
     b.hp--; b.flee = 3; b.inv = 3; b.vs = Math.max(b.vs, G.speed) + 6; b.vz = 4; G.speed *= 0.55; G.invT = 0.9; G.shake = 0.3; G.hits++; G.score += 1000;
     sfx('hit'); const [x, y] = screenOf(b); burst(x, y, 22, ['#ec7022', '#344aa0', '#f0f4e2', '#9ad06a']); float(b.hp > 0 ? `COLPITO! ${b.hp} ANCORA` : 'ROX FERMATO!', x - 30, y - 20, '#ffffff', b.hp > 0 ? 1 : 2);
     say(b, SAY.chaseHit, 1.4);
     if (b.hp <= 0) { b.vz = 9; b.vs = G.speed + 8; endChase(true); }
   } else if (gap < -2.5) {   // you got past him: he takes a shortcut and turns up ahead
-    b.s = G.pos + CARZ + rnd(60, 90); b.lat = rnd(-rw + 1.2, rw - 1.2); say(b, SAY.shortcut, 1.6); if (G.live) toast('ROX HA PRESO UNA SCORCIATOIA!', 1300);
+    b.s = G.pos + CARZ + rnd(35, 55); b.lat = rnd(-rw + 1.2, rw - 1.2); say(b, SAY.shortcut, 1.6); if (G.live) toast('ROX HA PRESO UNA SCORCIATOIA!', 1300);
   }
   if (b.s >= FINISH && b.hp > 0 && G.phase === 'play') endChase(false);
 }

@@ -17,4 +17,7 @@ Prima avvia un server statico dalla radice del repo: `python3 -m http.server 876
   per confrontarla col video tratto per tratto.
 - `node tools/test/sprites.mjs OUT.png`: un foglio con tutti gli sprite (Rox in ogni posa, auto, oggetti, fumetti).
 
-Il bot è più bravo di una persona (sterza senza ritardo): in Chase vince in ~35 s, in Investi prende ~39 Rox su 43.
+Il bot è più bravo di una persona (sterza senza ritardo): in Chase vince in ~35 s, in Investi prende ~37 Rox su 42 e
+timbra con 10–30 s di margine. Non mira mai dietro un'auto parcheggiata al marciapiede (una persona la vede).
+Playtest della terza sessione con un bot "umano" (lo stesso con 150–300 ms di ritardo, script non salvato nel repo):
+con 150 ms vince Chase 2 volte su 3 (su `main` 0 su 3) e in Investi timbra in tempo 5 volte su 6.
