@@ -6,11 +6,15 @@
 //                sometimes golden. Run over as many as you can (combo multiplier), dodge the traffic.
 //   ROX CHASE    Rox has taken the Grizzly floor scrubber and is racing to clock in before you, riding it backwards and
 //                throwing fennel and wet-floor signs. Ram him five times before he gets to the warehouse.
+//   CORRIDOIO IS the boss fight (after clocking in on time, or from the menu): in UFP's warehouse, in a forklift, against
+//                Rox reversing his own forklift down the IS aisle and throwing his pallet at you. Ram him when his
+//                battery runs flat, six times in three phases. Drawn by warehouse.js, not by the road.
 //
 // World units are metres: s is the distance along the route, lat the offset from the road centre (+ right).
 // The camera sits CARZ metres behind your car's rear bumper; the car is drawn as one of the road's "things".
 import { createRoad } from './road.js';
-import { buildRox, buildCars, buildProps, bubble, scoreText } from './sprites.js';
+import { createWarehouse } from './warehouse.js';
+import { buildRox, buildCars, buildProps, buildLifts, bubble, scoreText } from './sprites.js';
 import * as AU from './audio.js';
 
 const $ = id => document.getElementById(id), clamp = (v, a, b) => Math.max(a, Math.min(b, v)), rnd = (a, b) => a + Math.random() * (b - a), pick = a => a[Math.floor(Math.random() * a.length)];
@@ -33,6 +37,17 @@ const SAY = {
   chaseHit: ['AHIA! IL GRIZZLY!', 'MI HAI RIGATO IL GRIZZLY!', 'NON VALE!', 'LO DICO AL CAPO!', 'BASTA!', 'IL GRIZZLY HA L\'ASSICURAZIONE?', 'MI HAI LAVATO VIA!', 'ORA IL PAVIMENTO LO PASSI TU!'],
   chaseHorn: ['NON MI FERMI COL CLACSON!', 'SUONA SUONA...', 'IL GRIZZLY NON HA GLI SPECCHIETTI!'],
   shortcut: ['SCORCIATOIA!', 'CONOSCO LA STRADA!', 'PASSO DAL CORRIDOIO IS!', 'IL GRIZZLY VA OVUNQUE!'],
+  // the boss fight, by phase: the pallet, raining fennel, turbo
+  lift1: ['IL BANCALE È TUTTO TUO!', 'TI CONSEGNO UN PACCO!', 'FIRMA LA BOLLA!', 'MERCE IN USCITA!', 'BEEP BEEP, RETROMARCIA!', 'PAVIMENTO BAGNATO, ATTENTO!', 'L\'INVENTARIO LO FAI TU!', 'CHI ROMPE PAGA!'],
+  lift2: ['FINOCCHI DAL CIELO!', 'ASSAGGIA QUESTO!', 'CONSEGNA A DOMICILIO!', 'FRESCHI DI PANORAMA!', 'UN FINOCCHIO AL GIORNO...', 'GUARDA IN ALTO!'],
+  lift3: ['MODALITÀ TURBO!', 'ORA FACCIO SUL SERIO!', 'IL 50 NON SI ARRENDE!', 'GIÙ LE SCATOLE!', 'IL CORRIDOIO IS È CASA MIA!', 'TUTTO LO SCAFFALE CONTRO DI TE!'],
+  flat: ['BATTERIA SCARICA?!', 'NO NO NO, LA SPINA!', 'CHI HA STACCATO LA CARICA?', 'L\'AVEVO MESSO SOTTO CARICA!', 'DAI, PARTI...', 'NON ORA!'],
+  recharge: ['RICARICATO! AH AH!', 'BATTERIA PIENA!', 'TROPPO LENTO!', 'TI È ANDATA MALE!', 'PILE NUOVE!'],
+  liftHit: ['AHIA, IL MULETTO!', 'NON SI TAMPONA IN MAGAZZINO!', 'CHIAMO LA SICUREZZA!', 'MI SI È ROVESCIATO IL BANCALE!', 'IL MULETTO HA L\'ASSICURAZIONE?', 'SEGNALO TUTTO AL CAPO!', 'I MIEI FINOCCHI!'],
+  liftBump: ['NON SPINGERE!', 'PRECEDENZA AL MULETTO!', 'MANTIENI LA DISTANZA!', 'NON SI SORPASSA NEL CORRIDOIO!'],
+  liftHorn: ['ANCHE IO HO IL CLACSON! BEEP!', 'SUONA PURE!', 'IN MAGAZZINO NON SI SUONA!'],
+  liftLaugh: ['PRESO!', 'AH AH AH!', 'CONSEGNATO!', 'BOLLA FIRMATA!', 'STRIKE!', 'RESO NON ACCETTATO!'],
+  liftWin: ['CIAO CIAO!', 'TORNA QUANDO SAI GUIDARE!', 'TI ASPETTO ALLA TIMBRATRICE!', 'IL CORRIDOIO IS È MIO!'],
 };
 const RANKS = [[0, 'Collega modello (che noia)'], [1, 'Pedone distratto'], [5, 'Apprendista cacciatore di Rox'], [10, 'Cacciatore di Rox'], [20, 'Terrore di Via Salvatorelli'], [30, 'Leggenda della Ferramenta']];
 
@@ -40,19 +55,21 @@ const RANKS = [[0, 'Collega modello (che noia)'], [1, 'Pedone distratto'], [5, '
 const CAM_H = 2.6, HORIZON = 0.46;
 const isPortrait = () => innerHeight > innerWidth;
 const widthFor = () => isPortrait() ? 240 : clamp(Math.round(H * innerWidth / Math.max(1, innerHeight)), 280, 400);
-let road = null, g = null, W = 0, H = 180, CARZ = 7, building = false;
+let road = null, wh = null, g = null, W = 0, H = 180, CARZ = 7, BZ = 6, building = false;
+const BOSS_CAM = 4.2, BOSS_HZ = 0.36;   // the warehouse: the camera higher, to see over the forklift's guard
 async function makeRoad() {
   building = true; W = widthFor(); H = isPortrait() ? 250 : 180; document.body.classList.toggle('portrait', isPortrait());
   document.documentElement.style.setProperty('--stage-h', `${(100 * H / W).toFixed(2)}vw`);   // portrait: the picture on top, the controls below
   road = await createRoad(canvas, { width: W, height: H, camH: CAM_H, horizon: HORIZON, steer: true });
   g = canvas.getContext('2d'); g.imageSmoothingEnabled = false;
   CARZ = CAM_H * road.FOCAL / (H * 0.955 - Math.round(H * HORIZON));   // the car's rear bumper sits just above the bottom edge
+  wh = createWarehouse(canvas, { camH: BOSS_CAM, horizon: BOSS_HZ }); BZ = BOSS_CAM * wh.FOCAL / (H * 0.955 - wh.HZ);
   building = false;
 }
 
 // ------------------------------------------------------------ pictures
 const faceImg = await new Promise(res => { const i = new Image(); i.onload = () => res(i); i.onerror = () => res(null); i.src = 'assets/rox/face.png'; });
-const ROX = buildRox(faceImg), CARS = buildCars(), PROPS = buildProps();
+const ROX = buildRox(faceImg), CARS = buildCars(), PROPS = buildProps(), LIFTS = buildLifts(ROX);
 const PPM = 40;   // pixels per metre of Rox's pictures (he is 2.35 m tall: a bobblehead you can see from afar)
 const hmOf = im => im.height / PPM;
 const BUB = new Map(), bub = t => { if (!BUB.has(t)) BUB.set(t, bubble(t)); return BUB.get(t); };
@@ -71,7 +88,8 @@ addEventListener('keydown', e => {
   if (KEYMAP[e.key]) { keys[KEYMAP[e.key]] = true; touchMode = false; e.preventDefault(); }
   else if (e.key === ' ' || e.key === 'h' || e.key === 'H') { horn(); e.preventDefault(); }
   else if (e.key === 'Escape' || e.key === 'p' || e.key === 'P') togglePause();
-  else if (e.key === 'Enter' && G.phase === 'end') start(G.mode);
+  else if (e.key === 'Enter' && G.phase === 'end') again();
+  else if (e.key === 'Enter' && G.phase === 'intro') goBoss();
 });
 addEventListener('keyup', e => { if (KEYMAP[e.key]) keys[KEYMAP[e.key]] = false; });
 for (const b of document.querySelectorAll('[data-k]')) {
@@ -92,8 +110,11 @@ function reset(mode) {
   G.ents.push({ kind: 'finish', s: FINISH, lat: 0 }, { kind: 'ufp', s: LEN - 8, lat: 0 });
   if (mode === 'chase') G.ents.push(G.boss = { kind: 'boss', s: 75, lat: q.rw / 2, vs: 0, hp: BOSS_HP, flee: 0, inv: 0, dodgeCool: 0, turbo: 0, turboCool: 0, tgtLat: q.rw / 2, tgtT: 2, dropT: 3, sayT: 1.5, said: null, saidT: 0, lift: 0, vz: 0, rot: 0 });
   else G.boss = null;
+  G.lift = null; G.carry = null; G.investiRec = null;
+  if (mode === 'boss') { Object.assign(G, { lat: 0, camX: 0, hp: MY_HP, taken: 0, hurtBy: [], decals: [], ents: [], nextSign: 22, slipCool: 0, wallT: 0 });
+    G.ents.push(G.lift = { kind: 'lift', s: BZ + LIFT_LEN + 11, lat: 0, vs: 0, hp: ROX_HP, phase: 1, state: 'attack', stT: 6.5, throwT: 1.8, dropT: 2, tgtLat: 0, tgtT: 1.5, sayT: 0.8, beepT: 0, inv: 0, said: null, saidT: 0, lift: 0, vz: 0, rot: 0 }); }
 }
-const carFront = () => G.pos + CARZ + 3.4;
+const carFront = () => G.mode === 'boss' ? G.pos + BZ + LIFT_LEN : G.pos + CARZ + 3.4;
 const toast = (t, ms = 1600) => { const el = $('toast'); el.textContent = t; el.classList.add('show'); clearTimeout(toast.h); toast.h = setTimeout(() => el.classList.remove('show'), ms); };
 const sfx = (k, ...a) => { if (G.live) AU.sfx[k](...a); };
 
@@ -167,6 +188,7 @@ function slip(e, wet) {
 function horn() {
   if (G.phase !== 'play' || G.hornT > 0) return; G.hornT = 0.6; AU.sfx.horn();
   if (G.boss) { if (G.boss.s - carFront() < 120) say(G.boss, SAY.chaseHorn, 1.4); return; }
+  if (G.lift) { if (G.lift.state === 'attack' && Math.random() < 0.6) { say(G.lift, SAY.liftHorn, 1.4); AU.sfx.backup(); } return; }
   for (const e of G.ents) if (e.kind === 'rox' && e.state === 'idle' && e.s - carFront() < 50 && e.s > carFront()) { say(e, SAY.horn, 1); if (!e.vz) e.vz = 3.2; }
 }
 
@@ -278,6 +300,162 @@ function bossStep(b, dt, rw) {
   if (b.s >= FINISH && b.hp > 0 && G.phase === 'play') endChase(false);
 }
 
+// ------------------------------------------------------------ the boss fight: CORRIDOIO IS
+// You drive UFP's yellow forklift up the IS aisle; Rox reverses his own forklift ahead of you, keeping his distance, and
+// throws his load at you. Every few seconds his battery runs flat (the light blinks first): he stops for a moment and
+// that is when you ram him. Two rams a phase, three phases; you have five lives (your forklift's).
+const LIFT_LEN = 2.9, LAT_MAX = 1.75, ROX_HP = 6, MY_HP = 5;
+const PHASES = [
+  { name: 'IL BANCALE', gap: 11.5, attack: [9, 11], window: 3.4, every: [1.05, 1.5], lat: 1.3 },
+  { name: 'PIOGGIA DI FINOCCHI', gap: 12.5, attack: [9, 11], window: 3.1, every: [1.05, 1.45], lat: 1.7 },
+  { name: 'TURBO', gap: 11, attack: [8.5, 10], window: 2.8, every: [1, 1.4], lat: 2.4, drops: [1.7, 2.4] },
+];
+const myRear = () => G.pos + BZ;
+function hurtMe(e, what) {
+  if (G.invT > 0 || G.finished) return; G.hp--; G.taken++; G.hurtBy.push(what + (e ? ' ' + e.mode : '')); G.invT = 1.5; G.speed *= 0.4; G.shake = 0.4; sfx('crash'); if (e) e.gone = true;
+  float(what, W / 2 - 30, H * 0.5, '#ff5a4a', 1); if (G.lift.state !== 'done') say(G.lift, SAY.liftLaugh, 1.2);
+  if (G.hp <= 0) { G.finished = true; G.phase = 'ending'; G.result = { won: false, time: G.t }; G.lift.state = 'gone'; say(G.lift, SAY.liftWin, 2.2); AU.sfx.lose(); toast('IL TUO MULETTO È KO!', 1800); setTimeout(() => endScreen(), 2400); }
+}
+function slipMe(e) { if (G.slipCool > 0) return; G.slipT = 0.7; G.slipCool = 1.4; G.speed *= 0.7; sfx('slip'); if (e) { e.gone = true; const [x, y] = screenOf(e); float(e.item === 'fennel' ? 'SCIVOLONE!' : 'BAGNATO!', x - 24, y - 14, '#7fe0ff'); } }
+// he throws something off his pallet: it lands behind him and slides at you; fennel flies in an arc to where you will be
+function bossThrow(L, P) {
+  const r = Math.random(), aim = () => clamp(Math.random() < 0.5 ? G.lat + rnd(-0.5, 0.5) : rnd(-LAT_MAX, LAT_MAX), -LAT_MAX, LAT_MAX);
+  const can = !G.ents.some(e => e.item === 'can') && G.decals.length < 2;
+  const kind = L.phase === 1 ? (r < 0.45 ? 'box' : r < 0.75 || !can ? 'wet' : 'can') : L.phase === 2 ? (r < 0.62 ? 'fennel' : r < 0.85 ? 'box' : 'wet') : (r < 0.45 ? 'fennel' : r < 0.8 ? 'box' : 'wet');
+  if (kind === 'fennel') {   // to where your forklift will be when it lands (you have to move)
+    const T = 1.35, s1 = Math.min(L.s - 3.5, myRear() + LIFT_LEN / 2 + G.speed * T + rnd(-0.5, 1.5));
+    G.ents.push({ kind: 'item', item: 'fennel', mode: 'arc', s: L.s - 0.5, lat: L.lat, s0: L.s - 0.5, lat0: L.lat, s1, lat1: aim(), t: 0, T, lift: 1.6, rot: 0 });
+  } else { const tl = kind === 'can' ? L.lat : aim(); G.ents.push({ kind: 'item', item: kind, mode: 'slide', s: L.s - 0.6, lat: L.lat, tl, vs: kind === 'can' ? -1.2 : -1.8, vlat: (tl - L.lat) / 0.6, latT: 0.6, lift: 1.3, vz: 1, rot: 0, s0: L.s - 0.6 }); }
+  if (Math.random() < 0.35) sfx('taunt');
+}
+// phase 3: he hits the racking and boxes fall from the top shelves where you will be (their shadow shows first)
+function bossDrop() { const T = 1.4, s = Math.min(G.lift.s - 3, myRear() + LIFT_LEN / 2 + G.speed * T + rnd(-0.5, 1)); G.ents.push({ kind: 'item', item: 'box', mode: 'fall', s, lat: clamp(G.lat + rnd(-0.7, 0.7), -LAT_MAX, LAT_MAX), lift: 6.6, t: 0, T, rot: 0 }); }
+
+function bossFight(dt) {
+  const L = G.lift, P = PHASES[L.phase - 1], live = G.live, play = G.phase === 'play' && !G.finished;
+  G.t += dt;
+  let steer = 0, gas = 0, brake = 0;
+  if (play) { steer = (keys.right ? 1 : 0) - (keys.left ? 1 : 0); brake = keys.brake ? 1 : 0; gas = keys.gas || (touchMode && !keys.brake) ? 1 : 0; }
+  else if (G.finished) brake = 1;
+  G.braking = brake > 0; G.steer = steer; G.gas = gas;
+  // your forklift: slow, but it turns well even slowly
+  const maxV = 9;
+  if (brake) G.speed -= 12 * dt; else if (gas) G.speed += 4.6 * (1 - (G.speed / maxV) ** 2) * dt; else G.speed -= 2.2 * dt;
+  G.speed = clamp(G.speed, 0, maxV + 1);
+  const sr = G.slipT > 0 ? 2.6 : 4.6 * Math.min(1, G.speed / 6 + 0.4) * (G.speed > 0.2 || gas ? 1 : 0);
+  G.lat += steer * sr * dt; if (G.slipT > 0) { G.slipT -= dt; G.lat += Math.sin(G.t * 20) * 3.5 * dt; }
+  if (Math.abs(G.lat) > LAT_MAX) { G.lat = Math.sign(G.lat) * LAT_MAX; if (G.speed > 3 && (G.wallT -= dt) <= 0) { G.wallT = 0.12; G.speed -= 0.4; burst(G.lat > 0 ? W - 30 : 30, H * 0.8, 3, ['#ffe14a', '#ffffff']); } }   // scraping the racking
+  G.pos += G.speed * dt;
+  G.camX += (G.lat * 0.7 - G.camX) * Math.min(1, dt * 6); wh.setCamX(G.camX);
+  for (const k of ['invT', 'hornT', 'shake', 'slipCool']) G[k] = Math.max(0, G[k] - dt);
+  while (G.nextSign < G.pos + 75) { G.ents.push({ kind: 'sign', s: G.nextSign, lat: 0 }); G.nextSign += 45; }   // the aisle's name hangs every 45 m
+
+  // Rox: keeps his distance (you cannot catch him while his battery is on), wanders across the aisle, throws
+  const front = carFront(); let gap = L.s - front;
+  L.inv = Math.max(0, L.inv - dt); if (L.saidT > 0) L.saidT -= dt;
+  if (L.state === 'attack' || L.state === 'hurt') {
+    const want = L.state === 'hurt' ? G.speed + 7 : clamp(G.speed + 1.3 * (P.gap - gap), 0, 13);
+    L.vs += clamp(want - L.vs, -10 * dt, 9 * dt);
+    if ((L.tgtT -= dt) <= 0) { L.tgtT = rnd(1.1, 2.4); L.tgtLat = rnd(-LAT_MAX, LAT_MAX); }
+    L.lat += clamp(L.tgtLat - L.lat, -P.lat * dt, P.lat * dt);
+  } else if (L.state === 'flat') L.vs = Math.max(0, L.vs - 10 * dt);
+  else if (L.state === 'gone') L.vs = Math.min(14, L.vs + 6 * dt);
+  else L.vs = Math.max(0, L.vs - 12 * dt);
+  L.s += L.vs * dt;
+  if (L.vz || L.lift > 0) { L.lift += L.vz * dt; L.vz -= 14 * dt; if (L.lift <= 0) { L.lift = 0; L.vz = 0; } } L.rot *= 1 - dt * 4;
+  if (play && L.state === 'attack') {
+    if ((L.stT -= dt) <= 0) { L.state = 'flat'; L.stT = P.window; say(L, SAY.flat, 1.6); sfx('flat'); }
+    else { if ((L.throwT -= dt) <= 0 && gap > 5) { L.throwT = rnd(...P.every); bossThrow(L, P); }
+      if (P.drops && (L.dropT -= dt) <= 0) { L.dropT = rnd(...P.drops); bossDrop(); }
+      if ((L.beepT -= dt) <= 0) { L.beepT = 1.1; sfx('backup'); }   // reversing: beep... beep...
+      if ((L.sayT -= dt) <= 0) { L.sayT = rnd(3.5, 5.5); say(L, SAY['lift' + L.phase], 1.7); } }
+  } else if (play && L.state === 'flat') { if ((L.stT -= dt) <= 0) { L.state = 'attack'; L.stT = rnd(...P.attack); L.throwT = 0.6; say(L, SAY.recharge, 1.5); sfx('charge'); } }
+  else if (play && L.state === 'hurt') { if ((L.stT -= dt) <= 0 && gap > P.gap - 3) { L.state = 'attack'; L.stT = rnd(...P.attack); L.throwT = 1; } }
+  // touching him: a ram while his battery is flat, otherwise he just keeps you off (nobody overtakes in the aisle)
+  gap = L.s - carFront();
+  if (gap < 0.25 && L.state !== 'gone') {
+    const side = Math.abs(L.lat - G.lat) < 1.75;
+    if (side && L.state === 'flat' && L.inv <= 0 && play) bossHit(L);
+    else if (side && play && L.state === 'attack' && G.hornT <= 0 && Math.random() < dt * 2) say(L, SAY.liftBump, 1.2);
+    G.pos = L.s - 0.25 - BZ - LIFT_LEN; G.speed = Math.min(G.speed, Math.max(0, L.vs - 0.5)); gap = 0.25;
+  }
+  // what he threw: sliding, flying, falling, lying on the floor
+  const rear = myRear(), fr = rear + LIFT_LEN, onMe = (s, lat, half) => s > rear - 0.3 && s < fr + 0.3 && Math.abs(lat - G.lat) < 0.95 + half;
+  for (const e of G.ents) {
+    if (e.kind === 'sign') { if (e.s < G.pos) e.gone = true; continue; }
+    if (e.kind === 'climber') { climb(e, dt); continue; }
+    if (e.kind !== 'item') continue;
+    if (e.mode === 'slide') { e.s += e.vs * dt; if (e.latT > 0) { e.latT -= dt; e.lat = clamp(e.lat + e.vlat * dt, -LAT_MAX - 0.4, LAT_MAX + 0.4); }
+      if (e.lift > 0 || e.vz) { e.lift += e.vz * dt; e.vz -= 16 * dt; if (e.lift <= 0) { e.lift = 0; e.vz = 0; } }
+      if (e.item === 'can') { e.rot += dt * 3; if (e.lift === 0) { if (!e.puddle) G.decals.push(e.puddle = { s0: e.s, s1: e.s + 0.6, lat: e.lat, w: 1.3 }); e.puddle.s0 = Math.min(e.puddle.s0, e.s); if (e.puddle.s1 - e.puddle.s0 > 18) e.puddle.s1 = e.puddle.s0 + 18; } }   // it leaks along its lane
+      if (e.lift < 0.5 && onMe(e.s, e.lat, 0.2)) { if (e.item === 'can') slipMe(e); else hurtMe(e, e.item === 'box' ? 'SCATOLATA!' : 'CARTELLO!'); }
+    } else if (e.mode === 'arc') { e.t += dt; const u = Math.min(1, e.t / e.T); e.s = e.s0 + (e.s1 - e.s0) * u; e.lat = e.lat0 + (e.lat1 - e.lat0) * u; e.lift = 1.6 * (1 - u) + 4.2 * Math.sin(Math.PI * u); e.rot += dt * 9;
+      if (u >= 1) { e.mode = 'floor'; e.lift = 0; e.rot = 0; if (onMe(e.s, e.lat, 0.3)) hurtMe(e, 'FINOCCHIATA!'); }
+    } else if (e.mode === 'fall') { e.t += dt; const u = Math.min(1, e.t / e.T); e.lift = 6.6 * (1 - u * u); e.rot = u * 0.6;
+      if (u >= 1) { e.mode = 'floor'; e.lift = 0; e.rot = 0; sfx('thud'); G.shake = Math.max(G.shake, 0.12); if (onMe(e.s, e.lat, 0.4)) hurtMe(e, 'SCATOLATA!'); }
+    } else if (e.mode === 'floor' && e.item === 'coffee') { if (onMe(e.s, e.lat, 0.4)) { e.gone = true; sfx('pickup'); const [x, y] = screenOf(e); if (G.hp < MY_HP) { G.hp++; float('+1 MULETTO', x - 24, y - 12, '#7fe0ff'); } else { G.score += 500; float('+500', x - 12, y - 12, '#7fe0ff'); } } }
+    else if (e.mode === 'floor' && onMe(e.s, e.lat, 0.3)) { if (e.item === 'fennel') slipMe(e); else hurtMe(e, 'SCATOLATA!'); }
+    if (e.s < G.pos - 2) e.gone = true;
+  }
+  if (play) for (const d of G.decals) if (d.s1 > rear && d.s0 < fr && Math.abs(d.lat - G.lat) < d.w / 2 + 0.6) slipMe(null);
+  G.decals = G.decals.filter(d => d.s1 > G.pos - 2);
+  G.ents = G.ents.filter(e => !e.gone);
+  for (const p of G.parts) { p.x += p.vx * dt; p.y += p.vy * dt; p.vy += 200 * dt; p.t -= dt; } G.parts = G.parts.filter(p => p.t > 0);
+  for (const f of G.floats) { f.y -= 22 * dt; f.t -= dt; } G.floats = G.floats.filter(f => f.t > 0);
+}
+function bossHit(L) {
+  L.hp--; G.hits++; G.score += 1500; L.inv = 1.5; L.state = 'hurt'; L.stT = 1.3; L.vz = 2.6; L.rot = (L.lat > G.lat ? 1 : -1) * 0.12; L.vs = G.speed + 5;
+  G.speed *= 0.3; G.invT = Math.max(G.invT, 0.8); G.shake = 0.35; sfx('hit');
+  const [x, y] = screenOf(L); burst(x, y, 24, ['#ec7022', '#344aa0', '#f0f4e2', '#9ad06a', '#c89a50']);
+  float(L.hp > 0 ? `COLPO! ${L.hp} ANCORA` : 'MULETTO FERMATO!', x - 30, y - 20, '#ffffff', L.hp > 0 ? 1 : 2);
+  if (L.hp <= 0) return bossWon(L);
+  say(L, SAY.liftHit, 1.4);
+  G.ents.push({ kind: 'item', item: 'coffee', mode: 'floor', s: L.s + 2, lat: clamp(L.lat + (Math.random() < 0.5 ? -1.3 : 1.3), -LAT_MAX, LAT_MAX), lift: 0, rot: 0 });   // off his pallet: a coffee, a life back
+  if (L.hp % 2 === 0) { L.phase++; const P = PHASES[L.phase - 1]; setTimeout(() => { if (G.lift === L && G.phase === 'play') { toast(`FASE ${L.phase}: ${P.name}!`, 1600); say(L, SAY['lift' + L.phase], 1.8); } }, 900); }
+}
+// the sixth ram: Rox jumps off his forklift and climbs the racking (the hook for the next boss)
+function bossWon(L) {
+  L.state = 'done'; L.vs = 0; G.finished = true; G.phase = 'ending'; G.result = { won: true, time: G.t };
+  const bonus = Math.max(0, Math.round(6000 - G.t * 40)) + G.hp * 800; G.score += bonus; G.result.bonus = bonus;
+  const side = L.lat >= 0 ? 1 : -1; G.ents.push({ kind: 'climber', s: L.s - 0.4, lat: L.lat, lat0: L.lat, side, t: 0, lift: 1.1, said: null, saidT: 0 });
+  AU.sfx.win(); toast('ROX SCAPPA SUGLI SCAFFALI!', 2200); setTimeout(() => endScreen(), 4600);
+}
+function climb(e, dt) {
+  e.t += dt; if (e.saidT > 0) e.saidT -= dt;
+  const top = 5.2, wall = e.side * (wh.HALF + 0.25);
+  if (e.t < 0.8) { const u = e.t / 0.8; e.lat = e.lat0 + (wall - e.lat0) * u; e.lift = 1.1 + 1.8 * Math.sin(Math.PI * u) + 0.4 * u; }   // the jump
+  else e.lift = Math.min(top, 1.5 + (e.t - 0.8) * 1.6);
+  if (!e.s1 && e.t > 0.1) { e.s1 = 1; say(e, 'NON MI PRENDI!', 2); }
+  if (!e.s2 && e.t > 2.8) { e.s2 = 1; say(e, 'CI VEDIAMO SUGLI SCAFFALI!', 2); }
+}
+function liftImg(L) {
+  if (L.state === 'done') return LIFTS.empty;
+  const f = L.inv > 0.6 ? 'ouch' : L.phase === 3 || L.state === 'gone' ? 'grin' : 'calm', blink = Math.floor(G.t * 6) % 2;
+  if (L.state === 'flat') return LIFTS[f + (blink ? 'Flat' : 'Off')];
+  if (L.state === 'attack' && L.stT < 1.2) return LIFTS[f + (blink ? 'Flat' : '')];   // the light warns you first
+  return LIFTS[f];
+}
+function bossThings() {
+  const out = [], add = (s, lat, img, hm, lift = 0, rot = 0, wm) => { const z = s - G.pos; if (z < 0.8 || z > 70) return null; const th = { z, lat, img, hm, lift, rot, wm }; out.push(th); return th; };
+  for (const e of G.ents) {
+    let th = null;
+    if (e.kind === 'lift') { th = add(e.s, e.lat, liftImg(e), 3.8, e.lift, e.rot); add(e.s + 0.05, e.lat, PROPS.shadow, 0.3, 0, 0, 2.8); }   // an XL forklift, like the Grizzly XL: his face must read
+    else if (e.kind === 'sign') th = add(e.s, 0, LIFTS.sign, 1.3, 5.4);
+    else if (e.kind === 'climber') { const im = e.t < 0.8 ? ROX.climb1 : e.lift >= 5.2 ? (Math.floor(e.t * 2.5) % 2 ? ROX.wave : ROX.stand) : Math.floor(e.t * 5) % 2 ? ROX.climb1 : ROX.climb2; th = add(e.s, e.lat, im, hmOf(im), e.lift); }
+    else if (e.kind === 'item') {
+      if (e.mode === 'arc' || e.mode === 'fall') { const u = Math.min(1, e.t / e.T); add(e.mode === 'arc' ? e.s1 : e.s, e.mode === 'arc' ? e.lat1 : e.lat, PROPS.shadow, 0.2, 0, 0, 0.5 + u * 0.9); }   // where it will land
+      if (e.item === 'coffee') { th = add(e.s, e.lat, PROPS.coffee, 0.55, 0.3 + Math.sin(G.t * 5) * 0.12); e.th = th; continue; }
+      const im = e.item === 'box' ? LIFTS.box : e.item === 'can' ? LIFTS.can : e.item === 'wet' ? PROPS.wet : PROPS.fennel;
+      th = add(e.s, e.lat, im, e.item === 'box' ? 0.62 : e.item === 'wet' ? 0.8 : e.item === 'can' ? 0.55 : 0.6, e.lift, e.rot);
+    }
+    e.th = th;
+  }
+  const me = { z: BZ, lat: G.lat, img: G.braking ? LIFTS.youBrake : LIFTS.you, hm: 2.4, lift: Math.abs(G.shake) > 0.2 ? rnd(0, 0.05) : 0, rot: G.slipT > 0 ? Math.sin(G.t * 20) * 0.12 : G.steer * -0.02 };
+  if (G.invT > 0 && G.invT < 1.4 && Math.floor(G.t * 16) % 2) me.alpha = 0.5;
+  out.push({ z: BZ + 0.05, lat: G.lat, img: PROPS.shadow, hm: 0.25, wm: 2.4 }, me); G.carTh = me;
+  return out;
+}
+
 // ------------------------------------------------------------ drawing
 function roxImg(e) {
   const f = Math.floor(e.t * 4) % 2; if (e.state === 'fly') return ROX.hit;
@@ -330,8 +508,13 @@ function hud(now) {
   if (!G.live) return;
   $('h-score').textContent = String(G.score).padStart(6, '0'); $('h-combo').textContent = G.combo > 1 ? `COMBO X${Math.min(8, G.combo)}` : '';
   $('h-speed').textContent = `${Math.round(G.speed * 3.6)} KM/H`;
-  if (G.mode === 'investi') { const left = G.deadline - G.clock; $('h-mid').textContent = fmtClock(G.clock); $('h-mid').classList.toggle('late', left < 0); $('h-mid').classList.toggle('hurry', left >= 0 && left < 20); $('h-sub').textContent = `ROX INVESTITI: ${G.hits}`; }
-  else { $('h-mid').textContent = '❤'.repeat(Math.max(0, G.boss.hp)) + '♡'.repeat(BOSS_HP - Math.max(0, G.boss.hp)); $('h-mid').classList.remove('late', 'hurry'); $('h-sub').textContent = `DISTANZA DA ROX: ${Math.max(0, Math.round(G.boss.s - carFront()))} M`; }
+  $('progress').style.display = G.mode === 'boss' ? 'none' : '';
+  if (G.mode === 'boss') { const L = G.lift, flat = L.state === 'flat';
+    $('h-combo').textContent = `MULETTO ${'■'.repeat(Math.max(0, G.hp))}${'□'.repeat(MY_HP - Math.max(0, G.hp))}`;
+    $('h-mid').textContent = 'ROX ' + '❤'.repeat(Math.max(0, L.hp)) + '♡'.repeat(ROX_HP - Math.max(0, L.hp)); $('h-mid').classList.remove('late', 'hurry');
+    $('h-sub').textContent = flat ? 'BATTERIA SCARICA! SPERONALO!' : `FASE ${L.phase}: ${PHASES[L.phase - 1].name}`; $('h-sub').classList.toggle('hurry', flat); }
+  else if (G.mode === 'investi') { const left = G.deadline - G.clock; $('h-mid').textContent = fmtClock(G.clock); $('h-mid').classList.toggle('late', left < 0); $('h-mid').classList.toggle('hurry', left >= 0 && left < 20); $('h-sub').textContent = `ROX INVESTITI: ${G.hits}`; $('h-sub').classList.remove('hurry'); }
+  else { $('h-mid').textContent = '❤'.repeat(Math.max(0, G.boss.hp)) + '♡'.repeat(BOSS_HP - Math.max(0, G.boss.hp)); $('h-mid').classList.remove('late', 'hurry'); $('h-sub').textContent = `DISTANZA DA ROX: ${Math.max(0, Math.round(G.boss.s - carFront()))} M`; $('h-sub').classList.remove('hurry'); }
   $('p-car').style.left = `${clamp(G.pos / LEN, 0, 1) * 100}%`;
   $('p-rox').style.display = G.boss ? 'block' : 'none'; if (G.boss) $('p-rox').style.left = `${clamp(G.boss.s / LEN, 0, 1) * 100}%`;
   $('btn-pause').style.display = G.phase === 'play' ? 'block' : 'none';
@@ -344,12 +527,16 @@ function showScreen(id) { for (const s of document.querySelectorAll('.screen')) 
 function menuRecords() {
   $('best-investi').textContent = BEST.investi ? `RECORD: ${BEST.investi.score} PUNTI · ${BEST.investi.hits} ROX` : 'NESSUN RECORD ANCORA';
   $('best-chase').textContent = BEST.chase ? `RECORD: ROX FERMATO IN ${fmtTime(BEST.chase.time)}` : 'NESSUN RECORD ANCORA';
+  $('best-boss').textContent = BEST.boss ? `RECORD: ${BEST.boss.score} PUNTI · ${fmtTime(BEST.boss.time)}` : 'NESSUN RECORD ANCORA';
 }
 function toMenu() { AU.engineOff(); AU.musicStop(); reset('attract'); G.phase = 'menu'; showScreen('menu'); menuRecords(); }
-async function start(mode) {
+async function start(mode, carry = null) {
   AU.unlock(); reset(mode); G.phase = 'countdown'; showScreen(null); $('controls').classList.toggle('show', true);
-  $('story').innerHTML = mode === 'investi' ? 'Sono le 14:28. Alle 14:30 devi timbrare.<br>Rox è uscito dal Panorama... e si è moltiplicato.<br><b>Investine più che puoi!</b>' : 'Rox ha rubato il Grizzly e corre a timbrare prima di te.<br>Guida al contrario e lancia finocchi.<br><b>Speronalo 5 volte prima della ditta!</b>';
-  $('story').classList.add('show'); AU.engineOn(); if (AU.audioState().music) AU.musicStart(mode === 'chase');
+  if (carry) { G.carry = carry; G.score = carry.score; }   // straight on from INVESTI ROX: the score carries on
+  $('story').innerHTML = mode === 'investi' ? 'Sono le 14:28. Alle 14:30 devi timbrare.<br>Rox è uscito dal Panorama... e si è moltiplicato.<br><b>Investine più che puoi!</b>'
+    : mode === 'boss' ? 'Magazzino UFP, corridoio IS. Rox è salito su un muletto<br>e ti tira addosso il bancale.<br><b>Quando gli si scarica la batteria, speronalo! 6 colpi.</b>'
+    : 'Rox ha rubato il Grizzly e corre a timbrare prima di te.<br>Guida al contrario e lancia finocchi.<br><b>Speronalo 5 volte prima della ditta!</b>';
+  $('story').classList.add('show'); AU.engineOn(); if (AU.audioState().music) AU.musicStart(mode !== 'investi');
   for (const n of [3, 2, 1]) { $('count').textContent = n; $('count').classList.add('show'); AU.sfx.beep(false); await new Promise(r => setTimeout(r, 750)); if (G.mode !== mode) return; }
   $('count').textContent = 'VIA!'; AU.sfx.beep(true); G.phase = 'play'; $('story').classList.remove('show'); setTimeout(() => $('count').classList.remove('show'), 600);
 }
@@ -357,8 +544,19 @@ function finish() {
   G.finished = true; G.phase = 'ending'; const onTime = G.clock <= G.deadline, left = Math.max(0, G.deadline - G.clock);
   const bonus = onTime ? 1000 + Math.round(left * 50) : 0; G.score += bonus;
   G.result = { onTime, bonus };
-  setTimeout(() => endScreen(), 1700); if (onTime) AU.sfx.win(); else AU.sfx.lose();
+  setTimeout(() => onTime ? bossIntro() : endScreen(), 1700); if (onTime) AU.sfx.win(); else AU.sfx.lose();
   toast(onTime ? 'TIMBRATO IN ORARIO!' : 'TIMBRATO IN RITARDO...', 1600);
+}
+// on time: Rox is not finished with you yet. On to the boss fight (or stop here)
+function bossIntro() {
+  if (G.mode !== 'investi' || G.phase !== 'ending') return;
+  AU.engineOff(); AU.musicStop(); G.phase = 'intro'; $('controls').classList.remove('show'); investiRecord(); showScreen('bossintro');
+  $('bi-score').textContent = `${G.score} PUNTI · ${G.hits} ROX · ${fmtClock(G.clock)}`;
+}
+const goBoss = () => start('boss', { score: G.score, hits: G.hits, roxes: G.roxes, clock: G.clock, rec: G.investiRec });
+function investiRecord() {
+  if (G.investiRec != null) return G.investiRec;
+  G.investiRec = !BEST.investi || G.score > BEST.investi.score; if (G.investiRec) { BEST.investi = { score: G.score, hits: G.hits }; saveBest(); } return G.investiRec;
 }
 function endChase(won) {
   G.finished = true; G.phase = 'ending'; G.result = { won, time: G.t };
@@ -374,8 +572,16 @@ function endScreen() {
     lines = [`Timbrato alle <b>${fmtClock(G.clock)}</b>${G.result.onTime ? ` · bonus puntualità +${G.result.bonus}` : ' · il capo ti ha visto'}`,
       `Rox investiti: <b>${G.hits}</b> su ${G.roxes} · combo massima <b>x${Math.min(8, G.maxCombo)}</b>`,
       `Incidenti: ${G.crashes}`, `Titolo: <b>${rank}</b>`];
-    if (!BEST.investi || G.score > BEST.investi.score) { BEST.investi = { score: G.score, hits: G.hits }; saveBest(); rec = true; }
+    rec = investiRecord();
     $('end-share').dataset.text = `Ho investito ${G.hits} Rox tornando dal Panorama (${G.score} punti, ${rank}). Prova tu!`;
+  } else if (G.mode === 'boss') {
+    const c = G.carry, won = G.result.won, own = G.score - (c ? c.score : 0);
+    title = won ? 'MULETTO FERMATO!' : 'ROX HA VINTO!';
+    lines = won ? [`Il muletto di Rox fermato in <b>${fmtTime(G.result.time)}</b> · bonus +${G.result.bonus}`, `Colpi presi: <b>${G.taken}</b> · il tuo muletto: ${G.hp}/${MY_HP}`, 'Rox è saltato giù ed è scappato su per gli scaffali...', '<b>CONTINUA...</b>']
+      : ['Il tuo muletto è da portare in officina.', `Hai speronato Rox <b>${ROX_HP - G.lift.hp}</b> volte su ${ROX_HP}.`, 'Ora si vanta in mensa. Col finocchio in mano.'];
+    if (c) lines.unshift(`Timbrato alle <b>${fmtClock(c.clock)}</b> · Rox investiti: <b>${c.hits}</b> su ${c.roxes}`);
+    if (won && (!BEST.boss || own > BEST.boss.score)) { BEST.boss = { score: own, time: G.result.time, taken: G.taken }; saveBest(); rec = true; }
+    $('end-share').dataset.text = won ? `Ho fermato il muletto di Rox nel corridoio IS in ${fmtTime(G.result.time)} (${G.score} punti)! Prova tu!` : 'Rox mi ha battuto col muletto nel corridoio IS... vendicami!';
   } else {
     title = G.result.won ? 'ROX FERMATO!' : 'ROX HA TIMBRATO!';
     lines = G.result.won ? [`L'hai fermato in <b>${fmtTime(G.result.time)}</b>`, 'Il Grizzly è sotto sequestro.', 'Rox oggi pulisce i bagni.'] : ['Rox è arrivato in ditta prima di te.', `Gli hai tolto <b>${BOSS_HP - G.boss.hp}</b> cuori su ${BOSS_HP}.`, 'Ora lo racconterà a tutti per una settimana.'];
@@ -388,10 +594,12 @@ function togglePause(force) {
   if (G.phase === 'play' && (force === true || force === undefined)) { G.phase = 'paused'; showScreen('pause'); AU.engineOff(); }
   else if (G.phase === 'paused' && force !== true) { G.phase = 'play'; showScreen(null); AU.engineOn(); }
 }
-$('btn-investi').onclick = () => start('investi'); $('btn-chase').onclick = () => start('chase');
+$('btn-investi').onclick = () => start('investi'); $('btn-chase').onclick = () => start('chase'); $('btn-boss').onclick = () => start('boss');
+$('bi-go').onclick = goBoss; $('bi-stop').onclick = () => endScreen();
 $('btn-howto').onclick = () => showScreen('howto'); $('btn-howto-back').onclick = () => showScreen('menu');
 $('btn-resume').onclick = () => togglePause(); $('btn-quit').onclick = toMenu; $('btn-pause').onclick = () => togglePause();
-$('end-again').onclick = () => start(G.mode); $('end-menu').onclick = toMenu;
+const again = () => start(G.carry ? 'investi' : G.mode);   // after the whole run (road and aisle): the whole run again
+$('end-again').onclick = again; $('end-menu').onclick = toMenu;
 $('end-share').onclick = async () => { const text = $('end-share').dataset.text + ' ' + location.href.split('?')[0]; try { if (navigator.share) await navigator.share({ text }); else { await navigator.clipboard.writeText(text); toast('COPIATO! INCOLLALO NEL GRUPPO', 1500); } } catch {} };
 const syncAudioBtns = () => { const s = AU.audioState(); $('btn-sound').textContent = `SUONI: ${s.sound ? 'SI' : 'NO'}`; $('btn-music').textContent = `MUSICA: ${s.music ? 'SI' : 'NO'}`; };
 $('btn-sound').onclick = () => { AU.unlock(); AU.setSound(!AU.audioState().sound); syncAudioBtns(); }; $('btn-music').onclick = () => { AU.unlock(); AU.setMusic(!AU.audioState().music); syncAudioBtns(); }; syncAudioBtns();
@@ -402,10 +610,17 @@ $('credits').innerHTML = 'Mappa © <a href="https://www.openstreetmap.org/copyri
 
 // ------------------------------------------------------------ the loop
 let last = performance.now(), resizeT = null;
+const TS = clamp(+params.get('ts') || 1, 0.25, 4);   // tests only: ?ts=3 runs the game three times faster
 addEventListener('resize', () => { clearTimeout(resizeT); resizeT = setTimeout(async () => { if ((widthFor() === W && (isPortrait() ? 250 : 180) === H) || building) return; await makeRoad(); }, 300); });
 function frame(now) {
-  const dt = Math.min(0.05, (now - last) / 1000); last = now;
-  if (!building) {
+  const dt = Math.min(0.05, (now - last) / 1000 * TS); last = now;
+  if (window.__rox?.bot) window.__rox.bot(dt);   // the tests' bot plays in game time
+  if (!building && G.mode === 'boss') {   // the warehouse: no road
+    if (G.phase !== 'paused' && G.phase !== 'end') bossFight(G.phase === 'countdown' ? 0 : dt); else if (G.phase === 'end') G.t += dt;
+    wh.render(G.pos, bossThings(), G.decals); overlays();
+    if (G.live && G.phase === 'play') AU.engineSet(G.speed * 2.2, G.gas);
+    canvas.style.transform = G.shake > 0 ? `translate(${rnd(-1, 1) * G.shake * 14}px, ${rnd(-1, 1) * G.shake * 10}px)` : '';
+  } else if (!building) {
     road.streamAround(G.pos);
     if (road.ready(G.pos)) {
       if (G.phase !== 'paused' && G.phase !== 'end') step(G.phase === 'countdown' ? 0 : dt);
@@ -424,4 +639,4 @@ requestAnimationFrame(frame);
 if (params.get('mode')) start(params.get('mode'));
 
 // for tests and recordings
-window.__rox = { G, get road() { return road; }, start, keys, ROX, CARS, PROPS, step, get CARZ() { return CARZ; } };
+window.__rox = { G, get road() { return road; }, start, keys, ROX, CARS, PROPS, LIFTS, step, get CARZ() { return CARZ; }, get BZ() { return BZ; }, LIFT_LEN, LAT_MAX };

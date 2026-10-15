@@ -11,13 +11,22 @@ Italian. Read `NEXT_SESSION.md` first: it has the state, the decisions taken wit
   (Google Fonts); it lacks Ì and À, so write "SI"/"PA-PA" style text in buttons.
 - `game/main.js`: the game. State object `G`, `reset(mode)`, `step(dt)`, `bossStep`, `things()` (what to draw),
   `overlays()` (bubbles, particles, floating scores on the canvas), `hud()`, screens. Modes: `attract` (menu
-  background, autopilot, silent), `investi`, `chase`. Phases: menu, countdown, play, paused, ending, end.
-  `window.__rox` exposes `G`, `keys`, `CARZ`, `start` for the tests.
+  background, autopilot, silent), `investi`, `chase`, `boss` (CORRIDOIO IS, the forklift boss fight: `bossFight(dt)`,
+  `bossThings()`, `PHASES`, drawn by warehouse.js instead of the road; after Investi on time `bossIntro()` offers it and
+  `start('boss', carry)` carries the score on, `G.carry`). Phases: menu, countdown, play, paused, ending, intro, end.
+  `window.__rox` exposes `G`, `keys`, `CARZ`, `BZ`, `start` for the tests; `__rox.bot(dt)`, if set, runs every frame
+  in game time, and `?ts=3` runs the game 3x faster (tests only).
+- `game/warehouse.js`: the IS aisle of UFP's warehouse, its own small renderer (no road data): the floor, racking and
+  ceiling ray-cast pixel by pixel into an ImageData (puddles as `decals`), then the same things as road.js's
+  `render()`. Endless: the racking repeats. Camera higher than on the road (`BOSS_CAM`) to see over your forklift.
 - `game/sprites.js`: everything not scenery is drawn by code at load: Rox (face photo on a pixel body; poses stand,
   wave, walk1/2, phone, eat, push, cart, grizzly, chase/chase2/chaseOuch, sleep, hit (flying, arms up), gold*), cars
   (Rox's own: `CARS.rox`, a dented red Renault Captur, plate ROX 50, parked in the first bay across from the
   Panorama's door), Ape, fennel, wet-floor sign, coffee, shadow, finish banner, UFP warehouse, speech bubbles, score
-  text. All get a 1 px outline. Rox's expressions (`faceVar`: calm, sleep, ouch, chew, grin) are pixels of the one
+  text; for the boss fight `buildLifts(ROX)`: your yellow UFP forklift from behind, Rox's orange-and-blue one from the
+  front (light green / red flat / off, his face calm / grin / ouch, `empty` when he has jumped off), box, jerrycan, the
+  hanging CORRIDOIO IS sign; Rox's poses `drive_*` (unoutlined, drawn into the forklift) and `climb1/2`. All get a 1 px
+  outline. Rox's expressions (`faceVar`: calm, sleep, ouch, chew, grin) are pixels of the one
   photo moved and painted over; the face canvas is 4 px wider than the face so the cheeks can puff out.
 - `game/font.js`: the 5x7 pixel font extracted from road.js, plus ! ? : + *.
 - `game/audio.js`: Web Audio synth (engine, sfx, tarantella loop). Settings in localStorage `rox-audio`.
@@ -92,9 +101,10 @@ Italian. Read `NEXT_SESSION.md` first: it has the state, the decisions taken wit
 ## Checking a change
 
 1. `python3 -m http.server 8765 --bind 127.0.0.1` from the repo root.
-2. `node tools/test/ui.mjs /tmp/shots` and `node tools/test/drive.mjs investi|chase /tmp/shots ...`, then look at the
+2. `node tools/test/ui.mjs /tmp/shots` and `node tools/test/drive.mjs investi|chase|boss /tmp/shots ...`, then look at the
    screenshots with Read. Also try a phone size (`390 844 ... mobile` and `844 390 ... mobile`). For the scenery,
-   `node tools/test/at.mjs /tmp/at 0,500,1000` shoots the empty road at given metres. Outside the cloud image:
+   `node tools/test/at.mjs /tmp/at 0,500,1000` shoots the empty road at given metres. The boss fight's balance:
+   `node tools/test/boss.mjs 9 200` (a bot that sees 200 ms late plays 9 games, prints wins, time, hits taken). Outside the cloud image:
    Playwright in a scratch folder (`PLAYWRIGHT=<dir>/node_modules/playwright/index.mjs`) and `CHROME=<installed chrome>`.
 3. Expected noise: the AudioContext warning in headless runs.
 4. After importing art, check `clean.mjs`'s output: `cut` / `boxed` pictures are dropped. `codex-art.mjs import` pads
