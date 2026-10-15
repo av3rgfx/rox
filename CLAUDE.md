@@ -15,9 +15,14 @@ Italian. Read `NEXT_SESSION.md` first: it has the state, the decisions taken wit
   `bossThings()`, `PHASES`, drawn by warehouse.js instead of the road; after Investi on time `bossIntro()` offers it and
   `start('boss', carry)` carries the score on, `G.carry` = `{score, first, investi?, boss?}`), `kong` (ROX KONG, the
   second boss, all in kong.js; after the aisle is won `kongIntro()` offers it, both intros share the `#bossintro`
-  screen via `intro()`; `again()` restarts from `carry.first`). Phases: menu, countdown, play, paused, ending, intro, end.
-  `window.__rox` exposes `G`, `keys`, `CARZ`, `BZ`, `start`, `KG` (the kong module) for the tests; `__rox.bot(dt)`, if set, runs every frame
-  in game time, and `?ts=3` runs the game 3x faster (tests only).
+  screen via `intro()`; `again()` restarts from `carry.first`), `kombat` (ROX KOMBAT, the fighting game, from the menu
+  only: the card opens the `#select` screen, a fighter card sets `kArgs` and calls `start('kombat')`; all in kombat.js,
+  no countdown, its HUD on the canvas; after a lost match `again()` (RIPROVA) restarts that match with the same tower).
+  Phases: menu, countdown, play, paused, ending, intro, end. `fitStage(mode)`: on an upright phone ROX KONG gets a taller
+  canvas (up to 350 px) so the whole racking fits under the HUD; every other mode keeps the road's size.
+  `window.__rox` exposes `G`, `keys`, `CARZ`, `BZ`, `start`, `KG` (the kong module), `KM` (kombat), `FT` (the fighters),
+  `kombat(id, from, opps)` for the tests; `__rox.bot(dt)`, if set, runs every frame in game time, and `?ts=3` runs the
+  game 3x faster (tests only).
 - `game/warehouse.js`: the IS aisle of UFP's warehouse, its own small renderer (no road data): the floor, racking and
   ceiling ray-cast pixel by pixel into an ImageData (puddles as `decals`), then the same things as road.js's
   `render()`. Endless: the racking repeats. Camera higher than on the road (`BOSS_CAM`) to see over your forklift.
@@ -29,6 +34,22 @@ Italian. Read `NEXT_SESSION.md` first: it has the state, the decisions taken wit
   the RESI box, the way up is at the other end. The still part of a bay is drawn once (`drawBg`). Keys: ←→ walk, ↑↓
   (`keys.gas`/`brake`) ladders, Space or SALTA (`keys.jump`, plus `keys.jumpTap` for taps shorter than a frame).
   Rox's speech bubble comes from main's `overlays()` (`G.ents = [K.R]`).
+- `game/kombat.js`: ROX KOMBAT (`createKombat({...})`: `reset(pick, from, opps, score)`, `step(dt)`, `render(g)`; state in
+  `G.F`). Side view, units canvas pixels: x along the arena (0..`AW` = 420, the camera between the two), y up from the
+  floor. A tower of three matches (two random colleagues, then Rox; Rox d'oro if you are Rox) in `ARENAS` (the
+  Panorama's car park with Codex's facade pictures, UFP's front with `lm-ufp.png`, the IS aisle drawn by code), best of
+  three rounds of 60 s. `MOVES` (punch, kick, `upper` = ↓+punch, `sweep` = ↓+kick, `jkick` in the air: start/act/rec
+  seconds, reach, height), the specials (`fireSpecial`: projectiles in `K.proj`), holding back blocks when something is
+  coming (`threatened`), `LEVELS` per match for the computer (`think` seconds between choices, `block`, `agg`, `dmg`:
+  how hard it hits). The match-winning blow gives `FINISCILO!` (stage `finish`): SPECIALE buries the loser in fennel
+  (`finocchiality`, stage `fatal`). Stages: vs, round, fight, ko, finish, fatal, over, done. Keys: ←→, ↑ jump (`gas`),
+  ↓ crouch (`brake`), `punch`/`kick`/`special` plus `*Tap` for presses (Z X C or J K L, Space = special).
+- `game/staff.js`: ROX KOMBAT's fighters. `ROSTER` (Rox and five colleagues as roles, never guessed real people:
+  il magazziniere, il mulettista, il commerciale, l'amministrazione, il capo; each `look` = clothes, `face` = a face drawn
+  by code, `special`, `lines`) and `GOLD` (Rox d'oro). `buildFighters(ROX)` draws every pose (`POSES`: joints, arms and
+  legs as thick segments on Rox's 40 x 92 bobblehead body) facing right and left (drawn mirrored shape by shape, so the
+  "50" reads), plus `down` (lying) and the select screen's face. A colleague's real photo goes in `photo` (cut out like
+  Rox's): then it is the face in every pose. Rox uses `ROX.faces` (his photo's expressions).
 - `game/sprites.js`: everything not scenery is drawn by code at load: Rox (face photo on a pixel body; poses stand,
   wave, walk1/2, phone, eat, push, cart, grizzly, chase/chase2/chaseOuch, sleep, hit (flying, arms up), gold*), cars
   (Rox's own: `CARS.rox`, a dented red Renault Captur, plate ROX 50, parked in the first bay across from the
@@ -120,7 +141,8 @@ Italian. Read `NEXT_SESSION.md` first: it has the state, the decisions taken wit
    screenshots with Read. Also try a phone size (`390 844 ... mobile` and `844 390 ... mobile`). For the scenery,
    `node tools/test/at.mjs /tmp/at 0,500,1000` shoots the empty road at given metres. The boss fight's balance:
    `node tools/test/boss.mjs 9 200` (a bot that sees 200 ms late plays 9 games, prints wins, time, hits taken), and
-   ROX KONG's: `node tools/test/kong.mjs 9 200`. Outside the cloud image:
+   ROX KONG's: `node tools/test/kong.mjs 9 200`, ROX KOMBAT's: `node tools/test/kombat.mjs 9 200` (towers; `FROM=2` starts at
+   the final), its fighters: `node tools/test/fighters.mjs OUT.png`. Outside the cloud image:
    Playwright in a scratch folder (`PLAYWRIGHT=<dir>/node_modules/playwright/index.mjs`) and `CHROME=<installed chrome>`.
 3. Expected noise: the AudioContext warning in headless runs.
 4. After importing art, check `clean.mjs`'s output: `cut` / `boxed` pictures are dropped. `codex-art.mjs import` pads

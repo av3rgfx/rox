@@ -26,7 +26,7 @@ export function outline(src, col = [24, 18, 22]) {
   for (let i = 3; i < d.length; i += 4) d[i] = d[i] > 100 ? 255 : 0;   // hard edges
   x.putImageData(id, 0, 0); return c;
 }
-function tinted(src, f) {   // f(r,g,b) -> [r,g,b] on every opaque pixel
+export function tinted(src, f) {   // f(r,g,b) -> [r,g,b] on every opaque pixel
   const c = canv(src.width, src.height), x = ctxOf(c); x.drawImage(src, 0, 0); const id = x.getImageData(0, 0, c.width, c.height), d = id.data;
   for (let i = 0; i < d.length; i += 4) if (d[i + 3]) { const o = f(d[i], d[i + 1], d[i + 2]); d[i] = o[0]; d[i + 1] = o[1]; d[i + 2] = o[2]; }
   x.putImageData(id, 0, 0); return c;
@@ -37,7 +37,7 @@ function half(src) {
   const id = x.getImageData(0, 0, c.width, c.height), d = id.data; for (let i = 3; i < d.length; i += 4) { if (d[i] > 90) { const k = 255 / d[i]; d[i - 3] = Math.min(255, d[i - 3] * k); d[i - 2] = Math.min(255, d[i - 2] * k); d[i - 1] = Math.min(255, d[i - 1] * k); d[i] = 255; } else d[i] = 0; }
   x.putImageData(id, 0, 0); return c;
 }
-function rotated(src, quarterTurns) {
+export function rotated(src, quarterTurns) {
   const odd = quarterTurns % 2, c = canv(odd ? src.height : src.width, odd ? src.width : src.height), x = ctxOf(c);
   x.translate(c.width / 2, c.height / 2); x.rotate(quarterTurns * Math.PI / 2); x.drawImage(src, -src.width / 2, -src.height / 2); return c;
 }
@@ -48,7 +48,7 @@ const SKIN = [214, 162, 138], SKIN_D = [176, 124, 104], SHIRT = [30, 30, 36], SH
 const SHOE = [64, 64, 72], SOLE = [222, 222, 214], ORANGE = [236, 112, 34], ORANGE_D = [190, 82, 24], BLUE = [52, 74, 160], BLUE_L = [84, 108, 196];
 
 // the face: the photo cut-out, scaled to the head box, contrast lifted a little, hard alpha
-function prepFace(img, w, h) {
+export function prepFace(img, w, h) {
   const c = canv(w, h), x = c.getContext('2d'); x.imageSmoothingEnabled = true; x.imageSmoothingQuality = 'high'; x.drawImage(img, 0, 0, w, h);
   const id = x.getImageData(0, 0, w, h), d = id.data;
   for (let i = 0; i < d.length; i += 4) { d[i + 3] = d[i + 3] > 110 ? 255 : 0; for (let k = 0; k < 3; k++) d[i + k] = Math.max(0, Math.min(255, (d[i + k] - 128) * 1.15 + 134)); }
@@ -58,7 +58,7 @@ function prepFace(img, w, h) {
 // ROX: his expressions, all from the one photo: pixels of that face moved and painted over (no other picture of him).
 // On a canvas 4 px wider (2 each side) so the cheeks can puff out. Measured on the 34 x 44 face: brows rows 15-16,
 // eyes rows 17-19 (x 9-13 and 18-22), mouth rows 29-30 (x 11-22).
-function faceVar(face, kind) {
+export function faceVar(face, kind) {
   const w = face.width + 4, h = face.height, c = canv(w, h), x = ctxOf(c); x.drawImage(face, 2, 0); if (kind === 'calm') return c;
   const id = x.getImageData(0, 0, w, h), d = id.data, I = (a, b) => ((b * w) + a + 2) * 4, get = (a, b) => [d[I(a, b)], d[I(a, b) + 1], d[I(a, b) + 2], d[I(a, b) + 3]];
   const set = (a, b, col) => { const i = I(a, b); d[i] = col[0]; d[i + 1] = col[1]; d[i + 2] = col[2]; d[i + 3] = 255; }, rect = (a, b, ww, hh, col) => { for (let yy = b; yy < b + hh; yy++) for (let xx = a; xx < a + ww; xx++) set(xx, yy, col); };
@@ -118,7 +118,7 @@ function roxBody(face, pose) {
 }
 
 // a fennel bulb (finocchio): white-green bulb, pale green stalks, feathery fronds
-function fennel(scale = 1) {
+export function fennel(scale = 1) {
   const c = canv(22, 26), x = ctxOf(c), R = (a, b, w, h, col) => { x.fillStyle = rgb(col); x.fillRect(a, b, w, h); };
   R(9, 2, 1, 8, [96, 168, 72]); R(6, 1, 1, 6, [96, 168, 72]); R(14, 0, 1, 8, [96, 168, 72]); R(4, 0, 3, 1, [120, 190, 84]); R(13, 0, 4, 1, [120, 190, 84]); R(8, 1, 3, 1, [120, 190, 84]);
   R(8, 8, 2, 6, [178, 214, 132]); R(12, 7, 2, 7, [178, 214, 132]); R(10, 8, 2, 6, [160, 204, 120]);
@@ -173,7 +173,7 @@ export function buildRox(faceImg) {
   // the boss fight: at the wheel of a forklift (the forklift is drawn round him by buildLifts), climbing the racking
   for (const f of ['calm', 'grin', 'ouch']) S['drive_' + f] = body('drive', f);
   S.climb1 = outline(body('climb1', 'grin')); S.climb2 = outline(body('climb2', 'grin'));
-  S.face = outline(face);
+  S.face = outline(face); S.faces = F;   // ROX KOMBAT draws its own body round these (game/staff.js)
   // ROX KONG, the boss on the shelves (a side view, smaller): Rox at half size, still a bobblehead, facing you
   S.k = {}; for (const [k, p, f] of [['stand', 'stand', 'calm'], ['grin', 'stand', 'grin'], ['wave', 'wave', 'grin'], ['throw', 'fly', 'grin'], ['climb1', 'climb1', 'grin'], ['climb2', 'climb2', 'grin'], ['hit', 'fly', 'ouch'], ['ouch', 'stand', 'ouch']]) S.k[k] = outline(half(body(p, f)));
   { const c = canv(56, 104), x = ctxOf(c), R = (a, b, w, h, col) => { x.fillStyle = rgb(col); x.fillRect(a, b, w, h); };   // the end: wrapped in stretch film on a pallet, a parcel for the time clock

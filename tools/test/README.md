@@ -26,6 +26,15 @@ Prima avvia un server statico dalla radice del repo: `python3 -m http.server 876
   rotola contro (prevede dove sarà, con un errore di ±60 ms sul momento del salto), non sale se qualcosa scende dalla
   scala, si sposta dal punto esclamativo delle scatole che cadono, prende il casco (e il caffè se ha perso una vita).
   Gioca a `?ts=3` e stampa per ogni partita: vinta o no, tempo, scaffale raggiunto, colpi presi e da cosa, salti.
+- `node tools/test/kombat.mjs [torri=6] [ritardo_ms=200] [OUT_DIR] [in_parallelo=3] [lottatore]`: ROX KOMBAT (il picchiaduro)
+  giocato da un bot che vede le mosse del computer in ritardo come una persona: si avvicina, preme pugno e calcio circa
+  3 volte al secondo quando è a tiro, tiene indietro per parare quello che ha visto arrivare, salta il nastro, si abbassa
+  sotto catalogo e "nel mio ufficio", si sposta dall'ombra del bancale, fa il montante a chi salta, usa lo speciale a
+  barra piena e a "FINISCILO!" preme SPECIALE (non sempre). Gioca a `?ts=3`, a turno con tutti i lottatori (o solo con
+  quello indicato), e stampa per ogni torre: vinta o no, incontro raggiunto, round vinti e persi, finocchiality,
+  punteggio, i colpi andati a segno per tipo. `FROM=2` parte dall'ultimo incontro (per provare solo Rox).
+- `node tools/test/fighters.mjs OUT.png [scala=2] [R|L]`: un foglio con i lottatori di ROX KOMBAT in tutte le pose,
+  rivolti a destra o a sinistra (la pagina è `tools/test/fighters.html`).
 - `node tools/test/sprites.mjs OUT.png`: un foglio con tutti gli sprite (Rox in ogni posa, auto, oggetti, fumetti, e
   quelli di ROX KONG: Rox a metà misura, il magazziniere di lato, la merce).
 

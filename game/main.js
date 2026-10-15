@@ -11,12 +11,16 @@
 //                battery runs flat, six times in three phases. Drawn by warehouse.js, not by the road.
 //   ROX KONG     the second boss (after CORRIDOIO IS, or from the menu): Rox climbs the racking and rolls UFP's goods
 //                down at you, a side view like Donkey Kong. Three bays; all of it in kong.js.
+//   ROX KOMBAT   a fighting game (from the menu): you pick Rox or a colleague and fight a tower of three, best of three
+//                rounds, ending with Rox. The fighters are in staff.js, the rest in kombat.js.
 //
 // World units are metres: s is the distance along the route, lat the offset from the road centre (+ right).
 // The camera sits CARZ metres behind your car's rear bumper; the car is drawn as one of the road's "things".
 import { createRoad } from './road.js';
 import { createWarehouse } from './warehouse.js';
 import { createKong, KONG_HP } from './kong.js';
+import { createKombat } from './kombat.js';
+import { buildFighters, ROSTER } from './staff.js';
 import { buildRox, buildCars, buildProps, buildLifts, buildKong, bubble, scoreText } from './sprites.js';
 import * as AU from './audio.js';
 
@@ -70,7 +74,14 @@ const CAM_H = 2.6, HORIZON = 0.46;
 const isPortrait = () => innerHeight > innerWidth;
 const widthFor = () => isPortrait() ? 240 : clamp(Math.round(H * innerWidth / Math.max(1, innerHeight)), 280, 400);
 let road = null, wh = null, g = null, W = 0, H = 180, CARZ = 7, BZ = 6, building = false;
-const BOSS_CAM = 4.2, BOSS_HZ = 0.36;   // the warehouse: the camera higher, to see over the forklift's guard
+const BOSS_CAM = 4.2, BOSS_HZ = 0.36;
+// ROX KONG on a phone held upright: a taller picture, so the whole racking fits under the HUD
+const SIDE = m => m === 'kong';
+function fitStage(mode) {
+  const h = isPortrait() && SIDE(mode) ? clamp(Math.round(W * (innerHeight - 0.62 * innerWidth) / innerWidth), H, 350) : H;
+  if (canvas.height !== h) { canvas.height = h; g.imageSmoothingEnabled = false; }
+  document.documentElement.style.setProperty('--stage-h', `${(100 * h / W).toFixed(2)}vw`);
+}   // the warehouse: the camera higher, to see over the forklift's guard
 async function makeRoad() {
   building = true; W = widthFor(); H = isPortrait() ? 250 : 180; document.body.classList.toggle('portrait', isPortrait());
   document.documentElement.style.setProperty('--stage-h', `${(100 * H / W).toFixed(2)}vw`);   // portrait: the picture on top, the controls below
@@ -83,7 +94,7 @@ async function makeRoad() {
 
 // ------------------------------------------------------------ pictures
 const faceImg = await new Promise(res => { const i = new Image(); i.onload = () => res(i); i.onerror = () => res(null); i.src = 'assets/rox/face.png'; });
-const ROX = buildRox(faceImg), CARS = buildCars(), PROPS = buildProps(), LIFTS = buildLifts(ROX), KS = buildKong();
+const ROX = buildRox(faceImg), CARS = buildCars(), PROPS = buildProps(), LIFTS = buildLifts(ROX), KS = buildKong(), FT = await buildFighters(ROX);
 const PPM = 40;   // pixels per metre of Rox's pictures (he is 2.35 m tall: a bobblehead you can see from afar)
 const hmOf = im => im.height / PPM;
 const BUB = new Map(), bub = t => { if (!BUB.has(t)) BUB.set(t, bubble(t)); return BUB.get(t); };
@@ -95,20 +106,23 @@ const LEN = road.LEN, FINISH = LEN - 55, BOSS_HP = 5;
 const UFP_LANDMARK = road.LMS.some(l => l.qid === 'ufp' && l.art);   // the real warehouse at its real place: then no stand-in   // the clock-in banner; the warehouse stands just after it
 
 // ------------------------------------------------------------ input
-const keys = { left: false, right: false, gas: false, brake: false, jump: false };   // ROX KONG: gas and brake are up and down the ladders
+const keys = { left: false, right: false, gas: false, brake: false, jump: false, punch: false, kick: false, special: false };   // ROX KONG: gas and brake are up and down the ladders; ROX KOMBAT: jump and crouch
 let touchMode = matchMedia('(pointer: coarse)').matches;
 const KEYMAP = { ArrowLeft: 'left', a: 'left', A: 'left', ArrowRight: 'right', d: 'right', D: 'right', ArrowUp: 'gas', w: 'gas', W: 'gas', ArrowDown: 'brake', s: 'brake', S: 'brake' };
+const FIGHTMAP = { z: 'punch', j: 'punch', x: 'kick', k: 'kick', c: 'special', l: 'special', ' ': 'special' };   // ROX KOMBAT's blows (a press is kept as a tap, like a jump)
 addEventListener('keydown', e => {
-  if (KEYMAP[e.key]) { keys[KEYMAP[e.key]] = true; touchMode = false; e.preventDefault(); }
+  const fk = G.mode === 'kombat' && FIGHTMAP[e.key.length === 1 ? e.key.toLowerCase() : e.key];
+  if (fk) { if (!e.repeat) keys[fk + 'Tap'] = true; keys[fk] = true; touchMode = false; e.preventDefault(); }
+  else if (KEYMAP[e.key]) { keys[KEYMAP[e.key]] = true; touchMode = false; e.preventDefault(); }
   else if (e.key === ' ' && G.mode === 'kong') { if (!e.repeat) keys.jumpTap = true; keys.jump = true; e.preventDefault(); }
   else if (e.key === ' ' || e.key === 'h' || e.key === 'H') { horn(); e.preventDefault(); }
   else if (e.key === 'Escape' || e.key === 'p' || e.key === 'P') togglePause();
   else if (e.key === 'Enter' && G.phase === 'end') again();
   else if (e.key === 'Enter' && G.phase === 'intro') goNext();
 });
-addEventListener('keyup', e => { if (KEYMAP[e.key]) keys[KEYMAP[e.key]] = false; if (e.key === ' ') keys.jump = false; });
+addEventListener('keyup', e => { if (KEYMAP[e.key]) keys[KEYMAP[e.key]] = false; if (e.key === ' ') keys.jump = false; const fk = FIGHTMAP[e.key.length === 1 ? e.key.toLowerCase() : e.key]; if (fk) keys[fk] = false; });
 for (const b of document.querySelectorAll('[data-k]')) {
-  const k = b.dataset.k, on = e => { e.preventDefault(); touchMode = true; AU.unlock(); if (k === 'horn') horn(); else keys[k] = true; if (k === 'jump') keys.jumpTap = true; b.classList.add('on'); try { b.setPointerCapture(e.pointerId); } catch {} };
+  const k = b.dataset.k, on = e => { e.preventDefault(); touchMode = true; AU.unlock(); if (k === 'horn') horn(); else keys[k] = true; keys[k + 'Tap'] = true; b.classList.add('on'); try { b.setPointerCapture(e.pointerId); } catch {} };
   const off = () => { if (k !== 'horn') keys[k] = false; b.classList.remove('on'); };
   b.addEventListener('pointerdown', on); b.addEventListener('pointerup', off); b.addEventListener('pointercancel', off); b.addEventListener('lostpointercapture', off);
 }
@@ -129,11 +143,14 @@ function reset(mode) {
   if (mode === 'boss') { Object.assign(G, { lat: 0, camX: 0, hp: MY_HP, taken: 0, hurtBy: [], decals: [], ents: [], nextSign: 22, slipCool: 0, wallT: 0 });
     G.ents.push(G.lift = { kind: 'lift', s: BZ + LIFT_LEN + 11, lat: 0, vs: 0, hp: ROX_HP, phase: 1, state: 'attack', stT: 6.5, throwT: 1.8, dropT: 2, tgtLat: 0, tgtT: 1.5, sayT: 0.8, beepT: 0, inv: 0, said: null, saidT: 0, lift: 0, vz: 0, rot: 0 }); }
   if (mode === 'kong') { Object.assign(G, { hp: KONG_HP, taken: 0, hurtBy: [] }); KG.reset(); }
+  if (mode === 'kombat') KM.reset(...kArgs);
 }
 const carFront = () => G.mode === 'boss' ? G.pos + BZ + LIFT_LEN : G.pos + CARZ + 3.4;
 const toast = (t, ms = 1600) => { const el = $('toast'); el.textContent = t; el.classList.add('show'); clearTimeout(toast.h); toast.h = setTimeout(() => el.classList.remove('show'), ms); };
 const sfx = (k, ...a) => { if (G.live) AU.sfx[k](...a); };
 const KG = createKong({ canvas, G, keys, ROXK: ROX.k, KS, sfx, say, SAY, float, burst, toast, end: () => endScreen() });
+const KM = createKombat({ canvas, G, keys, FT, PROPS, KS, CARS, sfx, say, float, burst, toast, bub, end: () => endScreen() });
+let kArgs = ['rox', 0, null, 0];   // ROX KOMBAT: your fighter, the match to start from, the tower, the score so far
 
 // ------------------------------------------------------------ spawning
 function spawnRox(s, forced) {
@@ -521,8 +538,9 @@ const fmtTime = t => `${Math.floor(t / 60)}:${(t % 60).toFixed(1).padStart(4, '0
 let hudT = 0;
 function hud(now) {
   if (now - hudT < 90) return; hudT = now;
-  $('hud').classList.toggle('show', G.live && (G.phase === 'play' || G.phase === 'countdown'));
+  $('hud').classList.toggle('show', G.live && (G.phase === 'play' || G.phase === 'countdown') && G.mode !== 'kombat');   // ROX KOMBAT draws its own
   if (!G.live) return;
+  if (G.mode === 'kombat') { $('btn-pause').style.display = G.phase === 'play' ? 'block' : 'none'; return; }
   $('h-score').textContent = String(G.score).padStart(6, '0'); $('h-combo').textContent = G.combo > 1 ? `COMBO X${Math.min(8, G.combo)}` : '';
   $('h-speed').textContent = `${Math.round(G.speed * 3.6)} KM/H`;
   $('progress').style.display = G.mode === 'boss' || G.mode === 'kong' ? 'none' : '';
@@ -550,10 +568,12 @@ function menuRecords() {
   $('best-chase').textContent = BEST.chase ? `RECORD: ROX FERMATO IN ${fmtTime(BEST.chase.time)}` : 'NESSUN RECORD ANCORA';
   $('best-boss').textContent = BEST.boss ? `RECORD: ${BEST.boss.score} PUNTI · ${fmtTime(BEST.boss.time)}` : 'NESSUN RECORD ANCORA';
   $('best-kong').textContent = BEST.kong ? `RECORD: ${BEST.kong.score} PUNTI · ${fmtTime(BEST.kong.time)}` : 'NESSUN RECORD ANCORA';
+  $('best-kombat').textContent = BEST.kombat ? `RECORD: ${BEST.kombat.score} PUNTI · ${BEST.kombat.name}` : 'NESSUN RECORD ANCORA';
 }
-function toMenu() { AU.engineOff(); AU.musicStop(); document.body.classList.remove('kong'); reset('attract'); G.phase = 'menu'; showScreen('menu'); menuRecords(); }
+function toMenu() { AU.engineOff(); AU.musicStop(); document.body.classList.remove('kong', 'kombat'); reset('attract'); fitStage('attract'); G.phase = 'menu'; showScreen('menu'); menuRecords(); }
 async function start(mode, carry = null) {
-  AU.unlock(); reset(mode); G.phase = 'countdown'; showScreen(null); $('controls').classList.toggle('show', true); document.body.classList.toggle('kong', mode === 'kong');
+  AU.unlock(); reset(mode); fitStage(mode); G.phase = 'countdown'; showScreen(null); $('controls').classList.toggle('show', true); document.body.classList.toggle('kong', mode === 'kong'); document.body.classList.toggle('kombat', mode === 'kombat');
+  if (mode === 'kombat') { G.phase = 'play'; $('story').classList.remove('show'); if (AU.audioState().music) AU.musicStart(true); return; }   // its own match card, ROUND 1, COMBATTI!
   if (carry) { G.carry = carry; G.score = carry.score; }   // straight on from the road or the aisle: the score carries on
   $('story').innerHTML = mode === 'investi' ? 'Sono le 14:28. Alle 14:30 devi timbrare.<br>Rox è uscito dal Panorama... e si è moltiplicato.<br><b>Investine più che puoi!</b>'
     : mode === 'boss' ? 'Magazzino UFP, corridoio IS. Rox è salito su un muletto<br>e ti tira addosso il bancale.<br><b>Quando gli si scarica la batteria, speronalo! 6 colpi.</b>'
@@ -627,23 +647,39 @@ function endScreen() {
     if (c?.investi) lines.unshift(`Timbrato alle <b>${fmtClock(c.investi.clock)}</b> · Rox investiti: <b>${c.investi.hits}</b> su ${c.investi.roxes}`);
     if (won && (!BEST.kong || own > BEST.kong.score)) { BEST.kong = { score: own, time: G.result.time, taken: G.taken }; saveBest(); rec = true; }
     $('end-share').dataset.text = won ? `Ho imballato Rox in cima agli scaffali di UFP in ${fmtTime(G.result.time)} (${G.score} punti)! Prova tu!` : 'Rox mi ha sommerso di silicone dagli scaffali... vendicami!';
+  } else if (G.mode === 'kombat') {
+    const F = G.F, won = G.result.won, me = F.P.d, beaten = F.opps.slice(0, F.matchesWon).map(id => FT[id].def.name), last = FT[F.opps[F.opps.length - 1]].def.name;
+    title = won ? 'CAMPIONE DI UFP!' : `HA VINTO ${F.C.d.name}!`;
+    lines = won ? [`Con <b>${me.name}</b> hai battuto ${beaten.join(', ')}.`, `Round vinti: <b>${F.roundsWon}</b> · persi: ${F.roundsLost} · perfetti: ${F.perfects}`, `Finocchiality: <b>${F.fin}</b>`,
+        F.fin ? `${last} è ancora sotto i finocchi. Il 50 si inchina.` : `${last} chiede la rivincita in mensa.`]
+      : [`Con <b>${me.name}</b> sei arrivato all'incontro <b>${F.n + 1}</b> di ${F.opps.length}.`, `Round vinti: ${F.roundsWon} · persi: ${F.roundsLost}`, `${F.C.d.name} ora si vanta in mensa.`, '<b>RIPROVA</b> riparte da questo incontro.'];
+    if (!BEST.kombat || G.score > BEST.kombat.score) { BEST.kombat = { score: G.score, name: me.name, won }; saveBest(); rec = true; }
+    $('end-share').dataset.text = won ? `Ho vinto ROX KOMBAT con ${me.name} (${G.score} punti, ${F.fin} finocchiality)! Prova tu!` : `${F.C.d.name} mi ha battuto a ROX KOMBAT... vendicami!`;
   } else {
     title = G.result.won ? 'ROX FERMATO!' : 'ROX HA TIMBRATO!';
     lines = G.result.won ? [`L'hai fermato in <b>${fmtTime(G.result.time)}</b>`, 'Il Grizzly è sotto sequestro.', 'Rox oggi pulisce i bagni.'] : ['Rox è arrivato in ditta prima di te.', `Gli hai tolto <b>${BOSS_HP - G.boss.hp}</b> cuori su ${BOSS_HP}.`, 'Ora lo racconterà a tutti per una settimana.'];
     if (G.result.won && (!BEST.chase || G.result.time < BEST.chase.time)) { BEST.chase = { time: G.result.time }; saveBest(); rec = true; }
     $('end-share').dataset.text = G.result.won ? `Ho fermato Rox sul Grizzly in ${fmtTime(G.result.time)}! Prova tu!` : 'Rox mi ha battuto col Grizzly... vendicami!';
   }
+  $('end-again').textContent = G.mode === 'kombat' && !G.result.won ? 'RIPROVA' : 'RIGIOCA';
   $('end-title').textContent = title; $('end-score').textContent = `${G.score} PUNTI${rec ? ' · NUOVO RECORD!' : ''}`; $('end-lines').innerHTML = lines.map(l => `<p>${l}</p>`).join('');
 }
 function togglePause(force) {
   if (G.phase === 'play' && (force === true || force === undefined)) { G.phase = 'paused'; showScreen('pause'); AU.engineOff(); }
-  else if (G.phase === 'paused' && force !== true) { G.phase = 'play'; showScreen(null); if (G.mode !== 'kong') AU.engineOn(); }
+  else if (G.phase === 'paused' && force !== true) { G.phase = 'play'; showScreen(null); if (G.mode !== 'kong' && G.mode !== 'kombat') AU.engineOn(); }
 }
 $('btn-investi').onclick = () => start('investi'); $('btn-chase').onclick = () => start('chase'); $('btn-boss').onclick = () => start('boss'); $('btn-kong').onclick = () => start('kong');
+$('btn-kombat').onclick = () => showScreen('select'); $('sel-back').onclick = () => showScreen('menu');
+// ROX KOMBAT's select screen: a card per fighter, his face, his special move
+for (const d of ROSTER) { const b = document.createElement('button'); b.className = 'fighter' + (d.real ? ' real' : ''); b.dataset.id = d.id;
+  b.innerHTML = `<img alt="" src="${FT[d.id].face.toDataURL()}"><div class="fname">${d.name}</div><div class="fmove">${d.move}</div><div class="frole">${d.role}</div>`;
+  b.onclick = () => { kArgs = [d.id, 0, null, 0]; start('kombat'); }; $('fighters').appendChild(b); }
 $('bi-go').onclick = () => goNext(); $('bi-stop').onclick = () => endScreen();
 $('btn-howto').onclick = () => showScreen('howto'); $('btn-howto-back').onclick = () => showScreen('menu');
 $('btn-resume').onclick = () => togglePause(); $('btn-quit').onclick = toMenu; $('btn-pause').onclick = () => togglePause();
-const again = () => start(G.carry ? G.carry.first : G.mode);   // after a run of several (road, aisle, shelves): the whole run again
+const again = () => {   // after a run of several (road, aisle, shelves): the whole run again; ROX KOMBAT lost: that match again
+  if (G.mode === 'kombat') { const F = G.F; kArgs = G.result.won ? [F.pick, 0, null, 0] : [F.pick, F.n, F.opps, F.startScore]; return start('kombat'); }
+  start(G.carry ? G.carry.first : G.mode); };
 $('end-again').onclick = again; $('end-menu').onclick = toMenu;
 $('end-share').onclick = async () => { const text = $('end-share').dataset.text + ' ' + location.href.split('?')[0]; try { if (navigator.share) await navigator.share({ text }); else { await navigator.clipboard.writeText(text); toast('COPIATO! INCOLLALO NEL GRUPPO', 1500); } } catch {} };
 const syncAudioBtns = () => { const s = AU.audioState(); $('btn-sound').textContent = `SUONI: ${s.sound ? 'SI' : 'NO'}`; $('btn-music').textContent = `MUSICA: ${s.music ? 'SI' : 'NO'}`; };
@@ -656,11 +692,15 @@ $('credits').innerHTML = 'Mappa © <a href="https://www.openstreetmap.org/copyri
 // ------------------------------------------------------------ the loop
 let last = performance.now(), resizeT = null;
 const TS = clamp(+params.get('ts') || 1, 0.25, 4);   // tests only: ?ts=3 runs the game three times faster
-addEventListener('resize', () => { clearTimeout(resizeT); resizeT = setTimeout(async () => { if ((widthFor() === W && (isPortrait() ? 250 : 180) === H) || building) return; await makeRoad(); }, 300); });
+addEventListener('resize', () => { clearTimeout(resizeT); resizeT = setTimeout(async () => { if ((widthFor() === W && (isPortrait() ? 250 : 180) === H) || building) return; await makeRoad(); fitStage(G.mode); }, 300); });
 function frame(now) {
   const dt = Math.min(0.05, (now - last) / 1000 * TS); last = now;
   if (window.__rox?.bot) window.__rox.bot(dt);   // the tests' bot plays in game time
-  if (!building && G.mode === 'kong') {   // the racking, from the side
+  if (!building && G.mode === 'kombat') {   // the fight: its own arenas and HUD
+    if (G.phase !== 'paused' && G.phase !== 'end') KM.step(dt); else if (G.phase === 'end') G.t += dt;
+    KM.render(g); overlays();
+    canvas.style.transform = G.shake > 0 ? `translate(${rnd(-1, 1) * G.shake * 14}px, ${rnd(-1, 1) * G.shake * 10}px)` : '';
+  } else if (!building && G.mode === 'kong') {   // the racking, from the side
     if (G.phase !== 'paused' && G.phase !== 'end') KG.step(G.phase === 'countdown' ? 0 : dt); else if (G.phase === 'end') G.t += dt;
     KG.render(g); overlays();
     canvas.style.transform = G.shake > 0 ? `translate(${rnd(-1, 1) * G.shake * 14}px, ${rnd(-1, 1) * G.shake * 10}px)` : '';
@@ -688,4 +728,4 @@ requestAnimationFrame(frame);
 if (params.get('mode')) start(params.get('mode'));
 
 // for tests and recordings
-window.__rox = { G, get road() { return road; }, start, keys, ROX, CARS, PROPS, LIFTS, KS, KG, KONG_HP, step, get CARZ() { return CARZ; }, get BZ() { return BZ; }, LIFT_LEN, LAT_MAX };
+window.__rox = { G, get road() { return road; }, start, keys, ROX, CARS, PROPS, LIFTS, KS, KG, KONG_HP, KM, FT, kombat: (id = 'rox', from = 0, opps = null) => { kArgs = [id, from, opps, 0]; start('kombat'); }, step, get CARZ() { return CARZ; }, get BZ() { return BZ; }, LIFT_LEN, LAT_MAX };
