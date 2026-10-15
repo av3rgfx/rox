@@ -1,6 +1,6 @@
 # Stato del progetto e prossima sessione
 
-Ultimo aggiornamento: 15 ottobre 2026, fine della seconda sessione (PR da `claude/rox-strada-vera`).
+Ultimo aggiornamento: 15 ottobre 2026, fine della seconda sessione (PR #5 unita in `main`).
 
 ## Cosa c'è già (funziona, testato in headless su PC e telefono)
 
@@ -16,8 +16,8 @@ Ultimo aggiornamento: 15 ottobre 2026, fine della seconda sessione (PR da `claud
 - Grafica: tutte le `pistoia-*` e i due landmark (UFP, Ex Mensa) sono immagini vere di Codex (due giri; il secondo
   era la PR #4, integrata a mano e chiusa). Il Panorama è ritagliato dal `lm-panorama` di Codex (4 campate ripetibili
   e l'ingresso con l'insegna). Mancano ancora le 15 `b-*` e il secondo capannone di UFP: prompt in
-  `art/codex/PROMPTS-NUOVE.md`, messaggio in `art/codex/MESSAGGIO-CODEX.md` (da mandare a Codex **dopo** aver unito
-  la PR di questa sessione, perché dice di partire da `main`).
+  `art/codex/PROMPTS-NUOVE.md`, messaggio in `art/codex/MESSAGGIO-CODEX.md` (ora si può mandare: la PR #5 è in `main`).
+  Se Codex apre una PR, va controllata e integrata come la #4.
 - La strada com'è davvero (confrontata col video tratto per tratto):
   - **nessun semaforo** (OSM non ne ha e il video lo conferma); STOP e precedenze dove sono, con la linea o i denti
     di squalo per terra; strisce pedonali solo dove ci sono; cartello blu della rotatoria;
@@ -55,30 +55,51 @@ Ultimo aggiornamento: 15 ottobre 2026, fine della seconda sessione (PR da `claud
 - Si chiama Rossano, "Rox". Pranza sempre al Panorama. Mangia spesso il finocchio.
 - Il "50" sulla maglietta è il logo dell'azienda.
 - Nella foto spinge un lavapavimenti Grizzly arancione e blu, nel corridoio "IS" del magazzino (scaffali gialli e blu).
-- Che auto guida: **ancora da chiedere** (nel messaggio della seconda sessione c'era il segnaposto "[modello e colore]").
-- Battute e tormentoni: **ancora da chiedere** (stesso problema: segnaposto non compilato).
+- Che auto guida: non lo sappiamo. Battute e tormentoni dell'ufficio: non li abbiamo. Altre foto: nessuna.
+  **Decisione del proprietario: non chiederli più.** Si procede con scelte ragionevoli (sotto) e il proprietario le
+  correggerà se vuole.
 
 ## Da fare nella prossima sessione
 
-### A. Grafica
+Lavorare in quest'ordine **senza chiedere le informazioni mancanti**; proporre un piano breve all'inizio, un branch
+nuovo da `main`, PR alla fine. Se tutto è fatto, passare alla boss fight e alle nuove modalità (sezione C).
 
-1. Quando Codex apre la PR con le `b-*`: controllarla (`clean.mjs`, `art/contact.png`), integrarla, provare.
-2. Ritocchi alla strada notati ma non fatti: le rotonde curvano poco (le direzioni sono smussate su ±60 m); siepi e
-   canneto sono blocchi visti da vicino; un cipresso generico davanti a UFP; Via Fantacci ha in realtà un muro a
-   sinistra e cartelloni pubblicitari a destra; palazzine generiche in Via Chirici (le vere sono arretrate).
+### A. Ritocchi alla strada (piccoli)
 
-### B. Il resto (sezione C della prima sessione)
+1. Le rotonde curvano poco (headings smussati su ±60 m in `layout.js`): provare a ridurre la smussatura dentro i
+   tratti `q.ring`, così la strada gira davvero intorno all'aiuola.
+2. Siepi e canneto a blocchi da vicino (`road.js`, codice `hedge`/`reeds`): pezzi più stretti o sfumati quando sono
+   vicini alla camera.
+3. Via Fantacci (930–1130 m): muro a sinistra e cartelloni pubblicitari a destra (un nuovo `props` disegnato dal
+   codice, con scritte inventate). Un cipresso generico davanti a UFP da togliere. Palazzine generiche in Via Chirici:
+   con `open` sono già arretrate, valutare `roles` più adatti.
+4. Se arriva la PR di Codex con le `b-*`: controllarla e integrarla.
 
-1. **Foto di Rox**: ritagliare (come `assets/rox/face.png`: maschera poligonale, circa 53x70) e aggiungere
-   espressioni: colpito/urlo, che mangia, che dorme, ghigno per il Chase. In `sprites.js` `buildRox` usa una sola
-   faccia: estenderlo a una faccia per posa.
-2. **Battute dell'ufficio**: aggiungerle a `SAY` in `game/main.js`.
-3. **Auto di Rox**: disegnarla (parcheggiata al Panorama, o nel traffico).
-4. **Boss finale nel magazzino UFP**: una scena nel corridoio "IS" con Rox sul Grizzly come boss. Da progettare insieme.
-5. **Classifica condivisa** tra colleghi: proposta Supabase con tabella punteggi e nome; anti-cheat minimo.
-6. **Playtest con persone vere**: Investi 105 s, un Rox ogni 34–70 m; Chase: Rox parte 75 m avanti, 15–30 m/s contro
-   35 del giocatore, 5 cuori. Ora ci sono più auto parcheggiate contro cui sbattere (parcheggio, Via Fermi, zona
-   industriale): verificare che non sia troppo difficile.
+### B. La vecchia sezione C, con scelte nostre
+
+1. **Espressioni di Rox** dalla sola foto che abbiamo (`assets/rox/face.png`): ritocchi a pixel della stessa faccia
+   (occhi chiusi per "dorme", bocca aperta per "colpito/urlo", guance piene per "mangia", sopracciglia e ghigno per il
+   Chase). In `sprites.js` `buildRox` passa da una faccia sola a una faccia per posa.
+2. **Battute**: scriverne di nuove, affettuose e da cartone animato, partendo da quello che sappiamo (pranzo al
+   Panorama, il finocchio, il Grizzly, la timbratura delle 14:00, il "50", il corridoio IS, il magazzino): aggiungerle
+   a `SAY` in `game/main.js`. Niente cattiverie.
+3. **Auto di Rox**: una utilitaria italiana anni 2000, grigio chiaro, un po' ammaccata, targa "ROX 50" (stesso stile
+   di `carRear`): parcheggiata in uno stallo del Panorama vicino all'uscita, e in Chase la si può superare all'inizio.
+4. **Playtest**: ora ci sono più auto parcheggiate contro cui sbattere (parcheggio, Via Fermi, zona industriale):
+   verificare col bot che Investi resti vincibile e regolare se serve.
+
+### C. Boss fight e nuove modalità (quando A e B sono fatti)
+
+1. **Boss finale nel magazzino UFP**: dopo "TIMBRA QUI" (o come terza modalità) una scena nel corridoio "IS" (scaffali
+   gialli e blu della foto), vista frontale come la strada: Rox sul Grizzly arancione e blu lava il pavimento e lancia
+   cartelli bagnati e finocchi; si schiva e lo si colpisce. Progettare la scena prima (proporla al proprietario con
+   uno schizzo o una pagina), poi farla. Il corridoio si può disegnare a codice con il motore della strada (`road.js`
+   ha già render prospettico) o come scena a sé in `main.js`.
+2. **Altre modalità** da proporre: "Pausa pranzo" (al contrario, da UFP al Panorama entro le 13:00), "Notturna" (la
+   stessa strada di sera, fari e lampioni), "Ape Car" (guidi l'Ape del finocchio, lenta e instabile), sfida a tempo
+   giornaliera. Scegliere col proprietario quali fare.
+3. **Classifica condivisa** tra colleghi: proposta Supabase con tabella punteggi e nome; anti-cheat minimo. Chiedere
+   prima di creare il progetto (consuma risorse del proprietario).
 
 ## Come provarlo
 
