@@ -49,7 +49,29 @@ function prepFace(img, w, h) {
   x.putImageData(id, 0, 0); return c;
 }
 
-// the body, 40 x 92, head box at the top. pose: stand | wave | walk1 | walk2 | phone | eat | push | sit
+// ROX: his expressions, all from the one photo: pixels of that face moved and painted over (no other picture of him).
+// On a canvas 4 px wider (2 each side) so the cheeks can puff out. Measured on the 34 x 44 face: brows rows 15-16,
+// eyes rows 17-19 (x 9-13 and 18-22), mouth rows 29-30 (x 11-22).
+function faceVar(face, kind) {
+  const w = face.width + 4, h = face.height, c = canv(w, h), x = ctxOf(c); x.drawImage(face, 2, 0); if (kind === 'calm') return c;
+  const id = x.getImageData(0, 0, w, h), d = id.data, I = (a, b) => ((b * w) + a + 2) * 4, get = (a, b) => [d[I(a, b)], d[I(a, b) + 1], d[I(a, b) + 2], d[I(a, b) + 3]];
+  const set = (a, b, col) => { const i = I(a, b); d[i] = col[0]; d[i + 1] = col[1]; d[i + 2] = col[2]; d[i + 3] = 255; }, rect = (a, b, ww, hh, col) => { for (let yy = b; yy < b + hh; yy++) for (let xx = a; xx < a + ww; xx++) set(xx, yy, col); };
+  const copy = (x0, x1, y0, y1, dy) => { for (let yy = y0; yy <= y1; yy++) for (let xx = x0; xx <= x1; xx++) set(xx, yy, get(xx, yy + dy)); };   // paint skin over a feature, from the face dy rows away
+  const DARK = [58, 26, 22], WHITE = [244, 240, 228];
+  if (kind === 'sleep') { copy(8, 14, 17, 19, 5); copy(17, 23, 17, 19, 5); for (const x0 of [9, 18]) for (let i = 0; i < 5; i++) set(x0 + i, i === 0 || i === 4 ? 18 : 19, DARK); }   // closed eyes, two little smiles
+  if (kind === 'ouch') { copy(8, 25, 13, 14, 2); copy(8, 25, 15, 16, -4);   // brows up: two rows higher, forehead below them
+    rect(9, 17, 4, 2, WHITE); rect(18, 17, 4, 2, WHITE); set(10, 18, DARK); set(19, 18, DARK);   // eyes wide open
+    for (let yy = 26; yy <= 35; yy++) for (let xx = 11; xx <= 22; xx++) { const e = ((xx - 16.5) / 4.6) ** 2 + ((yy - 30.5) / 4.8) ** 2; if (e < 1) set(xx, yy, e > 0.62 ? [120, 40, 36] : yy > 32 ? [196, 74, 70] : [44, 14, 14]); }   // the mouth: a big O
+    rect(14, 26, 6, 1, WHITE); }
+  if (kind === 'chew') { for (let yy = 21; yy <= 34; yy++) { const b = Math.round(2.2 * Math.sin(Math.PI * (yy - 21) / 13)); let l = -1, r = -1; for (let xx = 0; xx < face.width; xx++) if (get(xx, yy)[3]) { if (l < 0) l = xx; r = xx; } if (l < 0) continue;
+      for (let k = 1; k <= b; k++) { set(l - k, yy, get(l, yy)); set(r + k, yy, get(r, yy)); } }   // cheeks full
+    copy(10, 23, 28, 31, 5); rect(13, 30, 8, 1, DARK); rect(7, 26, 3, 2, [226, 120, 106]); rect(24, 26, 3, 2, [226, 120, 106]); }   // lips pressed shut, blushing
+  if (kind === 'grin') { for (let i = 0; i <= 6; i++) { const yy = 13 + Math.round(i * 0.6); for (const xx of [7 + i, 26 - i]) { set(xx, yy, DARK); set(xx, yy + 1, DARK); } }   // angry brows
+    copy(9, 24, 27, 32, 6); rect(11, 28, 12, 1, DARK); set(10, 27, DARK); set(23, 27, DARK); rect(11, 29, 12, 2, WHITE); for (const xx of [13, 16, 19]) rect(xx, 29, 1, 2, [170, 160, 150]); rect(12, 31, 10, 1, DARK); }   // a toothy grin
+  x.putImageData(id, 0, 0); return c;
+}
+
+// the body, 40 x 92, head box at the top. pose: stand | wave | walk1 | walk2 | phone | eat | push | sit | fly (arms up)
 function roxBody(face, pose) {
   const c = canv(40, 92), x = ctxOf(c), R = (a, b, w, h, col) => { x.fillStyle = rgb(col); x.fillRect(a, b, w, h); };
   const sit = pose === 'sit';
@@ -73,14 +95,16 @@ function roxBody(face, pose) {
   const sleeveL = () => R(2, 46, 6, 8, SHIRT), sleeveR = () => R(33, 46, 6, 8, SHIRT);
   const armDownL = () => { sleeveL(); R(3, 54, 4, 12, SKIN); R(2, 65, 6, 4, SKIN); }, armDownR = () => { sleeveR(); R(34, 54, 4, 12, SKIN); R(33, 65, 6, 4, SKIN); };
   const armUpR = () => { R(33, 40, 6, 9, SHIRT); R(34, 26, 4, 14, SKIN); R(33, 21, 6, 6, SKIN); };
+  const armUpL = () => { R(2, 40, 6, 9, SHIRT); R(3, 26, 4, 14, SKIN); R(2, 21, 6, 6, SKIN); };
   if (pose === 'wave') { armDownL(); armUpR(); }
+  else if (pose === 'fly') { armUpL(); armUpR(); }
   else if (pose === 'phone') { armDownR(); sleeveL(); R(3, 36, 4, 18, SKIN); R(2, 28, 6, 8, SKIN); R(4, 25, 4, 10, [40, 40, 48]); R(5, 26, 2, 3, [120, 180, 230]); }
   else if (pose === 'eat') { sleeveL(); sleeveR(); R(6, 52, 6, 5, SKIN); R(29, 52, 6, 5, SKIN); R(10, 50, 22, 6, SKIN); }
   else if (pose === 'push') { sleeveL(); sleeveR(); R(4, 54, 5, 8, SKIN); R(32, 54, 5, 8, SKIN); R(6, 60, 6, 4, SKIN); R(29, 60, 6, 4, SKIN); }
   else if (sit) { armDownL(); armUpR(); }
   else { armDownL(); armDownR(); }
-  // the head: his face, a bobblehead on purpose
-  x.drawImage(face, 3, 0);
+  // the head: his face, a bobblehead on purpose (faceVar's canvas, 2 px wider each side)
+  x.drawImage(face, 1, 0);
   return c;
 }
 
@@ -118,20 +142,21 @@ function trolley() {
 }
 
 export function buildRox(faceImg) {
-  const face = prepFace(faceImg, 34, 44), S = {};
-  const body = p => roxBody(face, p);
-  for (const p of ['stand', 'wave', 'walk1', 'walk2', 'phone', 'eat', 'push']) S[p] = outline(body(p));
+  const face = prepFace(faceImg, 34, 44), S = {}, F = {}; for (const k of ['calm', 'sleep', 'ouch', 'chew', 'grin']) F[k] = faceVar(face, k);
+  const body = (p, f = 'calm') => roxBody(F[f], p);
+  for (const p of ['stand', 'wave', 'walk1', 'walk2', 'phone', 'push']) S[p] = outline(body(p));
+  S.hit = outline(body('fly', 'ouch'));   // flying away like a skittle
   // eating: the fennel in his hands
-  { const c = canv(40, 92), x = ctxOf(c); x.drawImage(body('eat'), 0, 0); x.drawImage(fennel(), 9, 36); S.eat = outline(c); }
+  { const c = canv(40, 92), x = ctxOf(c); x.drawImage(body('eat', 'chew'), 0, 0); x.drawImage(fennel(), 9, 36); S.eat = outline(c); }
   // pushing a trolley towards you
   { const c = canv(48, 98), x = ctxOf(c); x.drawImage(body('push'), 4, 0); x.drawImage(trolley(), 1, 60); S.cart = outline(c); }
   // pushing the Grizzly towards you (like the photo)
   { const c = canv(52, 104), x = ctxOf(c); x.drawImage(body('push'), 6, 0); x.drawImage(grizzly(52, 46), 0, 58); S.grizzly = outline(c); }
   // the chase: riding the Grizzly backwards, waving a fennel at you
-  for (const [k, up] of [['chase', 0], ['chase2', 2]]) { const c = canv(64, 112), x = ctxOf(c), g = grizzly(64, 56); x.drawImage(g, 0, 56); x.drawImage(body('sit'), 12, 4 - up);
+  for (const [k, up, f] of [['chase', 0, 'grin'], ['chase2', 2, 'grin'], ['chaseOuch', 1, 'ouch']]) { const c = canv(64, 112), x = ctxOf(c), g = grizzly(64, 56); x.drawImage(g, 0, 56); x.drawImage(body('sit', f), 12, 4 - up);
     x.drawImage(fennel(), 41, 4 - up * 2); S[k] = outline(c); }
   // asleep on the asphalt
-  S.sleep = outline(rotated(body('stand'), 3));
+  S.sleep = outline(rotated(body('stand', 'sleep'), 3));
   // golden Rox: worth ten
   S.gold = tinted(S.wave, (r, g, b) => { const l = (r + g + b) / 3; return [Math.min(255, 90 + l * 0.9), Math.min(255, 66 + l * 0.75), Math.max(0, l * 0.25)]; });
   S.goldWalk1 = tinted(S.walk1, (r, g, b) => { const l = (r + g + b) / 3; return [Math.min(255, 90 + l * 0.9), Math.min(255, 66 + l * 0.75), Math.max(0, l * 0.25)]; });
@@ -149,6 +174,20 @@ function carRear(body, brake = false, plate = 'ROX 50') {
   const lc = brake ? [255, 70, 60] : [176, 30, 30]; R(5, 23, 7, 8, lc); R(52, 23, 7, 8, lc); if (brake) { R(6, 24, 5, 2, [255, 200, 190]); R(53, 24, 5, 2, [255, 200, 190]); R(27, 3, 10, 1, [255, 80, 70]); }
   const pw = textW(plate) + 6; R(32 - pw / 2 - 2, 25, pw + 2, 9, [236, 236, 228]); R(32 - pw / 2 - 2, 25, 2, 9, [40, 70, 170]); pixelText(x, plate, Math.round(32 - pw / 2 + 2), 26, '#1c1c22');   // the plate
   R(3, 35, 58, 4, [52, 52, 58]); R(4, 39, 10, 6, [24, 24, 28]); R(50, 39, 10, 6, [24, 24, 28]); R(12, 37, 6, 2, [140, 140, 150]);
+  return c;
+}
+// ROX: his car, a red Renault Captur from behind: a small crossover, taller than the hatchbacks, black roof, black plastic
+// round the wheels and along the bottom, slim C-shaped lights, a dent in the tailgate and a scratch (it has seen car parks)
+function carCaptur() {
+  const c = canv(64, 52), x = ctxOf(c), R = (a, b, w, h, col) => { x.fillStyle = rgb(col); x.fillRect(a, b, w, h); }, body = [196, 30, 34], d = shade(body, 0.7), l = shade(body, 1.18), blk = [34, 34, 38], cl = [58, 58, 64];
+  R(11, 1, 2, 3, [170, 172, 178]); R(51, 1, 2, 3, [170, 172, 178]); R(12, 2, 40, 4, blk); R(16, 5, 32, 2, cl);   // roof rails, the black roof, its spoiler
+  R(9, 6, 46, 16, body); R(9, 6, 3, 16, blk); R(52, 6, 3, 16, blk); R(14, 8, 36, 11, [40, 52, 72]); R(16, 9, 12, 3, [92, 112, 140]); R(29, 18, 6, 1, [255, 80, 70]);   // pillars, tinted rear window, wiper light
+  R(4, 21, 56, 17, body); R(4, 21, 56, 2, l); R(2, 22, 4, 6, blk); R(58, 22, 4, 6, blk);   // the tailgate, mirrors
+  for (const [lx, cx] of [[4, 4], [47, 57]]) { R(lx, 23, 13, 4, [40, 14, 16]); R(lx + 1, 24, 11, 2, [150, 22, 26]); R(cx, 23, 3, 8, [40, 14, 16]); R(cx + 1, 24, 1, 6, [236, 70, 60]); R(lx + 2, 24, 8, 1, [255, 120, 100]); }   // C-shaped lights
+  R(24, 22, 6, 4, d); R(25, 22, 4, 1, l); R(46, 33, 9, 1, [236, 200, 196]);   // the dent and a scratch
+  const plate = 'ROX 50', pw = textW(plate) + 6; R(32 - pw / 2 - 2, 28, pw + 2, 9, [236, 236, 228]); R(32 - pw / 2 - 2, 28, 2, 9, [40, 70, 170]); pixelText(x, plate, Math.round(32 - pw / 2 + 2), 29, '#1c1c22');
+  R(2, 38, 60, 6, blk); R(20, 41, 24, 2, [176, 178, 184]); R(2, 31, 3, 8, blk); R(59, 31, 3, 8, blk);   // black bumper with a silver skid plate, cladding
+  R(4, 44, 11, 8, [24, 24, 28]); R(49, 44, 11, 8, [24, 24, 28]); R(54, 42, 4, 2, [140, 140, 150]);   // wheels, the exhaust
   return c;
 }
 function carFront(body) {
@@ -181,7 +220,7 @@ export function buildCars() {
   return {
     you: outline(carRear([206, 36, 36], false, 'UFP 50')), youBrake: outline(carRear([206, 36, 36], true, 'UFP 50')),
     rear: CAR_COLOURS.map(c => outline(carRear(c, false, ['FI 123', 'PT 666', 'LU 007', 'PO 420', 'PT 050'][(c[0] + c[1]) % 5]))),
-    front: CAR_COLOURS.map(c => outline(carFront(c))), ape: outline(apeRear()), truck: outline(truckRear()),
+    front: CAR_COLOURS.map(c => outline(carFront(c))), ape: outline(apeRear()), truck: outline(truckRear()), rox: outline(carCaptur()),
   };
 }
 
