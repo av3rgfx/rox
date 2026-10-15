@@ -1,7 +1,7 @@
 // main.js: ROX, the game. Two modes on the real road from the Panorama (Via Bure Vecchia Nord) to Utensilferramenta
 // Pistoiese (Via Salvatorelli), drawn by Pixel Path's renderer (road.js) with the camera behind your car.
 //
-//   INVESTI ROX  lunch break is over, you must clock in by 14:00, and Rox is everywhere on the road: walking across,
+//   INVESTI ROX  lunch break is over, you must clock in by 14:30, and Rox is everywhere on the road: walking across,
 //                waving, on the phone, eating fennel, pushing a trolley or the Grizzly, asleep on the asphalt,
 //                sometimes golden. Run over as many as you can (combo multiplier), dodge the traffic.
 //   ROX CHASE    Rox has taken the Grizzly floor scrubber and is racing to clock in before you, riding it backwards and
@@ -19,20 +19,20 @@ const canvas = $('c'), params = new URLSearchParams(location.search);
 
 // ------------------------------------------------------------ words (Rox talks a lot)
 const SAY = {
-  hit: ['AHIOOO!', 'IL MIO FINOCCHIO!', 'MA GUARDA DOVE VAI!', 'LO DICO AL CAPO!', 'OGGI NON TIMBRO!', 'MAMMA MIA!', 'CHI È STATO?!', 'ERA UN FINOCCHIO NUOVO!', 'MI SI SONO ROTTI GLI OCCHIALI!', 'TORNO AL PANORAMA!', 'VOGLIO UN AVVOCATO!', 'NON VALE!'],
-  idle: ['CIAO BELLO!', 'C\'È POSTO IN MACCHINA?', 'PRENDO UN ALTRO FINOCCHIO', 'ARRIVO, ARRIVO...', 'SONO IN PAUSA!', 'HAI VISTO LE OFFERTE?', 'OGGI SI LAVORA POCO', 'CHE FAME...'],
-  phone: ['PRONTO? SONO AL PANORAMA', 'SÌ CAPO, ARRIVO...', 'MAMMA, HO PRESO I FINOCCHI'],
-  eat: ['GNAM! FINOCCHIO!', 'IL FINOCCHIO FA BENE', 'NE VUOI UN PO\'?'],
-  cart: ['SPESA DEL GIORNO!', 'C\'ERANO I FINOCCHI IN OFFERTA', 'PERMESSO!'],
-  grizzly: ['LAVO IO!', 'PAVIMENTO BAGNATO!', 'ATTENTO AL GRIZZLY!'],
-  sleep: ['ZZZ...', 'ZZZ... FINOCCHI... ZZZ'],
-  gold: ['ROX D\'ORO!', 'SONO PREZIOSO!'],
-  miss: ['SCARSO!', 'MANCO MI HAI VISTO!', 'RITENTA!', 'GUIDI COME MIA NONNA', 'AH AH AH!'],
-  horn: ['EH?!', 'CHE C\'È?!', 'CALMA!', 'NON SUONARE!'],
-  chase: ['PRENDIMI SE CI RIESCI!', 'VADO A TIMBRARE!', 'IL GRIZZLY NON SI FERMA!', 'FINOCCHI PER TUTTI!', 'PAVIMENTO BAGNATO!', 'CIAO CIAO!', 'TIMBRO PRIMA IO!', 'LENTO!'],
-  chaseHit: ['AHIA! IL GRIZZLY!', 'MI HAI RIGATO IL GRIZZLY!', 'NON VALE!', 'LO DICO AL CAPO!', 'BASTA!'],
-  chaseHorn: ['NON MI FERMI COL CLACSON!', 'SUONA SUONA...'],
-  shortcut: ['SCORCIATOIA!', 'CONOSCO LA STRADA!'],
+  hit: ['AHIOOO!', 'IL MIO FINOCCHIO!', 'MA GUARDA DOVE VAI!', 'LO DICO AL CAPO!', 'OGGI NON TIMBRO!', 'MAMMA MIA!', 'CHI È STATO?!', 'ERA UN FINOCCHIO NUOVO!', 'MI SI SONO ROTTI GLI OCCHIALI!', 'TORNO AL PANORAMA!', 'VOGLIO UN AVVOCATO!', 'NON VALE!', 'VOLO COME UN BIRILLO!', 'STRIKE!', 'IL 50 NON SI TOCCA!', 'SEGNA: INFORTUNIO SUL LAVORO!', 'MI HAI SCHIACCIATO IL PRANZO!', 'CHI LO PASSA ORA IL GRIZZLY?'],
+  idle: ['CIAO BELLO!', 'C\'È POSTO IN MACCHINA?', 'PRENDO UN ALTRO FINOCCHIO', 'ARRIVO, ARRIVO...', 'SONO IN PAUSA!', 'HAI VISTO LE OFFERTE?', 'OGGI SI LAVORA POCO', 'CHE FAME...', 'BUON APPETITO!', 'SONO LE 14:29, C\'È TEMPO', 'IL 50 È IL MIO NUMERO', 'DUE PASSI DOPO PRANZO', 'CORRIDOIO IS, ARRIVO!', 'OGGI IL MAGAZZINO LO LAVO IO'],
+  phone: ['PRONTO? SONO AL PANORAMA', 'SÌ CAPO, ARRIVO...', 'MAMMA, HO PRESO I FINOCCHI', 'CAPO, SONO GIÀ IN DITTA... QUASI', 'SÌ, IL GRIZZLY È CARICO', 'PORTO I FINOCCHI PER TUTTI?'],
+  eat: ['GNAM! FINOCCHIO!', 'IL FINOCCHIO FA BENE', 'NE VUOI UN PO\'?', 'CRUNCH!', 'IL SEGRETO DEL MIO FISICO', 'PRANZO LEGGERO, OGGI', 'DOLCE COME UN FINOCCHIO'],
+  cart: ['SPESA DEL GIORNO!', 'C\'ERANO I FINOCCHI IN OFFERTA', 'PERMESSO!', 'TUTTI FINOCCHI, GIURO', 'LA SPESA PER IL MAGAZZINO', 'IL CARRELLO È DEL PANORAMA, EH'],
+  grizzly: ['LAVO IO!', 'PAVIMENTO BAGNATO!', 'ATTENTO AL GRIZZLY!', 'DOVE PASSO IO BRILLA', 'IL GRIZZLY È MIO!', 'CORRIDOIO IS: PULITO!', 'SCAFFALI GIALLI, PAVIMENTO LUCIDO'],
+  sleep: ['ZZZ...', 'ZZZ... FINOCCHI... ZZZ', 'ZZZ... ANCORA 5 MINUTI...', 'ZZZ... TIMBRO DOPO... ZZZ', 'ZZZ... CHE BEL PRANZO...'],
+  gold: ['ROX D\'ORO!', 'SONO PREZIOSO!', 'VALGO 50 FINOCCHI!', 'EDIZIONE LIMITATA!', 'PRENDIMI, BRILLO!'],
+  miss: ['SCARSO!', 'MANCO MI HAI VISTO!', 'RITENTA!', 'GUIDI COME MIA NONNA', 'AH AH AH!', 'OLÈ!', 'TROPPO LENTO!', 'CI VEDIAMO ALLE 14:30', 'TI ASPETTO IN MAGAZZINO', 'NEMMENO COL GRIZZLY!'],
+  horn: ['EH?!', 'CHE C\'È?!', 'CALMA!', 'NON SUONARE!', 'CHE FRETTA!', 'MICA SONO UN BIRILLO!', 'PIANO, HO APPENA MANGIATO!'],
+  chase: ['PRENDIMI SE CI RIESCI!', 'VADO A TIMBRARE!', 'IL GRIZZLY NON SI FERMA!', 'FINOCCHI PER TUTTI!', 'PAVIMENTO BAGNATO!', 'CIAO CIAO!', 'TIMBRO PRIMA IO!', 'LENTO!', 'IL CORRIDOIO IS È MIO!', 'TIMBRO ALLE 14:29!', 'ASSAGGIA IL MIO FINOCCHIO!', 'IL 50 VINCE SEMPRE!', 'ATTENTO, SCIVOLA!'],
+  chaseHit: ['AHIA! IL GRIZZLY!', 'MI HAI RIGATO IL GRIZZLY!', 'NON VALE!', 'LO DICO AL CAPO!', 'BASTA!', 'IL GRIZZLY HA L\'ASSICURAZIONE?', 'MI HAI LAVATO VIA!', 'ORA IL PAVIMENTO LO PASSI TU!'],
+  chaseHorn: ['NON MI FERMI COL CLACSON!', 'SUONA SUONA...', 'IL GRIZZLY NON HA GLI SPECCHIETTI!'],
+  shortcut: ['SCORCIATOIA!', 'CONOSCO LA STRADA!', 'PASSO DAL CORRIDOIO IS!', 'IL GRIZZLY VA OVUNQUE!'],
 };
 const RANKS = [[0, 'Collega modello (che noia)'], [1, 'Pedone distratto'], [5, 'Apprendista cacciatore di Rox'], [10, 'Cacciatore di Rox'], [20, 'Terrore di Via Salvatorelli'], [30, 'Leggenda della Ferramenta']];
 
@@ -87,8 +87,8 @@ const G = { mode: 'attract', phase: 'menu', live: false };
 function reset(mode) {
   const q = road.roadAt(0);
   Object.assign(G, { mode, live: mode !== 'attract', pos: 0, speed: 0, lat: q.rw / 2, camX: q.rw / 2, t: 0, score: 0, combo: 0, comboT: 0, maxCombo: 0, hits: 0, roxes: 0, missed: 0,
-    clock: 13 * 3600 + 58 * 60 + 15, deadline: 14 * 3600, crashes: 0, ents: [], parts: [], floats: [], shake: 0, invT: 0, slipT: 0, boostT: 0, hornT: 0, finished: false, endT: 0, result: null,
-    nextRox: 70, nextTraffic: 160, nextCoffee: 380, nextPark: 0, wall: false, braking: false, sayT: 0 });
+    clock: 14 * 3600 + 28 * 60, deadline: 14 * 3600 + 30 * 60, crashes: 0, ents: [], parts: [], floats: [], shake: 0, invT: 0, slipT: 0, boostT: 0, hornT: 0, finished: false, endT: 0, result: null,
+    nextRox: 70, nextTraffic: 160, nextCoffee: 380, nextPark: 0, roxCar: false, wall: false, braking: false, sayT: 0 });
   G.ents.push({ kind: 'finish', s: FINISH, lat: 0 }, { kind: 'ufp', s: LEN - 8, lat: 0 });
   if (mode === 'chase') G.ents.push(G.boss = { kind: 'boss', s: 75, lat: q.rw / 2, vs: 0, hp: BOSS_HP, flee: 0, inv: 0, dodgeCool: 0, turbo: 0, turboCool: 0, tgtLat: q.rw / 2, tgtT: 2, dropT: 3, sayT: 1.5, said: null, saidT: 0, lift: 0, vz: 0, rot: 0 });
   else G.boss = null;
@@ -104,6 +104,7 @@ function spawnRox(s, forced) {
   const e = { kind: 'rox', type, s, lat: rnd(-rw + 0.8, rw - 0.8), vs: 0, vlat: 0, state: 'idle', t: Math.random() * 3, lift: 0, vz: 0, rot: 0, said: null, saidT: 0, talked: false };
   if (type === 'walk' || type === 'gold' || type === 'phone') { e.lat = side * (rw + 1.6); e.cross = -side * (type === 'gold' ? 3.4 : type === 'phone' ? 1.1 : rnd(1.6, 2.4)); e.trigger = type === 'gold' ? 80 : 50; }
   if (type === 'cart') e.vs = -1.3; if (type === 'grizzly') e.vs = -2.2;
+  if (!e.cross && q.park) for (const sd of q.park) { const sg = sd === 'L' ? -1 : 1; if (e.lat * sg > rw - 1.7) e.lat = sg * (rw - 1.7); }   // not right beside a car parked at the kerb: you could not get him without hitting it
   G.ents.push(e); G.roxes++;
   return e;
 }
@@ -119,9 +120,11 @@ function spawnTraffic(s) {
 function spawnParked(a, b) {
   const B = road.roadAt(a).bays;   // the Panorama car park, left of the lane: rows of bays at right angles to it, so you see the cars nose or tail on
   if (B) { const pitch = B.pitch || 16, aisle = B.aisle || 6, bed = B.bed ?? 1.2; for (let s = B.from + aisle + Math.ceil((a - B.from - aisle) / pitch) * pitch; s < b; s += pitch) if (road.roadAt(s + 8).bays)
-    for (const [ds, front] of [[2.5, true], [7.5, false]]) for (let j = 0; j < 8; j++) if (Math.random() < 0.7) G.ents.push({ kind: 'parked', s: s + ds, lat: -(road.roadAt(s + ds).rw + bed + 1.25 + j * 2.5), img: front ? pick(CARS.front) : pick(CARS.rear) }); }
+    for (const [ds, front] of [[2.5, true], [7.5, false]]) for (let j = 0; j < 8; j++) { const lat = -(road.roadAt(s + ds).rw + bed + 1.25 + j * 2.5);
+      if (!front && j === 0 && !G.roxCar && s + ds > 45) { G.roxCar = true; G.ents.push({ kind: 'parked', s: s + ds, lat, img: CARS.rox, hm: 1.7, roxCar: true }); continue; }   // his red Captur, in the first bay across from the Panorama's door
+      if (Math.random() < 0.7) G.ents.push({ kind: 'parked', s: s + ds, lat, img: front ? pick(CARS.front) : pick(CARS.rear) }); } }
   for (let s = a; s < b; s += rnd(6, 9)) { const q2 = road.roadAt(s); if (!q2.park || Math.random() < 0.3) continue;   // cars and vans at the kerb, half on the sidewalk, where the real street has them
-    for (const sd of q2.park) { const sg = sd === 'L' ? -1 : 1, truck = q2.trucks && Math.random() < 0.35; G.ents.push({ kind: 'parked', s, lat: sg * (q2.rw + (truck ? 0.3 : 0.1)), img: truck ? CARS.truck : sg > 0 ? pick(CARS.rear) : pick(CARS.front), hm: truck ? 3.1 : 1.45 }); } }
+    for (const sd of q2.park) { const sg = sd === 'L' ? -1 : 1, truck = q2.trucks && Math.random() < 0.35; G.ents.push({ kind: 'parked', kerb: true, s, lat: sg * (q2.rw + (truck ? 0.3 : 0.1)), img: truck ? CARS.truck : sg > 0 ? pick(CARS.rear) : pick(CARS.front), hm: truck ? 3.1 : 1.45 }); } }
 }
 function spawns() {
   const ahead = G.pos + 190;
@@ -153,9 +156,9 @@ function hitRox(e) {
 function crash(e) {
   G.invT = 1.6; G.shake = 0.5; G.crashes++; sfx('crash');
   if (e.oncoming || e.kind === 'parked') { G.speed = 0; } else { G.speed = Math.min(G.speed, e.vs) * 0.4; e.vs += 5; }
-  G.lat += (G.lat < e.lat ? -1 : 1) * 1.2;
+  if (e.kerb) G.lat = e.lat - Math.sign(e.lat) * 1.9; else G.lat += (G.lat < e.lat ? -1 : 1) * 1.2;   // off a car at the kerb: back onto the road, never behind the row (one crash after another)
   if (G.mode !== 'chase') { G.clock += 5; float('+5 SEC', W / 2 - 20, H * 0.45, '#ff5a4a', 2); }
-  if (G.live) toast(pick(['CHE BOTTA!', 'ASSICURAZIONE!', 'MA CHI TI HA DATO LA PATENTE?']), 1100);
+  if (G.live) toast(e.roxCar ? 'LA CAPTUR DI ROX! UN\'ALTRA AMMACCATURA...' : pick(['CHE BOTTA!', 'ASSICURAZIONE!', 'MA CHI TI HA DATO LA PATENTE?']), 1100);
 }
 function slip(e, wet) {
   G.slipT = 1.1; G.speed *= wet ? 0.5 : 0.6; G.invT = Math.max(G.invT, 0.6); sfx('slip'); e.gone = true;
@@ -221,6 +224,7 @@ function step(dt) {
       }
     } else if (e.kind === 'parked') {
       if (G.invT <= 0 && Math.abs(e.lat - G.lat) < 1.75 && e.s < front && e.s + 3.8 > rear) crash(e);   // onto the bays: straight into a parked car
+      if (e.roxCar && !e.seen && e.s - front < 25 && live) { e.seen = true; toast(G.mode === 'chase' ? 'LA CAPTUR DI ROX: OGGI HA PRESO IL GRIZZLY' : 'LA CAPTUR ROSSA DI ROX. LUI È GIÀ A PIEDI...', 1800); }
       if (e.s < G.pos - 20) e.gone = true;
     } else if (e.kind === 'car') {
       e.s += e.vs * dt; if (e.oncoming) e.lat = oppLane(road.roadAt(e.s)) + (e.dl || 0);
@@ -254,28 +258,29 @@ function bossStep(b, dt, rw) {
   b.s += b.vs * dt;
   if ((b.tgtT -= dt) <= 0) { b.tgtT = rnd(1.4, 2.8); b.tgtLat = rnd(-rw + 1.1, rw - 1.1); }
   // a side-step when you are about to ram him (not always: he is Rox)
-  b.dodgeCool -= dt; if (gap < 11 && gap > 1 && b.dodgeCool <= 0) { b.dodgeCool = 1.6; if (Math.random() < 0.5) { b.tgtLat = clamp(G.lat + (b.lat > G.lat ? 2.8 : -2.8), -rw + 0.9, rw - 0.9); b.tgtT = 1.2; b.dodge = 0.8; } }
-  b.dodge = Math.max(0, (b.dodge || 0) - dt); const ls = b.dodge > 0 ? 4.8 : 2.6;
-  b.lat += clamp(b.tgtLat - b.lat, -ls * dt, ls * dt); b.lat = clamp(b.lat, -rw + 0.8, rw - 0.8);
+  b.dodgeCool -= dt; if (gap < 11 && gap > 1 && b.dodgeCool <= 0) { b.dodgeCool = 1.6; if (Math.random() < 0.35) { b.tgtLat = clamp(G.lat + (b.lat > G.lat ? 2.8 : -2.8), -rw + 0.9, rw - 0.9); b.tgtT = 1.2; b.dodge = 0.8; } }
+  b.dodge = Math.max(0, (b.dodge || 0) - dt); const ls = b.dodge > 0 ? 3.8 : 2.6;   /* playtest: at 4.8 nobody but a bot could follow him */
+  const pk = road.roadAt(b.s).park || [], lo = pk.includes('L') ? -rw + 1.7 : -rw + 0.8, hi = pk.includes('R') ? rw - 1.7 : rw - 0.8;   // off the cars parked at the kerb
+  b.lat += clamp(b.tgtLat - b.lat, -ls * dt, ls * dt); b.lat = clamp(b.lat, lo, hi);
   if (b.lift > 0 || b.vz) { b.lift += b.vz * dt; b.vz -= 18 * dt; if (b.lift <= 0) { b.lift = 0; b.vz = 0; } }
   // throwing things behind him
   if ((b.dropT -= dt) <= 0 && gap < 130 && gap > 8) { b.dropT = rnd(1.5, 3) + b.hp * 0.3; /* angrier with every hit */ G.ents.push({ kind: Math.random() < 0.7 ? 'fennel' : 'wet', s: b.s - 1.5, lat: b.lat + rnd(-0.6, 0.6) }); if (Math.random() < 0.4) sfx('taunt'); }
   if ((b.sayT -= dt) <= 0) { b.sayT = rnd(3, 5.5); if (gap < 100) say(b, SAY.chase, 1.8); }
   // rammed
-  if (gap < 0.4 && gap > -2.5 && Math.abs(b.lat - G.lat) < 1.7 && G.invT <= 0 && b.inv <= 0) {
+  if (gap < 0.4 && gap > -2.5 && Math.abs(b.lat - G.lat) < 1.9 && G.invT <= 0 && b.inv <= 0) {
     b.hp--; b.flee = 3; b.inv = 3; b.vs = Math.max(b.vs, G.speed) + 6; b.vz = 4; G.speed *= 0.55; G.invT = 0.9; G.shake = 0.3; G.hits++; G.score += 1000;
     sfx('hit'); const [x, y] = screenOf(b); burst(x, y, 22, ['#ec7022', '#344aa0', '#f0f4e2', '#9ad06a']); float(b.hp > 0 ? `COLPITO! ${b.hp} ANCORA` : 'ROX FERMATO!', x - 30, y - 20, '#ffffff', b.hp > 0 ? 1 : 2);
     say(b, SAY.chaseHit, 1.4);
     if (b.hp <= 0) { b.vz = 9; b.vs = G.speed + 8; endChase(true); }
   } else if (gap < -2.5) {   // you got past him: he takes a shortcut and turns up ahead
-    b.s = G.pos + CARZ + rnd(60, 90); b.lat = rnd(-rw + 1.2, rw - 1.2); say(b, SAY.shortcut, 1.6); if (G.live) toast('ROX HA PRESO UNA SCORCIATOIA!', 1300);
+    b.s = G.pos + CARZ + rnd(35, 55); b.lat = rnd(-rw + 1.2, rw - 1.2); say(b, SAY.shortcut, 1.6); if (G.live) toast('ROX HA PRESO UNA SCORCIATOIA!', 1300);
   }
   if (b.s >= FINISH && b.hp > 0 && G.phase === 'play') endChase(false);
 }
 
 // ------------------------------------------------------------ drawing
 function roxImg(e) {
-  const f = Math.floor(e.t * 4) % 2;
+  const f = Math.floor(e.t * 4) % 2; if (e.state === 'fly') return ROX.hit;
   switch (e.type) {
     case 'walk': return e.go ? (f ? ROX.walk1 : ROX.walk2) : ROX.stand;
     case 'gold': return e.go ? (f ? ROX.goldWalk1 : ROX.goldWalk2) : ROX.gold;
@@ -290,7 +295,7 @@ function things() {
   for (const e of G.ents) {
     let th = null;
     if (e.kind === 'rox') { const im = roxImg(e); th = add(e, im, hmOf(im), e.lift, e.rot); if (e.state === 'idle' && e.lift < 0.3) add({ s: e.s + 0.05 }, PROPS.shadow, 0.16, 0, 0, e.lat, im.width / PPM * 1.1); }
-    else if (e.kind === 'boss') { const im = Math.floor(G.t * 3) % 2 ? ROX.chase : ROX.chase2; th = add(e, im, hmOf(im) * 1.4, e.lift, e.rot); add({ s: e.s + 0.05 }, PROPS.shadow, 0.25, 0, 0, e.lat, 2.2); }   // the Grizzly XL
+    else if (e.kind === 'boss') { const im = e.inv > 1.8 || e.hp <= 0 ? ROX.chaseOuch : Math.floor(G.t * 3) % 2 ? ROX.chase : ROX.chase2; th = add(e, im, hmOf(im) * 1.4, e.lift, e.rot); add({ s: e.s + 0.05 }, PROPS.shadow, 0.25, 0, 0, e.lat, 2.2); }   // the Grizzly XL
     else if (e.kind === 'car') th = add(e, e.img, e.ape ? 1.6 : 1.45);
     else if (e.kind === 'parked') th = add(e, e.img, e.hm || 1.45);
     else if (e.kind === 'fennel') th = add(e, PROPS.fennel, 0.55);
@@ -343,7 +348,7 @@ function menuRecords() {
 function toMenu() { AU.engineOff(); AU.musicStop(); reset('attract'); G.phase = 'menu'; showScreen('menu'); menuRecords(); }
 async function start(mode) {
   AU.unlock(); reset(mode); G.phase = 'countdown'; showScreen(null); $('controls').classList.toggle('show', true);
-  $('story').innerHTML = mode === 'investi' ? 'Sono le 13:58. Alle 14:00 devi timbrare.<br>Rox è uscito dal Panorama... e si è moltiplicato.<br><b>Investine più che puoi!</b>' : 'Rox ha rubato il Grizzly e corre a timbrare prima di te.<br>Guida al contrario e lancia finocchi.<br><b>Speronalo 5 volte prima della ditta!</b>';
+  $('story').innerHTML = mode === 'investi' ? 'Sono le 14:28. Alle 14:30 devi timbrare.<br>Rox è uscito dal Panorama... e si è moltiplicato.<br><b>Investine più che puoi!</b>' : 'Rox ha rubato il Grizzly e corre a timbrare prima di te.<br>Guida al contrario e lancia finocchi.<br><b>Speronalo 5 volte prima della ditta!</b>';
   $('story').classList.add('show'); AU.engineOn(); if (AU.audioState().music) AU.musicStart(mode === 'chase');
   for (const n of [3, 2, 1]) { $('count').textContent = n; $('count').classList.add('show'); AU.sfx.beep(false); await new Promise(r => setTimeout(r, 750)); if (G.mode !== mode) return; }
   $('count').textContent = 'VIA!'; AU.sfx.beep(true); G.phase = 'play'; $('story').classList.remove('show'); setTimeout(() => $('count').classList.remove('show'), 600);

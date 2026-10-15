@@ -9,6 +9,7 @@ await p.goto(`${BASE}?mode=${mode}`);
 await p.evaluate(() => { setInterval(() => { const R = window.__rox; if (!R || R.G.phase !== 'play') return; const G = R.G, f = G.pos + R.CARZ + 3.4; let tgt = null, best = 80;
   for (const e of G.ents) if ((e.kind === 'rox' && e.state === 'idle') || e.kind === 'boss') { const d = e.s - f; if (d > -1 && d < best) { best = d; tgt = e.lat; } }
   for (const e of G.ents) if ((e.kind === 'fennel' || e.kind === 'wet' || e.kind === 'car') && e.s - f > -1 && e.s - f < 28 && Math.abs(e.lat - G.lat) < 2) { tgt = G.lat + (e.lat > G.lat ? -2.5 : 2.5); break; }
+  for (const e of G.ents) if (e.kind === 'parked' && e.kerb && tgt != null && e.s - f > -4 && e.s - f < 30 && Math.sign(tgt) === Math.sign(e.lat) && Math.abs(tgt) > Math.abs(e.lat) - 1.9) tgt = e.lat - Math.sign(e.lat) * 1.95;   // never behind a parked car
   const k = R.keys; k.gas = true; k.left = tgt != null && tgt < G.lat - 0.3; k.right = tgt != null && tgt > G.lat + 0.3; }, 50); });
 let t0 = 0, i = 0;
 for (const t of shots.split(',').map(Number)) { await p.waitForTimeout(t - t0); t0 = t; await p.screenshot({ path: `${out}/${mode}-${w}x${h}-${i++}.png` });

@@ -8,7 +8,7 @@ Stato del lavoro e cose da fare: [NEXT_SESSION.md](NEXT_SESSION.md). Note tecnic
 
 ## Le modalità
 
-- **INVESTI ROX**: la pausa pranzo è finita, sono le 13:58 e devi timbrare alle 14:00. Rox è ovunque: attraversa, saluta,
+- **INVESTI ROX**: la pausa pranzo è finita, sono le 14:28 e devi timbrare alle 14:30. Rox è ovunque: attraversa, saluta,
   telefona, mangia finocchi, spinge il carrello del Panorama o il Grizzly, dorme sull'asfalto, a volte è d'oro. Più ne
   prendi di fila, più sale il moltiplicatore (fino a x8). Le auto ti fanno perdere 5 secondi, il caffè dà il turbo.
   All'arrivo c'è un muro di Rox davanti al traguardo.
