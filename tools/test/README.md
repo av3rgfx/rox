@@ -57,3 +57,12 @@ rotoli di nastro, ruote e finocchi (le scatole che cadono si schivano). Correzio
 - le scale erano troppo vicine (si saliva in 50 s senza incontrare niente): ora, come in Donkey Kong, si parte vicino
   ai RESI e la scala per salire è sempre all'altra estremità della trave, quindi la merce arriva di fronte;
 - un tocco veloce su SALTA (più breve di un fotogramma) non faceva saltare: ora resta "prenotato".
+
+Playtest della sesta sessione, ROX KOMBAT con `kombat.mjs` (9 torri per ritardo, a turno con tutti i lottatori):
+0 ms 9/9 torri vinte, 200 ms 6/9, 300 ms 6/9, 450 ms 3/9; ~3,5 minuti a torre, quasi sempre si perde all'ultimo
+incontro (Rox o il Rox d'oro); i primi due si vincono quasi sempre. Correzioni nate dal bot:
+- a piena forza il computer vinceva metà dei round e la torre non la finiva nessuno: ora picchia meno forte nei primi
+  due incontri (`dmg` in `LEVELS`: 0,65 / 0,8 / 0,85) e decide più piano;
+- la pioggia di finocchi di Rox colpiva troppo (danno 5 a finocchio) e la barra SPECIALE si riempiva troppo in fretta;
+- la combo contava ogni colpo a meno di un secondo dal precedente (punteggi da 900.000): ora conta solo i colpi messi
+  mentre l'avversario è ancora stordito; e la fine della torre aggiungeva il bonus a ogni fotogramma.
