@@ -1,0 +1,12 @@
+<!doctype html><meta charset="utf-8"><body style="margin:0;background:#3a3644"><canvas id="c"></canvas>
+<script type="module">
+// a sheet of ROX KOMBAT's fighters in every pose (tools/test/fighters.mjs shoots it)
+import { buildRox } from '../../game/sprites.js';
+import { buildFighters, POSE_NAMES } from '../../game/staff.js';
+const face = await new Promise(r => { const i = new Image(); i.onload = () => r(i); i.src = '../../assets/rox/face.png'; });
+const FT = await buildFighters(buildRox(face)), ids = Object.keys(FT), poses = [...POSE_NAMES, 'down'];
+const q = new URLSearchParams(location.search), side = q.get('side') || 'R', c = document.getElementById('c'), k = +(q.get('k') || 2); c.width = (poses.length * 100 + 60) * k; c.height = ids.length * 110 * k;
+const g = c.getContext('2d'); g.imageSmoothingEnabled = false; g.scale(k, k);
+ids.forEach((id, r) => { g.drawImage(FT[id].face, 4, r * 110 + 30); poses.forEach((p, i) => g.drawImage(FT[id][side][p], 60 + i * 100, r * 110 + 4)); });
+document.title = 'ok';
+</script>

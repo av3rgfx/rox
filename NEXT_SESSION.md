@@ -1,6 +1,6 @@
 # Stato del progetto e prossima sessione
 
-Ultimo aggiornamento: 15 ottobre 2026, fine della quinta sessione (branch `claude/rox-sessione-5`, PR da unire).
+Ultimo aggiornamento: 15 ottobre 2026, fine della sesta sessione (branch `claude/rox-sessione-6`, PR da unire).
 
 ## Cosa c'è già (funziona, testato in headless su PC e telefono)
 
@@ -9,7 +9,7 @@ Ultimo aggiornamento: 15 ottobre 2026, fine della quinta sessione (branch `claud
   Via Ubaldo Fantacci, Via Bure Vecchia Nord, Via Enrico Fermi, Via Dino Buzzati e Via Luigi Salvatorelli fino a
   **oltre** Utensilferramenta, che sta a destra lungo la strada. Scartati: la scorciatoia di 1,1 km giù per Via Bure
   Vecchia Nord e il giro ad anello di OSRM tra le corsie del parcheggio.
-- Quattro modalità complete:
+- Cinque modalità complete:
   - **INVESTI ROX**: partenza 14:28:00, timbratura entro le **14:30** (deciso dal proprietario); Rox in 9 varianti; combo fino a x8; traffico
     (−5 s), Ape, caffè turbo; muro di 4 Rox prima del traguardo "TIMBRA QUI" davanti alla serranda di UFP.
   - **ROX CHASE**: Rox sul Grizzly seduto al contrario, 5 cuori, finocchi e cartelli bagnati; perdi se arriva prima.
@@ -19,6 +19,7 @@ Ultimo aggiornamento: 15 ottobre 2026, fine della quinta sessione (branch `claud
   - **ROX KONG** (boss 2, quinta sessione): dopo il corridoio IS vinto ("MULETTO FERMATO! Ma Rox è saltato giù...",
     con "SUGLI SCAFFALI!" o "FINE QUI"; il punteggio si somma) e come quarta carta del menu (`?mode=kong`). Vedi sotto,
     "Quinta sessione".
+  - **ROX KOMBAT** (il picchiaduro, sesta sessione): quinta carta del menu (`?mode=kombat`). Vedi sotto, "Sesta sessione".
 - Grafica: tutte le `pistoia-*` e i due landmark (UFP, Ex Mensa) sono immagini vere di Codex (due giri; il secondo
   era la PR #4, integrata a mano e chiusa). Il Panorama è ritagliato dal `lm-panorama` di Codex (4 campate ripetibili
   e l'ingresso con l'insegna). Mancano ancora le 15 `b-*` e il secondo capannone di UFP: prompt in
@@ -104,6 +105,40 @@ Ultimo aggiornamento: 15 ottobre 2026, fine della quinta sessione (branch `claud
     (Investi → corridoio → scaffali) riparte dal primo;
   - playtest col bot (`tools/test/kong.mjs`): vince 7–8 partite su 9 anche vedendo con 450 ms di ritardo, ~80 s a
     partita. Dettagli in `tools/test/README.md`.
+- Sesta sessione:
+  - **ROX KONG sul telefono verticale**: lo schermo di gioco è più alto (fino a 350 px invece di 250, i comandi restano
+    sotto), così lo scaffale ci sta tutto e Rox in cima non finisce più sotto l'HUD (`fitStage` in `main.js`). Il
+    proprietario non aveva altre correzioni; il bot vince ancora 6 su 6 a 200 ms.
+  - **ROX KOMBAT**, il picchiaduro "stile Mortal Kombat" (`game/kombat.js`, lottatori in `game/staff.js`):
+    - vista di lato, uno contro uno, barre dell'energia, timer di 60 s, al meglio dei 3 round; l'HUD è disegnato sul
+      canvas (nomi, round vinti, punteggio, barra SPECIALE);
+    - scegli il lottatore (schermata con le facce) e fai una **torre di 3 incontri**: due colleghi a caso, poi **Rox**
+      (se sei Rox, il **Rox d'oro**), in tre posti della sua strada: **parcheggio del Panorama** (la facciata di Codex e le
+      auto, la Captur rossa compresa), **davanti a UFP** (il capannone vero di Codex, il cartello TIMBRA QUI, i paletti
+      arancioni) e il **corridoio IS** (scaffali, lo striscione "AL SERVIZIO DEL PROFESSIONISTA DAL 1974");
+    - mosse: pugno, calcio, salto e calcio volante, abbassarsi, ↓+pugno **montante** (fa volare), ↓+calcio
+      **sgambetto**, tenendo indietro **pari**; la barra verde SPECIALE si riempie colpendo e prendendo colpi;
+    - **lottatori e mosse speciali** (Rox con la sua faccia vera; gli altri sono **ruoli segnaposto**, con facce
+      disegnate a pixel, mai una persona vera indovinata):
+      - ROX: PIOGGIA DI FINOCCHI (tre finocchi ad arco);
+      - IL MAGAZZINIERE (casco giallo, maglietta "50"): NASTRO ADESIVO (rotola a terra, se ti prende sei impacchettato;
+        si salta);
+      - IL MULETTISTA (cappellino "50", barba, gilet giallo): BANCALE DALL'ALTO (cade dove sei, l'ombra avvisa);
+      - IL COMMERCIALE (giacca, cravatta): CATALOGO NUOVO (vola dritto all'altezza della testa; ci si abbassa);
+      - L'AMMINISTRAZIONE (capelli rossi, occhiali, cardigan): SCONTRINO INFINITO (lunghissimo, "TOT 50,00", ti tira
+        vicino);
+      - IL CAPO (camicia bianca, baffi grigi): NEL MIO UFFICIO! (un fumetto che, se ti prende, ti lascia immobile);
+      - ROX D'ORO: come Rox, tutto d'oro (solo come ultimo avversario);
+    - niente sangue: col K.O. si vola come un birillo (al rallentatore); quando vinci un incontro compare
+      **FINISCILO!** e premendo SPECIALE parte la **FINOCCHIALITY**: piovono finocchi finché dello sconfitto resta fuori
+      solo la testa ("SOTTO I FINOCCHI...");
+    - ogni lottatore ha le sue battute (saluto nella schermata VS, quando lo colpisci, quando vince); suoni nuovi
+      (pugno, calcio, montante, parata, speciale, K.O.);
+    - comandi: PC ← → (indietro = parata), ↑ salto, ↓ abbassati, Z/J pugno, X/K calcio, C/L/SPAZIO speciale; telefono:
+      una croce a sinistra e PUGNO, CALCIO, SPECIALE a destra;
+    - punteggio: danni × 10, combo, round vinto 1000 + tempo, round perfetto 2000, FINOCCHIALITY 5000, incontro vinto
+      3000 × numero; record locale `kombat`; se perdi, **RIPROVA** riparte da quell'incontro;
+    - playtest col bot (`tools/test/kombat.mjs`), vedi `tools/test/README.md`.
 - Strumenti nuovi: `tools/realroad.mjs` (segnaletica e rotonde da OSM + `art/road-custom.json` → `data/road.json`),
   `tools/rebase.mjs` (dopo un nuovo bake sposta edifici veri e landmark ai metri nuovi), `tools/test/at.mjs`
   (fotografa la strada vuota a metri precisi).
@@ -137,10 +172,9 @@ Ultimo aggiornamento: 15 ottobre 2026, fine della quinta sessione (branch `claud
 
 ## Da fare nella prossima sessione
 
-La quinta sessione ha costruito il boss 2, ROX KONG (sopra in "Cosa c'è già"); il proprietario non aveva correzioni al
-boss 1. **Prossima sessione: far provare al proprietario ROX KONG e correggere quello che dice; poi la prossima cosa
-che sceglie** tra il picchiaduro coi dipendenti (servono le sue informazioni, vedi C.3), le modalità proposte (C.4) e la
-classifica (C.5). Nessuna PR di Codex con le `b-*` è arrivata: se arriva, controllarla e integrarla come la #4
+La sesta sessione ha costruito ROX KOMBAT con Rox e cinque colleghi segnaposto (sopra in "Cosa c'è già"). **Prossima
+sessione: far provare ROX KOMBAT al proprietario e correggere quello che dice; mettere i colleghi veri se manda
+nomi, foto e mosse (vedi C.3); poi la prossima cosa che sceglie** tra le modalità proposte (C.4) e la classifica (C.5). Nessuna PR di Codex con le `b-*` è arrivata: se arriva, controllarla e integrarla come la #4
 (`art/codex/MESSAGGIO-CODEX.md` si può mandare). Lavorare senza chiedere le informazioni mancanti, piano breve
 all'inizio, branch nuovo da `main`, PR alla fine.
 
@@ -172,11 +206,17 @@ muletto"). Se il proprietario intendeva altro, lo correggerà.
    velocità, `down` = quanto spesso la merce scende dalle scale, `falls`, `KONG_HP`), altri prodotti, un quarto
    scaffale (per esempio "UTENSILERIA": trapani e valigette), la faccia di un collega vero per il magazziniere (solo
    da una sua foto).
-3. **Più avanti, idee del proprietario**:
-   - **Picchiaduro "stile Mortal Kombat"**: tutti i dipendenti dell'azienda come personaggi, ognuno con la sua mossa
-     speciale. Servono dal proprietario: l'elenco dei dipendenti (nomi o soprannomi), una foto del viso di ciascuno
-     (come per Rox, ritagliata dalle foto, mai generata) e un'idea di mossa speciale per ognuno; dove manca, proporre
-     mosse affettuose. Chiedere queste cose quando si arriva a questa modalità.
+3. **Picchiaduro "ROX KOMBAT": fatto nella sesta sessione, con i colleghi segnaposto.** Scelte fatte senza chiedere, da
+   far confermare: il nome ROX KOMBAT, la FINOCCHIALITY, i cinque ruoli e le loro mosse, la torre di 3 incontri con Rox
+   per ultimo (Rox d'oro se giochi con Rox), le tre arene, la difficoltà (il computer colpisce meno forte nei primi due
+   incontri: `LEVELS` in `kombat.js`).
+   **Per mettere i colleghi veri** servono dal proprietario, per ognuno: il nome o il soprannome, una foto del viso
+   (frontale, buona luce, anche dal telefono: si ritaglia come quella di Rox, mai generata) e, se vuole, una mossa
+   speciale, due o tre battute tipiche e i colori dei vestiti. Si cambia la riga del collega in `ROSTER` (`game/staff.js`):
+   `name`, `photo: 'assets/staff/<nome>.png'`, `look`, `lines`, `special` (uno di quelli che ci sono, o una mossa nuova in
+   `fireSpecial`). Con la foto il collega ha la stessa faccia in tutte le pose (le espressioni "ouch" e ghigno sono
+   fatte a mano solo per la foto di Rox; per un collega si possono fare guardando la sua foto). Si possono aggiungere
+   lottatori oltre i sei: la schermata di scelta li mette in griglia da sola.
 4. **Modalità proposte da Claude** (salvate, da scegliere col proprietario), in ordine di consiglio:
    1. "Ape Car": guidi l'Ape del finocchio, lenta e ballerina, si ribalta nelle rotonde (costa poco, fa ridere);
    2. "Sfida del giorno": stessi Rox nelle stesse posizioni per tutti quel giorno (generatore casuale con seme dalla
@@ -188,13 +228,11 @@ muletto"). Se il proprietario intendeva altro, lo correggerà.
 ### Piccole cose rimaste
 
 - Il muro di Via Fantacci e di Bure Vecchia Nord è fatto di lastre piatte: da vicino si vede.
-- ROX KONG sul telefono verticale: lo scaffale non ci sta tutto, quindi finché sei in basso Rox in cima resta sotto
-  l'HUD (lo vedi all'inizio, quando la camera lo inquadra, e man mano che sali).
 - L'aiuola delle rotonde è un ovale a sinistra, non un cerchio intorno a cui gira la strada.
 - Le 15 `b-*` e il secondo capannone di UFP aspettano le immagini di Codex.
 
 ## Come provarlo
 
 - In locale: `python3 -m http.server 8000` e apri `http://localhost:8000/` (`?mode=investi` / `?mode=chase` /
-  `?mode=boss` / `?mode=kong`).
+  `?mode=boss` / `?mode=kong` / `?mode=kombat`, quest'ultimo con Rox).
 - Test automatici: `tools/test/README.md`.

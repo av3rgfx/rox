@@ -54,6 +54,14 @@ export const sfx = {
   smash() { noise(0, 0.25, 0.5, 1500, 0.6); tone('square', 800, 200, 0, 0.2, 0.1); },
   wrap() { noise(0, 0.9, 0.18, 3000, 2); tone('sine', 400, 1600, 0.1, 0.6, 0.05); },
   taunt() { tone('square', 660, 880, 0, 0.08, 0.06); tone('square', 880, 660, 0.09, 0.08, 0.06); },
+  // ROX KOMBAT: a swing, a punch, a kick, an uppercut, a block, a special move, a knockout
+  whoosh() { noise(0, 0.08, 0.12, 2400, 1.5); },
+  punch() { noise(0, 0.1, 0.45, 900, 0.8); tone('square', 220, 90, 0, 0.1, 0.12); },
+  kick() { noise(0, 0.14, 0.5, 600, 0.8); tone('square', 160, 60, 0, 0.14, 0.14); },
+  upper() { noise(0, 0.18, 0.5, 700, 0.8); tone('square', 200, 900, 0, 0.18, 0.1); },
+  block() { tone('square', 1400, 1100, 0, 0.05, 0.06); noise(0, 0.05, 0.15, 3000, 2); },
+  special() { [392, 523, 659, 784].forEach((f, i) => tone('square', f, f * 1.02, i * 0.04, 0.08, 0.08)); },
+  ko() { noise(0, 0.5, 0.6, 500, 0.6); tone('sawtooth', 300, 40, 0, 0.8, 0.18); [523, 392, 262].forEach((f, i) => tone('square', f, f, 0.3 + i * 0.16, 0.18, 0.1)); },
 };
 
 // the engine: two detuned oscillators through a low-pass filter, pitch from speed

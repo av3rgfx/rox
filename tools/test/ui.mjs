@@ -1,5 +1,5 @@
 // clicks through the screens like a person: node tools/test/ui.mjs OUT_DIR (menu, how to play, pause, chase won, the
-// aisle won, on to the shelves and ROX KONG won, ROX KONG from the menu, INVESTI on time and on to the aisle)
+// aisle won, on to the shelves and ROX KONG won, ROX KONG from the menu, INVESTI on time and on to the aisle, ROX KOMBAT)
 import { mkdirSync } from 'node:fs';
 import { chromium, BASE, watch } from './lib.mjs';
 const out = process.argv[2] || '/tmp/rox-shots'; mkdirSync(out, { recursive: true });
@@ -39,4 +39,24 @@ await p.evaluate(() => { const G = __rox.G; G.pos = __rox.road.LEN - 70 - __rox.
 await p.keyboard.down('ArrowUp'); await p.waitForTimeout(3500); await p.keyboard.up('ArrowUp'); await p.screenshot({ path: `${out}/ui-bossintro.png` });
 console.log('after investi:', await p.evaluate(() => __rox.G.phase));
 await p.click('#bi-go'); await p.waitForTimeout(3600); console.log('carried:', await p.evaluate(() => __rox.G.mode + ' ' + __rox.G.phase + ' score ' + __rox.G.score + ' carry ' + !!__rox.G.carry));
+// ROX KOMBAT from the menu: the select screen, a fighter, the match card, a fight won by force up to FINISCILO! and the
+// FINOCCHIALITY, then a lost one (RIPROVA starts that match again)
+await p.click('#btn-quit').catch(() => {}); await p.evaluate(() => document.querySelector('#pause.show') && document.getElementById('btn-quit').click()); await p.waitForTimeout(300);
+await p.evaluate(() => { if (document.querySelector('#bossintro.show')) document.getElementById('bi-stop').click(); }); await p.waitForTimeout(300); await p.evaluate(() => { if (document.querySelector('#end.show')) document.getElementById('end-menu').click(); });
+await p.click('#btn-kombat'); await p.waitForTimeout(300); await p.screenshot({ path: `${out}/ui-kombat-select.png` });
+await p.click('.fighter[data-id="magazziniere"]'); await p.waitForTimeout(1500); await p.screenshot({ path: `${out}/ui-kombat-vs.png` });
+await p.waitForFunction(() => __rox.G.F.stage === 'fight', null, { timeout: 15000 }); await p.keyboard.press('z'); await p.keyboard.press('x'); await p.waitForTimeout(800); await p.screenshot({ path: `${out}/ui-kombat-fight.png` });
+console.log('kombat:', await p.evaluate(() => { const F = __rox.G.F; return `${__rox.G.mode} ${F.stage} ${F.P.id} vs ${F.C.id} at ${F.arena.name}`; }));
+await p.evaluate(() => { const F = __rox.G.F; F.n = 2; F.P.wins = 1; F.C.hp = 1; F.C.x = F.P.x + 40; F.C.inv = 0; });
+for (let i = 0; i < 30 && await p.evaluate(() => __rox.G.F.stage) !== 'finish'; i++) { await p.evaluate(() => { const F = __rox.G.F; F.C.x = F.P.x + 40; }); await p.keyboard.press('z'); await p.waitForTimeout(120); }
+await p.waitForTimeout(400); await p.screenshot({ path: `${out}/ui-kombat-finish.png` }); await p.keyboard.press(' '); await p.waitForTimeout(2500); await p.screenshot({ path: `${out}/ui-kombat-fatal.png` });
+await p.waitForFunction(() => __rox.G.phase === 'end', null, { timeout: 15000 }); await p.screenshot({ path: `${out}/ui-kombat-end.png` });
+console.log('kombat end:', await p.evaluate(() => __rox.G.phase + ' ' + document.getElementById('end-title').textContent + ' | ' + document.getElementById('end-again').textContent + ' | ' + document.getElementById('end-lines').textContent));
+await p.click('#end-again'); await p.waitForTimeout(500); console.log('again:', await p.evaluate(() => `${__rox.G.mode} match ${__rox.G.F.n + 1} ${__rox.G.F.stage}`));
+await p.evaluate(() => { const F = __rox.G.F; F.stage = 'fight'; F.C.wins = 1; F.P.hp = 1; F.P.inv = 0; F.C.x = F.P.x + 40; F.C.st = 'idle'; });
+await p.waitForFunction(() => __rox.G.phase === 'end', null, { timeout: 40000 }).catch(() => {}); await p.screenshot({ path: `${out}/ui-kombat-lost.png` });
+console.log('kombat lost:', await p.evaluate(() => __rox.G.phase + ' ' + document.getElementById('end-title').textContent + ' | ' + document.getElementById('end-again').textContent));
+await p.click('#end-again'); await p.waitForTimeout(500); console.log('retry:', await p.evaluate(() => `${__rox.G.F.P.id} match ${__rox.G.F.n + 1} vs ${__rox.G.F.C.id}`));
+await p.keyboard.press('p'); await p.waitForTimeout(200); console.log('paused:', await p.evaluate(() => __rox.G.phase)); await p.click('#btn-quit'); await p.waitForTimeout(300);
+console.log('menu:', await p.evaluate(() => __rox.G.phase + ' ' + document.getElementById('best-kombat').textContent));
 console.log('errors:', errs); await b.close();

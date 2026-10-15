@@ -21,8 +21,9 @@
     game/layout.js   what stands beside the road (Pixel Path)
     game/warehouse.js the IS aisle of UFP's warehouse, for the boss fight (its own little renderer)
     game/kong.js     ROX KONG, the second boss: the racking from the side, like Donkey Kong
+    game/kombat.js   ROX KOMBAT, the fighting game; game/staff.js its fighters (where the colleagues go)
   Data: data/ (baked from OpenStreetMap), art/ (scenery pictures, art/kit.json). Serve the folder statically.
-  Debug: ?mode=investi, ?mode=chase, ?mode=boss or ?mode=kong starts a game straight away.
+  Debug: ?mode=investi, ?mode=chase, ?mode=boss, ?mode=kong or ?mode=kombat starts a game straight away.
 -->
 <style>
   :root { --ink: #fff8e8; --bg: #14121a; --panel: rgba(20, 18, 26, .86); --red: #d8302c; --yellow: #ffd23a; --blue: #3a5cc0; --orange: #ec7022;
@@ -82,6 +83,20 @@
   .mode.chase .name { color: var(--orange); }
   .mode.boss .name { color: #7fe0ff; }
   .mode.kong .name { color: #f6c41e; text-shadow: 2px 2px 0 #2e4aa8; }
+  .mode.kombat { grid-column: 1 / -1; } .mode.kombat .name { color: #ff5a4a; text-shadow: 2px 2px 0 #000; letter-spacing: 2px; }
+  /* ROX KOMBAT's select screen */
+  .fighters { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 10px 0 4px; }
+  @media (max-width: 620px) { .fighters { grid-template-columns: repeat(2, 1fr); gap: 8px; } }
+  .fighter { background: #221e2c; border: 3px solid #000; box-shadow: 0 0 0 3px #55506a; padding: 8px 6px; cursor: pointer; color: var(--ink); font-family: var(--font); text-align: center; }
+  .fighter:hover, .fighter:focus-visible { box-shadow: 0 0 0 3px var(--yellow); outline: none; }
+  .fighter.real { box-shadow: 0 0 0 3px var(--red); }
+  .fighter img { width: clamp(48px, 10vw, 76px); image-rendering: pixelated; filter: drop-shadow(2px 2px 0 #000); }
+  .fighter .fname { font-size: clamp(8px, 1.5vw, 11px); color: var(--yellow); margin: 6px 0 4px; }
+  .fighter .fmove { font-size: clamp(6px, 1.1vw, 8px); color: #9ad06a; line-height: 1.5; }
+  .fighter .frole { font-size: 6px; color: #8a849a; margin-top: 4px; line-height: 1.5; }
+  .selnote { font-size: clamp(7px, 1.2vw, 9px); color: #8a849a; line-height: 1.7; margin: 6px 0 0; }
+  @media (max-height: 500px) and (min-width: 621px) { .modes { grid-template-columns: repeat(3, 1fr); } .mode.kombat { grid-column: auto; }
+    #select #sel-title { font-size: 20px; margin: 0 0 4px; } #select .tag, #select .frole, .selnote { display: none; } .fighters { gap: 6px; margin: 4px 0; } .fighter { padding: 4px 3px; } .fighter img { width: 34px; } .fighter .fname { margin: 3px 0 2px; } #select .row { margin-top: 6px; } }
   .mode .desc { font-size: clamp(7px, 1.3vw, 10px); line-height: 1.7; color: #d8d0bc; }
   .mode .best { font-size: 7px; margin-top: 8px; color: #8fd0ff; }
   .row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 14px; }
@@ -91,7 +106,7 @@
   .howto { text-align: left; font-size: clamp(8px, 1.4vw, 11px); line-height: 1.9; }
   .howto h2 { font-size: 13px; color: var(--yellow); font-weight: normal; margin: 12px 0 6px; }
   .howto kbd { background: #2c2838; border: 2px solid #000; padding: 1px 5px; font-family: var(--font); font-size: 9px; }
-  #end-title, #bi-title { font-size: clamp(22px, 6vw, 44px); color: var(--yellow); text-shadow: 4px 4px 0 var(--red); margin: 4px 0 10px; }
+  #end-title, #bi-title, #sel-title { font-size: clamp(22px, 6vw, 44px); color: var(--yellow); text-shadow: 4px 4px 0 var(--red); margin: 4px 0 10px; }
   #end-score, #bi-score { font-size: clamp(11px, 2.4vw, 18px); color: #7fe0ff; margin-bottom: 10px; }
   #end-lines p { font-size: clamp(8px, 1.5vw, 11px); line-height: 1.8; margin: 6px 0; }
   #end-lines b, #bi-tag b { color: var(--yellow); font-weight: normal; }
@@ -119,6 +134,16 @@
   .tb.jump { background: rgba(246, 196, 30, .35); }
   body.portrait.kong .tb { width: 21vw; height: 21vw; font-size: 13px; } body.portrait.kong .tb.small { width: 16vw; height: 16vw; }
   body.portrait.kong .khint { display: block !important; } body.portrait.kong .hint:not(.khint) { display: none; }
+  /* ROX KOMBAT: a cross (jump, crouch, walk) and three blows */
+  .fpad { display: none !important; }
+  body.kombat .fpad { display: grid !important; gap: 8px; align-items: center; justify-items: center; } body.kombat .pad.left, body.kombat .pad.right, body.kombat .kpad { display: none !important; } body.kombat .hint { display: none !important; }
+  .fpad.fl { grid-template-areas: ". u ." "l d r"; } .fpad.fr { grid-template-areas: "s s" "p k"; }
+  .fpad .tb { width: clamp(50px, 13vmin, 84px); height: clamp(50px, 13vmin, 84px); font-size: clamp(8px, 2.2vmin, 12px); }
+  .fpad .tb.small { width: clamp(44px, 11vmin, 70px); height: clamp(44px, 11vmin, 70px); }
+  .tb.punch { background: rgba(216, 48, 44, .38); } .tb.kick { background: rgba(58, 92, 192, .45); } .tb.special { background: rgba(120, 190, 80, .45); width: auto !important; border-radius: 28px; padding: 0 14px; height: clamp(38px, 9vmin, 56px) !important; }
+  body.portrait.kombat .fpad .tb { width: 16vw; height: 16vw; font-size: 9px; } body.portrait.kombat .fpad .tb.small { width: 13vw; height: 13vw; } body.portrait.kombat .tb.special { height: 11vw !important; }
+  body.portrait.kombat .fpad.fr .tb:not(.special) { width: 18vw; height: 18vw; } body.portrait.kombat #controls { padding-left: 10px; padding-right: 10px; }
+  body.kombat #btn-pause { top: 19%; right: 50%; transform: translateX(50%); padding: 5px 8px; font-size: 8px; }   /* under the clock and the score */
   .hint { display: none; }
   body.portrait .hint { display: block; position: fixed; left: 0; right: 0; bottom: max(30px, env(safe-area-inset-bottom)); text-align: center; font-size: 8px; color: #8a849a; pointer-events: none; }
 </style>
@@ -153,6 +178,13 @@
     <div class="ud"><button class="tb small" data-k="gas" aria-label="Su per la scala">▲</button><button class="tb small" data-k="brake" aria-label="Giù per la scala">▼</button></div>
     <button class="tb jump" data-k="jump" aria-label="Salta">SALTA</button>
   </div>
+  <div class="pad fpad fl">
+    <button class="tb small" data-k="gas" style="grid-area:u" aria-label="Salta">▲</button><button class="tb" data-k="left" style="grid-area:l" aria-label="Sinistra">◀</button>
+    <button class="tb small" data-k="brake" style="grid-area:d" aria-label="Abbassati">▼</button><button class="tb" data-k="right" style="grid-area:r" aria-label="Destra">▶</button>
+  </div>
+  <div class="pad fpad fr">
+    <button class="tb special" data-k="special" style="grid-area:s">SPECIALE</button><button class="tb punch" data-k="punch" style="grid-area:p">PUGNO</button><button class="tb kick" data-k="kick" style="grid-area:k">CALCIO</button>
+  </div>
   <div class="hint">L'ACCELERATORE È SEMPRE GIÙ</div>
   <div class="hint khint">▲ ▼ SU E GIÙ PER LE SCALE</div>
 </div>
@@ -166,6 +198,7 @@
       <button class="mode chase" id="btn-chase"><div class="name">ROX CHASE</div><div class="desc">Rox scappa sul Grizzly lanciando finocchi. Speronalo 5 volte.</div><div class="best" id="best-chase"></div></button>
       <button class="mode boss" id="btn-boss"><div class="name">CORRIDOIO IS</div><div class="desc">In magazzino Rox è su un muletto. Speronalo quando resta senza batteria.</div><div class="best" id="best-boss"></div></button>
       <button class="mode kong" id="btn-kong"><div class="name">ROX KONG</div><div class="desc">Rox è salito sugli scaffali e ti tira la merce di UFP. Prendilo in cima.</div><div class="best" id="best-kong"></div></button>
+      <button class="mode kombat" id="btn-kombat"><div class="name">ROX KOMBAT</div><div class="desc">Il picchiaduro di UFP: Rox e i colleghi, a pugni, calci e finocchi.</div><div class="best" id="best-kombat"></div></button>
     </div>
     <div class="row">
       <button class="btn" id="btn-howto">COME SI GIOCA</button>
@@ -181,6 +214,7 @@
     <p>PC: <kbd>←</kbd> <kbd>→</kbd> sterzi, <kbd>↑</kbd> acceleri, <kbd>↓</kbd> freni, <kbd>SPAZIO</kbd> clacson, <kbd>P</kbd> pausa. Vanno bene anche <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd>.</p>
     <p>Telefono: ◀ ▶ per sterzare, l'acceleratore è sempre premuto, FRENO per frenare, PA-PÀ per suonare. Si gioca meglio in orizzontale.</p>
     <p>In ROX KONG: <kbd>←</kbd> <kbd>→</kbd> cammini, <kbd>↑</kbd> <kbd>↓</kbd> sali e scendi le scale, <kbd>SPAZIO</kbd> salti. Sul telefono ◀ ▶, ▲ ▼ e SALTA.</p>
+    <p>In ROX KOMBAT: <kbd>←</kbd> <kbd>→</kbd> cammini (tenendo indietro pari), <kbd>↑</kbd> salti, <kbd>↓</kbd> ti abbassi, <kbd>Z</kbd> pugno, <kbd>X</kbd> calcio, <kbd>C</kbd> o <kbd>SPAZIO</kbd> speciale (vanno bene anche <kbd>J</kbd> <kbd>K</kbd> <kbd>L</kbd>). Sul telefono la croce, PUGNO, CALCIO e SPECIALE.</p>
     <h2>INVESTI ROX</h2>
     <p>Ogni Rox vale 100 punti, il Grizzly 250, Rox che dorme 150, il Rox d'oro 1000. Prendine tanti di fila e il moltiplicatore sale fino a x8. Le auto ti fanno perdere 5 secondi. Il caffè dà il turbo. Arriva entro le 14:30 per il bonus puntualità.</p>
     <h2>ROX CHASE</h2>
@@ -189,7 +223,19 @@
     <p>Si gioca dopo Investi Rox, se timbri in tempo, o dal menu. Guidi il muletto giallo di UFP: <kbd>←</kbd> <kbd>→</kbd> per spostarti nel corridoio. Rox va in retromarcia sul suo muletto e ti tira scatole, cartelli e finocchi (l'ombra a terra mostra dove cadono). Quando la spia diventa rossa ha la batteria scarica: speronalo! 6 colpi in 3 fasi. Il tuo muletto regge 5 botte; quando speroni Rox gli cade un caffè: prendilo e ne recuperi una.</p>
     <h2>ROX KONG</h2>
     <p>Si gioca dopo il corridoio IS, se fermi il muletto, o dal menu. Rox è in cima agli scaffali e ti fa rotolare addosso la merce di UFP: silicone, schiuma, nastro, ruote, scarpe antinfortunistiche, finocchi. Sali le scale piano per piano e salta quello che arriva (100 punti a salto). Dal secondo scaffale cadono anche scatole di viti: dove lampeggia il punto esclamativo, spostati. Il casco giallo per qualche secondo rompe tutto, il caffè ridà una vita. Tre scaffali; più fai in fretta, più bonus.</p>
+    <h2>ROX KOMBAT</h2>
+    <p>Scegli il lottatore e affronta tre incontri: due colleghi, poi Rox (se sei Rox, il Rox d'oro). Vince chi prende due round. Tieni premuto indietro per parare. <kbd>↓</kbd> + pugno è il montante (fa volare), <kbd>↓</kbd> + calcio lo sgambetto. Colpendo si riempie la barra verde: piena, premi SPECIALE per la mossa speciale (finocchi, nastro adesivo, bancale, catalogo, scontrino, "nel mio ufficio!"). Quando vinci un incontro compare FINISCILO!: premi SPECIALE per la FINOCCHIALITY.</p>
     <div class="row"><button class="btn primary" id="btn-howto-back">HO CAPITO</button></div>
+  </div>
+</section>
+
+<section class="screen" id="select">
+  <div class="panel">
+    <div id="sel-title">ROX KOMBAT</div>
+    <p class="tag">Scegli il tuo lottatore.</p>
+    <div class="fighters" id="fighters"></div>
+    <p class="selnote">I colleghi per ora sono ruoli, non persone: aspettano nome, foto e mossa veri.</p>
+    <div class="row"><button class="btn" id="sel-back">MENU</button></div>
   </div>
 </section>
 
